@@ -1,0 +1,11 @@
+.DS_STORE
+/*.gdx
+/*.lst
+/*.log*
+/*.lxi
+/*.dd
+/*.pf
+/*.trc
+/CON
+/END_GAMS
+/timesdriver.gms

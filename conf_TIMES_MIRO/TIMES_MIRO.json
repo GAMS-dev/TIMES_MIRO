@@ -1,0 +1,221 @@
+{
+  "theme": "browser",
+  "excelIncludeMeta": true,
+  "excelIncludeEmptySheets": true,
+  "autoGenInputGraphs": true,
+  "storeLogFilesDuration": 7,
+  "defCompMode": "split",
+  "activateModules": {
+    "loadLocal": true,
+    "logFile": true,
+    "lstFile": true,
+    "attachments": true,
+    "downloadTempFiles": false
+  },
+  "aggregateWidgets": true,
+  "defaultScenName": "default",
+  "overwriteSheetOrder": {
+    "input": ["_widgets", "dd", "timeslice", "milestonyr", "cubeinput"]
+  },
+  "overwriteAliases": {
+    "dd": {
+      "newAlias": "DD Files"
+    },
+    "timeslice": {
+      "newAlias": "Timeslices"
+    },
+    "milestonyr": {
+      "newAlias": "Years for this model run"
+    },
+    "cubeinput": {
+      "newAlias": "Input"
+    },
+    "_scalars": {
+      "newAlias": "Scalars"
+    },
+    "cubeoutput": {
+      "newAlias": "Output"
+    }
+  },
+  "dataRendering": {
+    "cubeinput": {
+      "outType": "miroPivot",
+      "options": {
+        "domainFilter": {
+          "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts"]
+        }
+      },
+      "height": 700
+    },
+    "cubeoutput": {
+      "outType": "miroPivot",
+      "options": {
+        "domainFilter": {
+          "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts"]
+        }
+      },
+      "height": 700
+    }
+  },
+  "saveTraceFile": true,
+  "roundingDecimals": 2,
+  "pivottable": {
+    "bgColor": "transparent"
+  },
+  "inputWidgets": {
+    "gmsreduce": {
+      "widgetType": "checkbox",
+      "alias": "Reduction algorithm",
+      "value": 1,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Use TIMES reduction algorithm?"
+    },
+    "gmsdscauto": {
+      "widgetType": "checkbox",
+      "alias": "Lumpy investment",
+      "value": 1,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Use lumpy investment formulation?"
+    },
+    "gmsdebug": {
+      "widgetType": "checkbox",
+      "alias": "Debugging mode",
+      "value": 0,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Generate debugging files and extended quality assurance checks?"
+    },
+    "gmsdumpsol": {
+      "widgetType": "checkbox",
+      "alias": "Dump solution to txt",
+      "value": 0,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Dump out selected solution results into a text file?"
+    },
+    "gmssolvenow": {
+      "widgetType": "checkbox",
+      "alias": "Data check only",
+      "value": 1,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Entire run (on) versus data check only (off)"
+    },
+    "gmsxtqa": {
+      "widgetType": "checkbox",
+      "alias": "Quality assurance",
+      "value": 1,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Enable quality assurance checks?"
+    },
+    "gmsRunName": {
+      "widgetType": "textinput",
+      "alias": "Name of the model run",
+      "value": "demo12",
+      "label": "Name of the model run"
+    },
+    "gmsvaruc": {
+      "widgetType": "checkbox",
+      "alias": "Use of slack variables",
+      "value": 1,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Explicitly use slack variables in user constraints?"
+    },
+    "gmssolveda": {
+      "widgetType": "checkbox",
+      "alias": "Activities and flows as expected values",
+      "value": 1,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Represent activities and flows as expected values?"
+    },
+    "gmssolver": {
+      "widgetType": "dropdown",
+      "alias": "Solver for TIMES",
+      "choices": ["xpress", "gurobi", "cplex", "mosek", "cbc"],
+      "selected": "cplex",
+      "noHcube": false,
+      "clearValue": false,
+      "multiple": false,
+      "label": "Solver to use"
+    },
+    "gmsbratio": {
+      "widgetType": "slider",
+      "alias": "Basis indicator",
+      "min": 0,
+      "max": 1,
+      "default": 1,
+      "step": 0.01,
+      "ticks": false,
+      "noHcube": false,
+      "label": "Basis indicator"
+    },
+    "gmsreslim": {
+      "widgetType": "slider",
+      "alias": "Time limit for solve",
+      "min": 10,
+      "max": 36000,
+      "default": 1000,
+      "step": 1,
+      "ticks": false,
+      "noHcube": false,
+      "label": "Time limit for solve [seconds]"
+    },
+    "gmsbotime": {
+      "widgetType": "textinput",
+      "alias": "Time span adjustment",
+      "value": "1960",
+      "label": "Adjustment for total available time span of years available in the model"
+    },
+    "gmsobj": {
+      "widgetType": "dropdown",
+      "alias": "Objective function formulation",
+      "choices": ["ALT", "AUTO", "LIN", "MOD", "STD"],
+      "selected": "MOD",
+      "noHcube": false,
+      "clearValue": false,
+      "multiple": false,
+      "label": "Objective function formulation"
+    },
+    "gmssolvelocal": {
+      "widgetType": "checkbox",
+      "alias": "Run on NEOS",
+      "value": 1,
+      "noHcube": false,
+      "class": "checkbox-material",
+      "label": "Run locally?"
+    },
+    "cubeinput":{
+      "widgetType": "table",
+      "bigData": true
+    }
+  },
+  "handsontable": {
+    "stretchH": "none",
+    "readonly": false,
+    "highlightCol": true,
+    "highlightRow": true,
+    "columnSorting": true,
+    "manualColumnResize": true,
+    "contextMenu": {
+      "enabled": true,
+      "allowRowEdit": true,
+      "allowColEdit": true,
+      "allowReadOnly": false
+    },
+    "height": 700,
+    "colWidths": 100
+  },
+  "overwriteHeaderAliases": {
+    "cubeinput": {
+      "newHeaders": ["Symbol", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
+    },
+    "cubeoutput": {
+      "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "value"]
+    }
+  }
+}

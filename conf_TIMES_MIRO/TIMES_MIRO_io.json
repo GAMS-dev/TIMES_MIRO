@@ -1,0 +1,165 @@
+{
+	"modelTitle":	"G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m",
+	"inputSymbols":	{
+		"dd":	{
+			"alias":	"Scenario",
+			"symtype":	"set",
+			"headers":	{
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"text":	{
+					"type":	"string",
+					"alias":	"Set text Scenario"
+				}
+			}
+		},
+		"timeslice":	{
+			"alias":	"ALL_TS",
+			"symtype":	"set",
+			"headers":	{
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"text":	{
+					"type":	"string",
+					"alias":	"Set text ALL_TS"
+				}
+			}
+		},
+		"milestonyr":	{
+			"alias":	"Years for this model run",
+			"symtype":	"set",
+			"headers":	{
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"text":	{
+					"type":	"string",
+					"alias":	"Set text Years for this model run"
+				}
+			}
+		},
+		"cubeinput":	{
+			"alias":	"cubeinput",
+			"symtype":	"parameter",
+			"headers":	{
+				"siname":	{
+					"type":	"string",
+					"alias":	"domain of input symbol names"
+				},
+				"dd":	{
+					"type":	"string",
+					"alias":	"Scenario"
+				},
+				"uc_n":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"all_reg":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"allyear":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"prc":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"com_grp":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"all_ts":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#1":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#2":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"value":	{
+					"type":	"numeric",
+					"alias":	"cubeinput"
+				}
+			}
+		},
+		"_scalars":	{
+			"alias":	"Input Scalars",
+			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsreduce", "gmsdscauto", "gmsdebug", "gmsdumpsol", "gmssolvenow", "gmsxtqa", "gmsvaruc", "gmsobj", "gmssolveda", "gmsbotime", "gmsrunname", "gmssolvelocal"],
+			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Switch for TIMES reduction algorithm", "Switch for lumpy investment formulation", "Switch for debugging files and extended quality assurance checks", "Switch for dumping out selected solution results into a text file", "Switch for entire run (1) versus data check (0)", "Switch for quality assurance checks", "Switch for explicit use of slack variables in user constraints", "Choice of objective function formulations", "Activities and flows as expected values", "Adjustment for total available time span of years available in the model", "name of the model run", "Switch for running locally or on NEOS"],
+			"symtypes":	["set", "parameter", "parameter", "parameter", "parameter", "parameter", "parameter", "parameter", "parameter", "parameter", "set", "parameter", "parameter", "set", "parameter"],
+			"headers":	{
+				"scalar":	{
+					"type":	"string",
+					"alias":	"Scalar Name"
+				},
+				"description":	{
+					"type":	"string",
+					"alias":	"Scalar Description"
+				},
+				"value":	{
+					"type":	"string",
+					"alias":	"Scalar Value"
+				}
+			}
+		}
+	},
+	"outputSymbols":	{
+		"cubeoutput":	{
+			"alias":	"cubeoutput",
+			"symtype":	"parameter",
+			"headers":	{
+				"soname":	{
+					"type":	"string",
+					"alias":	"domain of output symbol names"
+				},
+				"all_reg":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"allyear":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"prc":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"com_grp":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"all_ts":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#1":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"value":	{
+					"type":	"numeric",
+					"alias":	"cubeoutput"
+				}
+			}
+		}
+	}
+}

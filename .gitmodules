@@ -1,0 +1,3 @@
+[submodule "TIMES_Demo"]
+	path = TIMES_Demo
+	url = https://github.com/etsap-TIMES/TIMES_Demo.git
