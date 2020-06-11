@@ -73,7 +73,34 @@ UC_N            .'Set'.'UC_N'
 UC_RHSRT        .'Par'.'ALL_REG,UC_N,ALLYEAR,1'                          // reorder
 UC_RHSRTS       .'Par'.'ALL_REG,UC_N,ALLYEAR,ALL_TS,1'                   // reorder
 UC_R_EACH       .'Set'.'ALL_REG,UC_N'                                    // reorder
-VDA_EMCB        .'Par'.'ALL_REG,ALLYEAR,COM_GRP,1'                       
+VDA_EMCB        .'Par'.'ALL_REG,ALLYEAR,COM_GRP,1'
+* New with dk
+uc_r_sum        .'Set'.'UC_N,ALL_REG'
+flo_deliv       .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
+uc_ncap         .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC'
+ncap_itax       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+ncap_chpr       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+com_lim         .'Set'.'ALL_REG,COM_GRP,1'
+ncap_ftax       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+flo_cost        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
+uc_act          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC,ALL_TS'
+ncap_iled       .'Par'.'ALL_REG,ALLYEAR,PRC'
+com_taxnet      .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS,1'
+vda_ceh         .'Par'.'ALL_REG,ALLYEAR,PRC'
+cap_bnd         .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+uc_ire          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,2'
+ncap_elife      .'Par'.'ALL_REG,ALLYEAR,PRC'
+flo_tax         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
+uc_attr         .'Set'.'ALL_REG,UC_N,1,2,3'
+g_curex         .'Par'.'1,2'
+ire_flo         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,2,ALL_TS'
+flo_sub         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
+ncap_drate      .'Par'.'ALL_REG,ALLYEAR,PRC'
+flo_emis        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,ALL_TS'
+uc_rhsts        .'Par'.'UC_N,ALLYEAR,ALL_TS,1'
+prc_noff        .'Set'.'ALL_REG,PRC,1,2'
+vda_flop        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS '
+flo_func        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,All_TS'
 /;
 
 Set cdOutput(soName<,typ,*) 'Cube Data' /
@@ -150,6 +177,12 @@ Set cdOutput(soName<,typ,*) 'Cube Data' /
 
 $onEmbeddedCode Python:
 import os
+def printme(s):
+  if len(s)<255:
+    gams.printLog(s)
+  else:
+    print(s)
+  
 def check_and_calc_extra(cd, xdom):
   maxExtra = 0
   for cdRec in cd:
@@ -184,44 +217,88 @@ $if not errorFree $stop
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS);
 
+$onEmpty
 $onExternalInput
-set           dd            'Scenario'  /base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets/;
-set           TimeSlice     'ALL_TS'    / ANNUAL,S,W,SD,SN,WD,WN /;
+$set DATASET dk
+$ifthen.data %DATASET%==dk
+$set DDPREFIX TIMES-DK_COMETS/model/
+set           dd            'DD Files'  /base,elc_techs,elc_plants2020,elc_importexport,elc_dh-pipes,ind_techs,res_app_techs,res_techs,res_heatsav,sup_h2_chain,sup_bioref,
+                                         sup_biogasplants,tra_techs,elc_excessheat,ldc_wasteheat,elc_trade,syssettings,ind_demandproj,res_demandproj,elc_baseconstraints,
+                                         ind_baseconstraints,res_baseconstraints,tra_baseconstraints,sys_deliverycosts,elc_maxelcexports,elc_dh-pipesdata,sys_subannual_data,
+                                         elc_excessheat_pots,ind_ee-low,res_buildingstockproj,res_restrictheatsav,res_app_effproj,sup_northseaminingproj,sup-elc_renewablepotentials,
+                                         tra_xassumptions,elc_taxessubsidies,ind_taxessubsidies,res_taxessubsidies,tra_xtaxessubsidies,sup_taxessubsidies,ets-nets_emicoeff,
+                                         tra_demandproj,tra_minimum_shares,tra_ttb,tra_shiftpotential,tra_infrastructure_structure,sys_fuelinfrastructure,fuel_constraints,
+                                         tra_ev_share,sys_elc_ie,ldc_increaseddemand_varprofile,sup_fuelprice_bf18,sys_dr,vat,elc_ccs_techs,sys_carbon_budget,sys_carbon_budget_1-5,
+                                         sys_co2_2040_ship_ts,sys_co2_2040_ts,sys_co2_2050,tra_ev_share_aa,tra_ev_share_cb,tra_int_shipping,z_cb_no_tax,z_ccs_storagepotentials_cb_15,
+                                         z_ea_2018,z_ea_aa,z_ea_b,z_ea_dccc,z_ea_regeringen,z_ea_s/;
+set           actdd(dd)     'active DD' /base,elc_techs,elc_plants2020,elc_importexport,elc_dh-pipes,ind_techs,res_app_techs,res_techs,res_heatsav,sup_h2_chain,sup_bioref,
+                                         sup_biogasplants,tra_techs,elc_excessheat,ldc_wasteheat,elc_trade,syssettings,ind_demandproj,res_demandproj,elc_baseconstraints,
+                                         ind_baseconstraints,res_baseconstraints,tra_baseconstraints,sys_deliverycosts,elc_maxelcexports,elc_dh-pipesdata,sys_subannual_data,
+                                         elc_excessheat_pots,ind_ee-low,res_buildingstockproj,res_restrictheatsav,res_app_effproj,sup_northseaminingproj,sup-elc_renewablepotentials,
+                                         tra_xassumptions,elc_taxessubsidies,ind_taxessubsidies,res_taxessubsidies,tra_xtaxessubsidies,sup_taxessubsidies,ets-nets_emicoeff,
+                                         tra_demandproj,tra_minimum_shares,tra_ttb,tra_shiftpotential,tra_infrastructure_structure,sys_fuelinfrastructure,fuel_constraints,
+                                         tra_ev_share,sys_elc_ie,ldc_increaseddemand_varprofile,sup_fuelprice_bf18,sys_dr,vat/;
+set           offeps(dd)    'dd read under offeps' / sup_northseaminingproj /;                                         
+set           TimeSlice     'ALL_TS'    /ANNUAL,R,S,F,W,RWD,RNW,SWD,SNW,FWD,FNW,WWD,WNW,RWDA,RWDC,RWDD,RWDB,RNWA,RNWC,RNWD,RNWB,SWDA,SWDC,SWDD,SWDB,SNWA,SNWC,SNWD,SNWB,FWDA,FWDC,FWDD,FWDB,FNWA,FNWC,FNWD,FNWB,WWDA,WWDC,WWDD,WWDB,WNWA,WNWC,WNWD,WNWB/;
+set           MILESTONYR    'Years for this model run' / 2010,2012,2015,2020,2025,2030,2035,2040,2045,2050/;
+scalar        gmsBOTime     'Adjustment for total available time span of years available in the model' / 1970 /;
+singleton set gmsRunName    'name of the model run' / DTU_Frozen_policy_scenarie /;
+set           extensions(*,*) 'TIMES Extensions' / VALIDATE.NO, REDUCE.YES, DSCAUTO.YES, DEBUG.NO, DUMPSOL.NO, SOLVE_NOW.YES, MODEL_NAME.TIMES
+                                                   XTQA.YES, VAR_UC.YES, OBLONG.YES, DAMAGE.NO, STAGES.NO, SOLVEDA.YES, DATAGDX.YES, VDA.YES, VEDAVDD.YES /;
+singleton set gmsObj(*)       'Choice of objective function formulations' / 'AUTO' /; // ALT, AUTO, LIN, MOD, STD
+$else.data
+$set DDPREFIX TIMES_Demo/model/
+set           dd            'DD Files'  /base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets/;
+set           actdd(dd)     'active DD' /#dd/;
+set           offeps(dd)    'dd read under offeps' / /;                                         
+set           TimeSlice     'ALL_TS'    /ANNUAL,S,W,SD,SN,WD,WN/;
 set           MILESTONYR    'Years for this model run' / 2005, 2010, 2015, 2020, 2030, 2050/;
-parameter     cubeInput(%sysEnv.CUBEINPUTDOM%);
-singleton set gmsSolver(*)  'Solver for TIMES' / cplex /;
-scalar        gmsResLim     'Time limit for solve' / 1000 /;
-scalar        gmsBRatio     'Basis indicator' / 1 /;
-scalar        gmsReduce     'Switch for TIMES reduction algorithm' /1/;
-scalar        gmsDSCAuto    'Switch for lumpy investment formulation' /1/;
-scalar        gmsDebug      'Switch for debugging files and extended quality assurance checks' /0/;
-scalar        gmsDumpSol    'Switch for dumping out selected solution results into a text file' /0/;
-scalar        gmsSolveNow   'Switch for entire run (1) versus data check (0)' /1/;
-scalar        gmsXTQA       'Switch for quality assurance checks' /1/;
-scalar        gmsVarUC      'Switch for explicit use of slack variables in user constraints' /1/;
-singleton set gmsObj(*)     'Choice of objective function formulations' / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
-scalar        gmsSolVEDA    'Activities and flows as expected values' / 1 /;
 scalar        gmsBOTime     'Adjustment for total available time span of years available in the model' / 1960 /;
 singleton set gmsRunName    'name of the model run' / demo12 /;
-scalar        gmsSolveLocal 'Switch for running locally or on NEOS' / 1 /;
+set           extensions(*,*) 'TIMES Extensions' / REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO, SOLVE_NOW.YES, XTQA.YES,
+                                                   VAR_UC.YES, SOLVEDA.YES, DATAGDX.YES, VEDAVDD.YES /;
+singleton set gmsObj(*)       'Choice of objective function formulations' / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
+$endif.data
+parameter     cubeInput(%sysEnv.CUBEINPUTDOM%);
+set           solveropt(*,*)  'Solver options'   / scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1, barcrossalg.1, barorder.2 /;
+singleton set gmsSolver(*)    'Solver for TIMES' / cplex /;
+scalar        gmsResLim       'Time limit for solve' / 1000 /;
+scalar        gmsBRatio       'Basis indicator' / 1 /;
+singleton set gmsSolveOpt(*)  'Selection for local, short and long NEOS queue' / local /; // local, short, long
 * Skipped VDA DATAGDX VEDAVDD 
 $offExternalInput
+$offEmpty
 
 $onExternalOutput
 parameter cubeOutput(%sysEnv.CUBEOUTPUTDOM%);
 $offExternalOutput
 
 $ifThen "x%gams.IDCGDXInput%"=="x"
+$onecho > "%gams.scrDir%mkdd.%gams.scrExt%"
+$onmulti
+$oneps
+$include "%mydd%"
+$offecho
 $onExternalInput
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 do_print = False
-dd_db = { dd:gams.ws.add_database_from_gdx(dd+'.gdx') for dd in gams.get('dd') }
+dd_db = {}
+for dd in gams.get('actdd'):
+  s = 'grep -iv offeps ' + r'%DDPREFIX% '.rstrip()+dd+'.dd > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
+  rc = os.system(s)
+  if not rc==0:
+    raise NameError('probem executing: ' + s)
+  s = 'gams "'+r'%gams.scrDir%mkdd.%gams.scrExt%'+'" --mydd "'+r'%gams.scrDir%mydd.%gams.scrExt%'+'" mp=2 lo=2 gdx='+dd+'.gdx'
+  rc = os.system(s)
+  if not rc==0:
+    raise NameError('probem executing: ' + s)
+  dd_db[dd] = gams.ws.add_database_from_gdx(dd+'.gdx')
 noDD = []
 for cdRec in cd_input:
   sym = cdRec[0]
   someDD = False
-  for dd in gams.get('dd'):
+  for dd in gams.get('actdd'):
     try:
       dd_sym = dd_db[dd][sym]
     except:
@@ -245,9 +322,19 @@ for cdRec in cd_input:
         gams.db['cubeInput'].add_record(key).value = 1
         if do_print: gams.printLog(str(key))
   if not someDD:
-    noDD.append(sym)
+    noDD.append(sym.lower())
 if len(noDD):
-  gams.printLog('*** Symbols not in any dd: ' + str(noDD))    
+  printme('--- Symbols not in any dd: ' + str(noDD))    
+# Check if some symbol in DD is not in our input map
+miss_sym = set()
+i_sym = set(s[0].lower() for s in cd_input)
+for dd in gams.get('actdd'):
+  for sym in dd_db[dd]:
+    if not sym.name.lower() in i_sym:
+      miss_sym.add(sym.name.lower())
+if len(miss_sym):
+  printme('*** Unmapped symbols in dd files: ' + str(miss_sym))
+  raise NameError('Unmapped symbols in dd files')
 $offEmbeddedCode cubeInput
 $offExternalInput
 $gdxOut _miro_gdxin_.gdx
@@ -263,18 +350,26 @@ $offExternalInput
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 gams.ws.my_eps = 0
-dd_txt = { dd:open(dd+'.dd','w') for dd in gams.get('dd') }
+offeps = set(gams.get('offeps'))
+dd_txt = { dd:open(dd+'.dd','w') for dd in gams.get('actdd') }
 cube_input = gams.db['cubeInput']
-for dd in gams.get('dd'):
+act_dd = set()
+for dd in gams.get('actdd'):
   dd_txt[dd].write('$onEmpty\n$onEps\n$onWarning\n$set SCENARIO_NAME "' + dd + '"\n')
+  act_dd.add(dd)
+  if dd in offeps:
+    dd_txt[dd].write('$offEps\n')
+  
 last_sym = ''
 for cr in cube_input:
+  if not cr.key(1) in act_dd:
+     continue
   if not cr.key(0)==last_sym:
     if not last_sym=='':
-      for dd in gams.get('dd'):
+      for dd in gams.get('actdd'):
         if dd_sym_written[dd]:
           dd_txt[dd].write('/;\n')
-    dd_sym_written = { dd:False for dd in gams.get('dd') }
+    dd_sym_written = { dd:False for dd in gams.get('actdd') }
     last_sym = cr.key(0)
     cdr = next(r for r in cd_input if r[0]==last_sym)
     last_dd = ''
@@ -299,7 +394,7 @@ for cr in cube_input:
   else:
     f.write('\n')
   
-for dd in gams.get('dd'):
+for dd in gams.get('actdd'):
   if dd_sym_written[dd]:
     dd_txt[dd].write('/;\n')
   dd_txt[dd].close()
@@ -311,99 +406,48 @@ $eval     GMSBRATIO   gmsBRatio
 $eval     GMSBOTIME   gmsBOTime   
 $eval.set GMSRUNNAME  gmsRunName.tl  
 $eval.set GMSOBJ      gmsObj.tl
-
-* YES/NO options
-$ifE     1==gmsReduce     $set GMSREDUCE   YES
-$ifE     1==gmsDSCAuto    $set GMSDSCAUTO  YES
-$ifE     1==gmsDebug      $set GMSDEBUG    YES
-$ifE     1==gmsDumpSol    $set GMSDUMPSOL  YES
-$ifE     1==gmsSolveNow   $set GMSSOLVENOW YES
-$ifE     1==gmsXTQA       $set GMSXTQA     YES
-$ifE     1==gmsVarUC      $set GMSVARUC    YES
-$ifE     1==gmsSolVEDA    $set GMSSOLVEDA  YES
-
-$ifE not 1==gmsReduce     $set GMSREDUCE    NO
-$ifE not 1==gmsDSCAuto    $set GMSDSCAUTO   NO
-$ifE not 1==gmsDebug      $set GMSDEBUG     NO
-$ifE not 1==gmsDumpSol    $set GMSDUMPSOL   NO
-$ifE not 1==gmsSolveNow   $set GMSSOLVENOW  NO
-$ifE not 1==gmsXTQA       $set GMSXTQA      NO
-$ifE not 1==gmsVarUC      $set GMSVARUC     NO
-$ifE not 1==gmsSolVEDA    $set GMSSOLVEDA   NO
+$eval.set GMSSOLVEOPT gmsSolveOpt.tl
 
 $onecho > timesdriver.gms
 $Title TIMES -- VERSION 4.1.0
-option resLim=%GMSRESLIM%, profile=1, solveOpt=REPLACE, bRatio=1;
+option resLim=%GMSRESLIM%, profile=1, solveOpt=REPLACE, bRatio=%GMSBRATIO%;
 option limRow=0, limCol=0, solPrint=OFF, solver=%GMSSOLVER%;
 $offListing
 $offEcho
 
 * Copy solver option file creation at execution time
-$ifThen.slvopt exist %GMSSOLVER%.opt
-$onEcho >> timesdriver.gms
-file fslvopt / '%GMSSOLVER%.opt' /; put fslvopt;
-$onPut
-$offEcho
-$call cat %GMSSOLVER%.opt >> timesdriver.gms
-$echo $offPut   >> timesdriver.gms
-$echo putClose; >> timesdriver.gms
-$endif.slvopt
-
-$onecho >> timesdriver.gms
-$set REDUCE     %GMSREDUCE%
-$set DSCAUTO    %GMSDSCAUTO%
-$set DEBUG      %GMSDEBUG%
-$set DUMPSOL    %GMSDUMPSOL%
-$set SOLVE_NOW  %GMSSOLVENOW%
-$set XTQA       %GMSXTQA%
-$set VAR_UC     %GMSVARUC%
-$set SOLVEDA    %GMSSOLVEDA%
-$set OBJ        %GMSOBJ%
-
-$set VDA        YES 
-$set DATAGDX    YES
-
-$onMulti
-set ALL_TS /
-$offecho
 $onEmbeddedCode Python:
 with open('timesdriver.gms', 'a+') as td:
+    td.write('file fslvopt / "%GMSSOLVER%.opt" /; put fslvopt "* Generated %GMSSOLVER% option file" /;\n$onPut\n')
+    for sor in gams.get('solveropt'):
+      td.write(sor[0]+' '+sor[1]+'\n')
+    td.write('$offPut\nputClose;\n')      
+    td.write('$set OBJ %GMSOBJ%\n')      
+    for er in gams.get('extensions'):
+      td.write('$set '+er[0]+' '+er[1]+'\n')
+    td.write('$onMulti\nset ALL_TS /\n')
     for tsr in gams.get('TimeSlice'):
       td.write(tsr + '\n')
-$offEmbeddedCode
-$onecho >> timesdriver.gms 
-/;
-* perform fixed declarations
-$set BOTIME %GMSBOTIME%
-$batInclude initsys.mod
-
-* declare the (system/user) empties
-$batInclude initmty.mod
-$offecho
-$onEmbeddedCode Python:
-with open('timesdriver.gms', 'a+') as td:
-    for ddr in gams.get('dd'):
+    td.write('/;\n')
+    td.write('$set BOTIME %GMSBOTIME%\n$batInclude initsys.mod\n$batInclude initmty.mod\n')
+    for ddr in gams.get('actdd'):
       td.write('$batInclude ' + ddr + '.dd\n')
     td.write('\nSet MILESTONYR /\n')
     for msr in gams.get('MILESTONYR'):
       td.write(msr + '\n')
+    td.write('/;\n')
 $offEmbeddedCode
 $onecho >> timesdriver.gms 
-/;
-
 $set RUN_NAME %GMSRUNNAME%
-$set VEDAVDD YES
-
-* do the rest
 $batInclude maindrv.mod mod
 $offecho
 
-$ifThenE.localSolve gmsSolveLocal==1
+$ifThenI.localSolve %GMSSOLVEOPT%==local
 $  call.checkErrorLevel gams timesdriver.gms idir=TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 gdx=out.gdx
+$exit
 $else.localSolve
 $  call.checkErrorLevel gams timesdriver.gms idir=TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 a=c s=times.g00
 $  set restartFile times.g00
-$  set queue       short
 $  set wantGDX     yes
 
 $  set dryRun      ''
@@ -443,7 +487,7 @@ except ImportError:
 xml = r'''<document>
 <category>lp</category>
 <solver>BDMLP</solver>
-<priority>%queue%</priority>
+<priority>:queue:</priority>
 <inputType>GAMS</inputType>
 <model><![CDATA[]]></model>
 <options><![CDATA[]]></options>
@@ -453,6 +497,7 @@ xml = r'''<document>
 <wantlst><![CDATA[yes]]></wantlst>
 <wantgdx><![CDATA[%wantGDX%]]></wantgdx>
 </document>'''
+xml = xml.replace(":queue:", '%GMSSOLVEOPT%'.lower())
 
 neos = xmlrpclib.ServerProxy('https://neos-server.org:3333')
 alive = neos.ping()
@@ -525,7 +570,6 @@ for cdRec in cd_output:
       gams.db['cubeOutput'].add_record(key).value = r.level
 $offembeddedCode cubeOutput
 $endif
-
 
 
 
