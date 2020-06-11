@@ -219,7 +219,7 @@ alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS);
 
 $onEmpty
 $onExternalInput
-$set DATASET demo12
+$set DATASET dk
 $ifthen.data %DATASET%==dk
 $set DDPREFIX E:\WC\times-dk\model\
 set           dd            'DD Files'  /base,elc_techs,elc_plants2020,elc_importexport,elc_dh-pipes,ind_techs,res_app_techs,res_techs,res_heatsav,sup_h2_chain,sup_bioref,
@@ -244,7 +244,7 @@ set           MILESTONYR    'Years for this model run' / 2010,2012,2015,2020,202
 scalar        gmsBOTime     'Adjustment for total available time span of years available in the model' / 1970 /;
 singleton set gmsRunName    'name of the model run' / DTU_Frozen_policy_scenarie /;
 set           extensions(*,*) 'TIMES Extensions' / VALIDATE.NO, REDUCE.YES, DSCAUTO.YES, DEBUG.NO, DUMPSOL.NO, SOLVE_NOW.YES, MODEL_NAME.TIMES
-                                                   XTQA.YES, OBLONG.YES, DAMAGE.NO, STAGES.NO, SOLVEDA.YES, DATAGDX.YES, VEDAVDD.YES /;
+                                                   XTQA.YES, VAR_UC.YES, OBLONG.YES, DAMAGE.NO, STAGES.NO, SOLVEDA.YES, DATAGDX.YES, VDA.YES, VEDAVDD.YES /;
 singleton set gmsObj(*)       'Choice of objective function formulations' / 'AUTO' /; // ALT, AUTO, LIN, MOD, STD
 $else.data
 $set DDPREFIX TIMES_Demo/model/
