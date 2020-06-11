@@ -221,7 +221,7 @@ $onEmpty
 $onExternalInput
 $set DATASET dk
 $ifthen.data %DATASET%==dk
-$set DDPREFIX E:\WC\times-dk\model\
+$set DDPREFIX TIMES-DK_COMETS/model/
 set           dd            'DD Files'  /base,elc_techs,elc_plants2020,elc_importexport,elc_dh-pipes,ind_techs,res_app_techs,res_techs,res_heatsav,sup_h2_chain,sup_bioref,
                                          sup_biogasplants,tra_techs,elc_excessheat,ldc_wasteheat,elc_trade,syssettings,ind_demandproj,res_demandproj,elc_baseconstraints,
                                          ind_baseconstraints,res_baseconstraints,tra_baseconstraints,sys_deliverycosts,elc_maxelcexports,elc_dh-pipesdata,sys_subannual_data,
@@ -570,7 +570,6 @@ for cdRec in cd_output:
       gams.db['cubeOutput'].add_record(key).value = r.level
 $offembeddedCode cubeOutput
 $endif
-
 
 
 
