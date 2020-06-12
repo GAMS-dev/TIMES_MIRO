@@ -274,7 +274,6 @@ for r in gams.get('scenddmap'):
 gams.set('actdd',actdd)
 gams.set('orderactdd',orderactdd)
 $offEmbeddedCode actdd orderactdd
-display actdd, orderactdd;
 
 $onExternalOutput
 parameter cubeOutput(%sysEnv.CUBEOUTPUTDOM%);
