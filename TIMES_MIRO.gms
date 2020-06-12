@@ -101,6 +101,8 @@ uc_rhsts        .'Par'.'UC_N,ALLYEAR,ALL_TS,1'
 prc_noff        .'Set'.'ALL_REG,PRC,1,2'
 vda_flop        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS '
 flo_func        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,All_TS'
+* New with starter
+com_pkts        .'Set'.'ALL_REG,COM_GRP,ALL_TS'
 /;
 
 Set cdOutput(soName<,typ,*) 'Cube Data' /
@@ -216,58 +218,63 @@ $offEmbeddedCode
 $if not errorFree $stop
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS);
+set scenario 'Collection of DD Files';
+set ddorder 'Order index for DD Files' / 1*500 /;
 
 $onEmpty
-$onExternalInput
-$set DATASET dk
+$set DATASET demo
 $ifthen.data %DATASET%==dk
 $set DDPREFIX TIMES-DK_COMETS/model/
-set           dd            'DD Files'  /base,elc_techs,elc_plants2020,elc_importexport,elc_dh-pipes,ind_techs,res_app_techs,res_techs,res_heatsav,sup_h2_chain,sup_bioref,
-                                         sup_biogasplants,tra_techs,elc_excessheat,ldc_wasteheat,elc_trade,syssettings,ind_demandproj,res_demandproj,elc_baseconstraints,
-                                         ind_baseconstraints,res_baseconstraints,tra_baseconstraints,sys_deliverycosts,elc_maxelcexports,elc_dh-pipesdata,sys_subannual_data,
-                                         elc_excessheat_pots,ind_ee-low,res_buildingstockproj,res_restrictheatsav,res_app_effproj,sup_northseaminingproj,sup-elc_renewablepotentials,
-                                         tra_xassumptions,elc_taxessubsidies,ind_taxessubsidies,res_taxessubsidies,tra_xtaxessubsidies,sup_taxessubsidies,ets-nets_emicoeff,
-                                         tra_demandproj,tra_minimum_shares,tra_ttb,tra_shiftpotential,tra_infrastructure_structure,sys_fuelinfrastructure,fuel_constraints,
-                                         tra_ev_share,sys_elc_ie,ldc_increaseddemand_varprofile,sup_fuelprice_bf18,sys_dr,vat,elc_ccs_techs,sys_carbon_budget,sys_carbon_budget_1-5,
-                                         sys_co2_2040_ship_ts,sys_co2_2040_ts,sys_co2_2050,tra_ev_share_aa,tra_ev_share_cb,tra_int_shipping,z_cb_no_tax,z_ccs_storagepotentials_cb_15,
-                                         z_ea_2018,z_ea_aa,z_ea_b,z_ea_dccc,z_ea_regeringen,z_ea_s/;
-set           actdd(dd)     'active DD' /base,elc_techs,elc_plants2020,elc_importexport,elc_dh-pipes,ind_techs,res_app_techs,res_techs,res_heatsav,sup_h2_chain,sup_bioref,
-                                         sup_biogasplants,tra_techs,elc_excessheat,ldc_wasteheat,elc_trade,syssettings,ind_demandproj,res_demandproj,elc_baseconstraints,
-                                         ind_baseconstraints,res_baseconstraints,tra_baseconstraints,sys_deliverycosts,elc_maxelcexports,elc_dh-pipesdata,sys_subannual_data,
-                                         elc_excessheat_pots,ind_ee-low,res_buildingstockproj,res_restrictheatsav,res_app_effproj,sup_northseaminingproj,sup-elc_renewablepotentials,
-                                         tra_xassumptions,elc_taxessubsidies,ind_taxessubsidies,res_taxessubsidies,tra_xtaxessubsidies,sup_taxessubsidies,ets-nets_emicoeff,
-                                         tra_demandproj,tra_minimum_shares,tra_ttb,tra_shiftpotential,tra_infrastructure_structure,sys_fuelinfrastructure,fuel_constraints,
-                                         tra_ev_share,sys_elc_ie,ldc_increaseddemand_varprofile,sup_fuelprice_bf18,sys_dr,vat/;
-set           offeps(dd)    'dd read under offeps' / sup_northseaminingproj /;                                         
-set           TimeSlice     'ALL_TS'    /ANNUAL,R,S,F,W,RWD,RNW,SWD,SNW,FWD,FNW,WWD,WNW,RWDA,RWDC,RWDD,RWDB,RNWA,RNWC,RNWD,RNWB,SWDA,SWDC,SWDD,SWDB,SNWA,SNWC,SNWD,SNWB,FWDA,FWDC,FWDD,FWDB,FNWA,FNWC,FNWD,FNWB,WWDA,WWDC,WWDD,WWDB,WNWA,WNWC,WNWD,WNWB/;
-set           MILESTONYR    'Years for this model run' / 2010,2012,2015,2020,2025,2030,2035,2040,2045,2050/;
-scalar        gmsBOTime     'Adjustment for total available time span of years available in the model' / 1970 /;
-singleton set gmsRunName    'name of the model run' / DTU_Frozen_policy_scenarie /;
-set           extensions(*,*) 'TIMES Extensions' / VALIDATE.NO, REDUCE.YES, DSCAUTO.YES, DEBUG.NO, DUMPSOL.NO, SOLVE_NOW.YES, MODEL_NAME.TIMES
-                                                   XTQA.YES, VAR_UC.YES, OBLONG.YES, DAMAGE.NO, STAGES.NO, SOLVEDA.YES, DATAGDX.YES, VDA.YES, VEDAVDD.YES /;
-singleton set gmsObj(*)       'Choice of objective function formulations' / 'AUTO' /; // ALT, AUTO, LIN, MOD, STD
+$include dkdata
+$elseif.data %DATASET%==starter
+$set DDPREFIX D:\Users\mbussieck\Downloads\times_starter\
+$include starterdata
+$elseif.data  %DATASET%==mydata
+* Fill in your data
+$onExternalInput
+$offExternalInput
 $else.data
 $set DDPREFIX TIMES_Demo/model/
-set           dd            'DD Files'  /base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets/;
-set           actdd(dd)     'active DD' /#dd/;
-set           offeps(dd)    'dd read under offeps' / /;                                         
-set           TimeSlice     'ALL_TS'    /ANNUAL,S,W,SD,SN,WD,WN/;
-set           MILESTONYR    'Years for this model run' / 2005, 2010, 2015, 2020, 2030, 2050/;
-scalar        gmsBOTime     'Adjustment for total available time span of years available in the model' / 1960 /;
-singleton set gmsRunName    'name of the model run' / demo12 /;
-set           extensions(*,*) 'TIMES Extensions' / REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO, SOLVE_NOW.YES, XTQA.YES,
-                                                   VAR_UC.YES, SOLVEDA.YES, DATAGDX.YES, VEDAVDD.YES /;
-singleton set gmsObj(*)       'Choice of objective function formulations' / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
+$onExternalInput
+set           dd                              'DD Files'                      / base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,
+                                                                                refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets /;
+set           scenddmap(scenario<,ddorder,dd) 'Scenario DD File map'          / demo12.(#ddorder:#dd) /;
+set           offeps(dd)                      'dd read under offeps'          / /;                                         
+set           TimeSlice                       'ALL_TS'                        / ANNUAL,S,W,SD,SN,WD,WN/ ;
+set           MILESTONYR                      'Years for this model run'      / 2005, 2010, 2015, 2020, 2030, 2050 /;
+scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / 1960 /;
+singleton set gmsRunScenario(scenario)        'Selected scenario'             / demo12 /;
+set           extensions(*,*)                 'TIMES Extensions'              / REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
+                                                                                SOLVE_NOW.YES, XTQA.YES, VAR_UC.YES, SOLVEDA.YES, DATAGDX.YES,
+                                                                                VEDAVDD.YES /;
+singleton set gmsObj(*)      'Choice of objective function formulations'      / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
+$offExternalInput
 $endif.data
+$onExternalInput
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%);
-set           solveropt(*,*)  'Solver options'   / scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1, barcrossalg.1, barorder.2 /;
-singleton set gmsSolver(*)    'Solver for TIMES' / cplex /;
-scalar        gmsResLim       'Time limit for solve' / 1000 /;
-scalar        gmsBRatio       'Basis indicator' / 1 /;
-singleton set gmsSolveOpt(*)  'Selection for local, short and long NEOS queue' / local /; // local, short, long
+set           solveropt(*,*) 'Solver options'                                 / scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
+                                                                                barcrossalg.1, barorder.2, threads.8 /;
+singleton set gmsSolver(*)   'Solver for TIMES'                               / cplex /;
+scalar        gmsResLim      'Time limit for solve'                           / 1000 /;
+scalar        gmsBRatio      'Basis indicator'                                / 1 /;
+singleton set gmsRunOpt(*)   'Selection for local, short and long NEOS queue' / local /; // local, short, long
 * Skipped VDA DATAGDX VEDAVDD 
 $offExternalInput
 $offEmpty
+
+set actdd(dd), orderactdd(ddorder,dd);
+$onEmbeddedCode Python:
+actScen = list(gams.get('gmsRunScenario'))[0]
+actdd = []
+orderactdd = []
+for r in gams.get('scenddmap'):
+   if r[0]==actScen:
+     actdd.append(r[2])
+     orderactdd.append((r[1],r[2]))
+gams.set('actdd',actdd)
+gams.set('orderactdd',orderactdd)
+$offEmbeddedCode actdd orderactdd
+display actdd, orderactdd;
 
 $onExternalOutput
 parameter cubeOutput(%sysEnv.CUBEOUTPUTDOM%);
@@ -404,9 +411,9 @@ $eval.set GMSSOLVER   gmsSolver.tl
 $eval     GMSRESLIM   gmsResLim   
 $eval     GMSBRATIO   gmsBRatio   
 $eval     GMSBOTIME   gmsBOTime   
-$eval.set GMSRUNNAME  gmsRunName.tl  
+$eval.set GMSRUNNAME  gmsRunScenario.tl  
 $eval.set GMSOBJ      gmsObj.tl
-$eval.set GMSSOLVEOPT gmsSolveOpt.tl
+$eval.set GMSRUNOPT   gmsRunOpt.tl
 
 $onecho > timesdriver.gms
 $Title TIMES -- VERSION 4.1.0
@@ -430,8 +437,8 @@ with open('timesdriver.gms', 'a+') as td:
       td.write(tsr + '\n')
     td.write('/;\n')
     td.write('$set BOTIME %GMSBOTIME%\n$batInclude initsys.mod\n$batInclude initmty.mod\n')
-    for ddr in gams.get('actdd'):
-      td.write('$batInclude ' + ddr + '.dd\n')
+    for ddr in gams.get('orderactdd'):
+      td.write('$batInclude ' + ddr[1] + '.dd\n')
     td.write('\nSet MILESTONYR /\n')
     for msr in gams.get('MILESTONYR'):
       td.write(msr + '\n')
@@ -442,11 +449,10 @@ $set RUN_NAME %GMSRUNNAME%
 $batInclude maindrv.mod mod
 $offecho
 
-$ifThenI.localSolve %GMSSOLVEOPT%==local
-$  call.checkErrorLevel gams timesdriver.gms idir=TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 gdx=out.gdx
-$exit
+$ifThenI.localSolve %GMSRUNOPT%==local
+$  call.checkErrorLevel gams timesdriver.gms idir1=%gams.idir1%TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 o=solve.lst gdx=out.gdx
 $else.localSolve
-$  call.checkErrorLevel gams timesdriver.gms idir=TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 a=c s=times.g00
+$  call.checkErrorLevel gams timesdriver.gms idir1=%gams.idir1%TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 a=c xs=times.g00
 $  set restartFile times.g00
 $  set wantGDX     yes
 
@@ -497,7 +503,7 @@ xml = r'''<document>
 <wantlst><![CDATA[yes]]></wantlst>
 <wantgdx><![CDATA[%wantGDX%]]></wantgdx>
 </document>'''
-xml = xml.replace(":queue:", '%GMSSOLVEOPT%'.lower())
+xml = xml.replace(":queue:", '%GMSRUNOPT%'.lower())
 
 neos = xmlrpclib.ServerProxy('https://neos-server.org:3333')
 alive = neos.ping()
@@ -569,7 +575,5 @@ for cdRec in cd_output:
       if do_print: gams.printLog(str(key)+' '+str(r.value))
       gams.db['cubeOutput'].add_record(key).value = r.level
 $offembeddedCode cubeOutput
+*$if exist ./solve.lst put_utility 'incMsg' / 'solve.lst';
 $endif
-
-
-
