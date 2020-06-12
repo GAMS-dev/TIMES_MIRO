@@ -15,7 +15,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "dd", "timeslice", "milestonyr", "cubeinput"]
+    "input": ["_widgets", "dd", "timeslice", "milestonyr", "cubeinput", "scenddmap", "offeps", "_scalars", "extensions", "solveropt"]
   },
   "overwriteAliases": {
     "dd": {
@@ -35,6 +35,18 @@
     },
     "cubeoutput": {
       "newAlias": "Output"
+    },
+    "scenddmap": {
+      "newAlias": "Scenario DD File map"
+    },
+    "offeps": {
+      "newAlias": "dd read under offeps"
+    },
+    "extensions": {
+      "newAlias": "TIMES Extensions"
+    },
+    "solveropt": {
+      "newAlias": "Solver options"
     }
   },
   "dataRendering": {
@@ -63,76 +75,6 @@
     "bgColor": "transparent"
   },
   "inputWidgets": {
-    "gmsreduce": {
-      "widgetType": "checkbox",
-      "alias": "Reduction algorithm",
-      "value": 1,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Use TIMES reduction algorithm?"
-    },
-    "gmsdscauto": {
-      "widgetType": "checkbox",
-      "alias": "Lumpy investment",
-      "value": 1,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Use lumpy investment formulation?"
-    },
-    "gmsdebug": {
-      "widgetType": "checkbox",
-      "alias": "Debugging mode",
-      "value": 0,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Generate debugging files and extended quality assurance checks?"
-    },
-    "gmsdumpsol": {
-      "widgetType": "checkbox",
-      "alias": "Dump solution to txt",
-      "value": 0,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Dump out selected solution results into a text file?"
-    },
-    "gmssolvenow": {
-      "widgetType": "checkbox",
-      "alias": "Data check only",
-      "value": 1,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Entire run (on) versus data check only (off)"
-    },
-    "gmsxtqa": {
-      "widgetType": "checkbox",
-      "alias": "Quality assurance",
-      "value": 1,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Enable quality assurance checks?"
-    },
-    "gmsRunName": {
-      "widgetType": "textinput",
-      "alias": "Name of the model run",
-      "value": "demo12",
-      "label": "Name of the model run"
-    },
-    "gmsvaruc": {
-      "widgetType": "checkbox",
-      "alias": "Use of slack variables",
-      "value": 1,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Explicitly use slack variables in user constraints?"
-    },
-    "gmssolveda": {
-      "widgetType": "checkbox",
-      "alias": "Activities and flows as expected values",
-      "value": 1,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Represent activities and flows as expected values?"
-    },
     "gmssolver": {
       "widgetType": "dropdown",
       "alias": "Solver for TIMES",
@@ -151,7 +93,7 @@
       "default": 1,
       "step": 0.01,
       "ticks": false,
-      "noHcube": false,
+      "noHcube": true,
       "label": "Basis indicator"
     },
     "gmsreslim": {
@@ -162,7 +104,7 @@
       "default": 1000,
       "step": 1,
       "ticks": false,
-      "noHcube": false,
+      "noHcube": true,
       "label": "Time limit for solve [seconds]"
     },
     "gmsbotime": {
@@ -181,17 +123,47 @@
       "multiple": false,
       "label": "Objective function formulation"
     },
-    "gmssolvelocal": {
-      "widgetType": "checkbox",
-      "alias": "Run on NEOS",
-      "value": 1,
-      "noHcube": false,
-      "class": "checkbox-material",
-      "label": "Run locally?"
-    },
-    "cubeinput":{
+    "cubeinput": {
       "widgetType": "table",
       "bigData": true
+    },
+    "gmsrunscenario": {
+      "widgetType": "dropdown",
+      "alias": "Selected scenario",
+      "selected": "",
+      "noHcube": false,
+      "clearValue": false,
+      "multiple": false,
+      "label": "Select active scenario",
+      "choices": "$scenddmap$scenario"
+    },
+    "offeps": {
+      "widgetType": "dropdown",
+      "alias": "dd read under offeps",
+      "choices": "$dd$uni",
+      "selected": null,
+      "noHcube": true,
+      "clearValue": false,
+      "multiple": true,
+      "label": "DD Files to read under $offEps"
+    },
+    "gmsrunopt": {
+      "widgetType": "slider",
+      "alias": "Selection for local, short and long NEOS queue",
+      "min": 0,
+      "max": 10,
+      "default": 2,
+      "step": 1,
+      "ticks": false,
+      "noHcube": true
+    }
+  },
+  "overwriteHeaderAliases": {
+    "cubeinput": {
+      "newHeaders": ["Symbol", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
+    },
+    "cubeoutput": {
+      "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "value"]
     }
   },
   "handsontable": {
@@ -209,13 +181,5 @@
     },
     "height": 700,
     "colWidths": 100
-  },
-  "overwriteHeaderAliases": {
-    "cubeinput": {
-      "newHeaders": ["Symbol", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
-    },
-    "cubeoutput": {
-      "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "value"]
-    }
   }
 }
