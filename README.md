@@ -10,12 +10,18 @@ In order to use the TIMES MIRO demo app you need
 * to install GAMS MIRO 1.0.4 or newer
 
 ## Usage of the App
-
-### Launching the App
+The App can be launched with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set.
 
 #### Launch TIMES_DEMO App
+To launch the TIMES_DEMO app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu.
+
+![runbasemode](/pics/run_base_mode.png?raw=true)
 
 #### Launch TIMES-DK_COMETS App
+To launch the TIMES-DK_COMETS app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu and set [double dash parameter](https://www.gams.com/latest/docs/UG_GamsCall.html#UG_GamsCall_DoubleDashParametersEtc) `--DATASET=dk`.
+
+![runbasemode](/pics/run_base_mode_dk.png?raw=true)
+
 
 #### Launch your individual TIMES App
 
