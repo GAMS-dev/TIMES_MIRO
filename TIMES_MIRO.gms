@@ -222,7 +222,7 @@ set scenario 'Collection of DD Files';
 set ddorder 'Order index for DD Files' / 1*500 /;
 
 $onEmpty
-$set DATASET demo
+$if not set DATASET $set DATASET demo
 $ifthen.data %DATASET%==dk
 $set DDPREFIX TIMES-DK_COMETS/model/
 $include dkdata
