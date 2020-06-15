@@ -34,18 +34,30 @@ The Input widgets tab allows to specify some basic settings. Most of them should
 ![inputwidgets](/pics/input_widgets.png?raw=true)
 
 #### DD Files
+The DD Files Tab allows to specify the set of dd files and their order that should be used for the run.
 
 #### Timeslices
+The Timslices Tab shows the set of time slices for the current model. This is shown for the sake of completeness but should not be edited.  The set of timeslices and the representation of the intra-annual resolution is preconfigured and of central to many model parameters. A re-configuration of this set would require extensive modifications in the input parameters
 
 #### Years for this model run
+This tab allows to select the set of years for which the model will run. Those years areoften referred to as *milestone years*.
 
 #### Input
+This is the central tab for browsing and editing input data. The concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Such important indices are predefined in the wrapper file `TIMES_MIRO.gms`.
+Data can be browsed end edited in a table view that supports sorting and filtering:
+*insert screenshot*
+In the upper right corner there is *switch view* button that allows to browse the data in a powerful pivot table view.
+*insert screenshot*
+Currently, editing the data in the pivot table view is not supported.
 
 #### Scenario DD File map
+This tab allows to browse and edit multiple combinations of dd files (and their order) that result in different scenarios.
 
 #### TIMES Extensions
+This tab allows to enable/disable several TIMES extensions
 
 #### Solver Options
+This tab allows to change/define solver options to be used
 
 ### Output View
 
