@@ -20,16 +20,18 @@ To launch the TIMES_DEMO app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www
 #### Launch TIMES-DK_COMETS App
 To launch the TIMES-DK_COMETS app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu and set [double dash parameter](https://www.gams.com/latest/docs/UG_GamsCall.html#UG_GamsCall_DoubleDashParametersEtc) `--DATASET=dk`.
 
-![runbasemode](/pics/run_base_mode_dk.png?raw=true)
-
+![runbasemodedk](/pics/run_base_mode_dk.png?raw=true)
 
 #### Launch your individual TIMES App
+*to be completed*
 
 ### Input View
-
-#### Options
+After launching the app as described above, the app should open inside the browser and the Input view is is shown. Input is organized in eight tabs which are described below.
 
 #### Input Widgets
+The Input widgets tab allows to specify some basic settings. Most of them should be self expalining but special attention should be paid to the option to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). Submitting the model to NEOS allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license.
+
+![inputwidgets](/pics/input_widgets.png?raw=true)
 
 #### DD Files
 
