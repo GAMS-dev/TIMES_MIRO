@@ -1,10 +1,10 @@
-# TIMES MIRO demo app
-This is a [GAMS MIRO](https://gams.com/miro) demo app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model.
+# TIMES MIRO App
+This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model.
 To obtain the app, including the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
 > git clone --recurse-submodules https://github.com/GAMS-dev/TIMES_MIRO.git
 
 ## Prerequisites
-In order to use the TIMES MIRO demo app you need
+In order to use the TIMES MIRO app you need
 * to clone this repository
 * to install GAMS 31.2.0 or newer
 * to install GAMS MIRO 1.0.4 or newer
@@ -13,13 +13,17 @@ In order to use the TIMES MIRO demo app you need
 The App can be launched with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set.
 
 ### Launching the App
+The TIMES_MIRO demo app can be launched in different ways.
 
-#### Launch TIMES_DEMO App
+#### Launch the deployed TIMES_MIRO app
+Double click on `TIMES_MIRO.miroapp`. Click on *Load Data* and select either the *demo* or the *dk* data from the database.
+
+#### Launch TIMES_MIRO app with TIMES_DEMO data from GAMS Studio
 To launch the TIMES_DEMO app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu.
 
 ![runbasemode](/pics/run_base_mode.png?raw=true)
 
-#### Launch TIMES-DK_COMETS App
+#### Launch TIMES_MIRO app with TIMES-DK_COMETS data from GAMS Studio
 To launch the TIMES-DK_COMETS app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu and set [double dash parameter](https://www.gams.com/latest/docs/UG_GamsCall.html#UG_GamsCall_DoubleDashParametersEtc) `--DATASET=dk`.
 
 ![runbasemodedk](/pics/run_base_mode_dk.png?raw=true)
@@ -202,7 +206,7 @@ Set cdOutput(soName<,typ,*) 'Cube Data' /
 
 * It uses embedded Python code to compute a mapping between original GAMS Symbols and the input/output data cubes shown in the TIMES_MIRO demo app
 
-* 
+* ... *to be completed* 
 
 
 # License
