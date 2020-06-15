@@ -3,6 +3,7 @@
   "excelIncludeMeta": true,
   "excelIncludeEmptySheets": true,
   "autoGenInputGraphs": true,
+  "pageTitle": "TIMES MIRO Demo App",
   "storeLogFilesDuration": 7,
   "defCompMode": "split",
   "activateModules": {
@@ -148,13 +149,11 @@
       "label": "DD Files to read under $offEps"
     },
     "gmsrunopt": {
-      "widgetType": "slider",
+      "widgetType": "dropdown",
       "alias": "Selection for local, short and long NEOS queue",
-      "min": 0,
-      "max": 10,
-      "default": 2,
-      "step": 1,
-      "ticks": false,
+      "label": "Selection for local solve, short and long NEOS queue",
+      "choices": ["local", "short", "long"],
+      "aliases": ["Local", "NEOS short queue", "NEOS long queue"],
       "noHcube": true
     }
   },
