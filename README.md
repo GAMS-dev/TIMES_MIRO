@@ -12,6 +12,8 @@ In order to use the TIMES MIRO demo app you need
 ## Usage of the App
 The App can be launched with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set.
 
+### Launching the App
+
 #### Launch TIMES_DEMO App
 To launch the TIMES_DEMO app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu.
 
@@ -25,24 +27,35 @@ To launch the TIMES-DK_COMETS app, open `TIMES_MIRO.gms` in [GAMS Studio](https:
 #### Launch your individual TIMES App
 *to be completed*
 
-### Input View
-After launching the app as described above, the app should open inside the browser and the Input view is is shown. Input is organized in eight tabs which are described below.
+### Structure of the App
+After launching the app as described above, the app should open inside the browser
+The menu on the left allows to navigate between
+* Input View
+* Output View
+* GAMS Interaction View
+* Compare Scenarios View
+Furthermore it allows to load data from different data sources (e.g. the MIRO Database or a GDX file).
+Finally, the menu on the left also contains a solve button that allows to start a run based on settings and data specified in the input view.
+![navigation](/pics/solve.png?raw=true)
 
-#### Input Widgets
+#### Input View
+The input view is organized in eight tabs which are described below.
+
+##### Input Widgets
 The Input widgets tab allows to specify some basic settings. Most of them should be self expalining but special attention should be paid to the option to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). Submitting the model to NEOS allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license.
 
 ![inputwidgets](/pics/input_widgets.png?raw=true)
 
-#### DD Files
+##### DD Files
 The DD Files Tab allows to specify the set of dd files and their order that should be used for the run.
 
-#### Timeslices
+##### Timeslices
 The Timslices Tab shows the set of time slices for the current model. This is shown for the sake of completeness but should not be edited.  The set of timeslices and the representation of the intra-annual resolution is preconfigured and of central to many model parameters. A re-configuration of this set would require extensive modifications in the input parameters
 
-#### Years for this model run
+##### Years for this model run
 This tab allows to select the set of years for which the model will run. Those years areoften referred to as *milestone years*.
 
-#### Input
+##### Input
 This is the central tab for browsing and editing input data. The concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Such important indices are predefined in the wrapper file `TIMES_MIRO.gms`.
 Data can be browsed end edited in a table view that supports sorting and filtering:
 *insert screenshot*
@@ -50,22 +63,34 @@ In the upper right corner there is *switch view* button that allows to browse th
 *insert screenshot*
 Currently, editing the data in the pivot table view is not supported.
 
-#### Scenario DD File map
+##### Scenario DD File map
 This tab allows to browse and edit multiple combinations of dd files (and their order) that result in different scenarios.
 
-#### TIMES Extensions
+##### TIMES Extensions
 This tab allows to enable/disable several TIMES extensions
 
-#### Solver Options
+##### Solver Options
 This tab allows to change/define solver options to be used
 
-### Output View
+#### Output View
+Once a TIMES model has been solved by clicking the *Solve Model* button, the Output view is filled with data from that solve.
+Similar to the Input data, the concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Such important indices are predefined in the wrapper file `TIMES_MIRO.gms`.
+Output data can be browsed in a  a powerful pivot table view.
+*insert screenshot*
+In the upper right corner there is *switch view* button that allows to browse the data in table view that supports sorting and filtering.
+*insert screenshot*
 
-### GAMS Interaction View
+The output view also provides basic charting facilities. Supported chart types are:
+* bar chart
+* stacked bar chart
+* line chart
+* radar chart
 
-#### Log file
+#### GAMS Interaction View
+The GAMS Intearction View is automatically focussed during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the App is a combination of the lst files written when running the wrapper `TIMES_MIRO.gms` and the driver `timesdriver.gms`.
 
-#### Listing file
+#### Compare Scenarios View
+*to be completed*
 
 ## Functionality
 The basic principle of the TIMES MIRO demo app is that it works as a wrapper around the existing TIME source code and the well established data handling concept that feeds the model with data via so-called *.dd files.
