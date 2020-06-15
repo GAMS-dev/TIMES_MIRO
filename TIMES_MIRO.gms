@@ -574,5 +574,5 @@ for cdRec in cd_output:
       if do_print: gams.printLog(str(key)+' '+str(r.value))
       gams.db['cubeOutput'].add_record(key).value = r.level
 $offembeddedCode cubeOutput
-*$if exist ./solve.lst put_utility 'incMsg' / 'solve.lst';
+$if exist ./solve.lst put_utility 'incMsg' / 'solve.lst';
 $endif
