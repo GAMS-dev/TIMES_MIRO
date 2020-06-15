@@ -210,4 +210,4 @@ Set cdOutput(soName<,typ,*) 'Cube Data' /
 
 
 # License
-The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the TIMES_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See file `TIMES_Demo\LICENSE.txt` for more information.
+The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the TIMES_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See files `TIMES_Demo\LICENSE.txt` as well as `TIMES-DK_COMETS\LICENSE` for more information.
