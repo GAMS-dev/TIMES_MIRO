@@ -96,6 +96,72 @@ The GAMS Intearction View is automatically focussed during a run. It shows the l
 The basic principle of the TIMES MIRO demo app is that it works as a wrapper around the existing TIME source code and the well established data handling concept that feeds the model with data via so-called *.dd files.
 
 ### The Driver File timesdriver.gms
+The TIMES run is controlled by a driver file. When running TIMES through the TIMES_MIRO app, the driver file `timesdriver.gms` is created automatically based on settings made in the Input View. The basic structire of this file can be described as follows
+```
+$TITLE  TIMES -- VERSION 4.1.0
+*<GAMS Options>
+option resLim=1000, profile=1, solveOpt=REPLACE, bRatio=1;
+option limRow=0, limCol=0, solPrint=OFF, solver=cplex;
+$offListing
+
+*<Create Solver Option file>
+file fslvopt / "cplex.opt" /; put fslvopt "* Generated cplex option file" /;
+$onPut
+scaind 0
+rerun YES
+iis YES
+lpmethod 4
+baralg 1
+barcrossalg 1
+barorder 2
+threads 8
+$offPut
+
+$onMulti
+*<Define Timeslices>
+set ALL_TS /
+ANNUAL
+S
+W
+SD
+SN
+WD
+WN
+/;
+
+*<Adjustment for total available time span of years available in the model>
+$set BOTIME 1960
+
+*<DD Files>
+$batInclude initsys.mod
+$batInclude initmty.mod
+$batInclude base.dd
+$batInclude newtechs.dd
+$batInclude trade_param.dd
+$batInclude dem_ref.dd
+$batInclude syssettings.dd
+$batInclude peak_rsv.dd
+$batInclude refinery.dd
+$batInclude demproj_dtcar.dd
+$batInclude uc_nuc_maxcap.dd
+$batInclude bounds-uc_wsets.dd
+
+*<Years for this model run>
+Set MILESTONYR /
+2005
+2010
+2015
+2020
+2030
+2050
+/;
+
+*<define RUN_NAME>
+$set RUN_NAME demo12
+
+*<batinclude of TIMES source code>
+$ BATINCLUDE maindrv.mod mod
+```
 
 ### The Wrapper File TIMES_MIRO.gms
 
