@@ -164,6 +164,46 @@ $ BATINCLUDE maindrv.mod mod
 ```
 
 ### The Wrapper File TIMES_MIRO.gms
+This file is at the heart of the TIMES_MIRO demo app.
+* It defines and uses the extraordinary domain sets that are used in the cube view for input and output data.
+```
+set xidom          'Extraordinary input domains'  / UC_N UserConstraint, ALL_REG Region, ALLYEAR Period, PRC Process, COM_GRP Commodity, ALL_TS TimeSlice/
+    xodom          'Extraordinary output domains' /                      ALL_REG Region, ALLYEAR Period, PRC Process, COM_GRP Commodity, ALL_TS TimeSlice/
+[...]
+;
+```
+* It lists all GAMS Symbols with type and domain information that should be shown in the input data cube. The domain has to be provided in a format that lists all the *extraordinary* domain sets and replaces non-extraordinary domain sets by numbers 1,2,...
+```
+Set cdInput(siName<,typ,*) 'Cube Input Data' /
+REG             .'Set'.'ALL_REG'
+CUR             .'Set'.'1'
+UNITS           .'Set'.'1'                                               
+UNITS_ACT       .'Set'.'1'                                               
+UNITS_CAP       .'Set'.'1'                                               
+UNITS_COM       .'Set'.'1'                                               
+UNITS_MONY      .'Set'.'1'                                               
+ACT_BND         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1'                    
+ACT_COST        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
+ACT_CUM         .'Par'.'ALL_REG,PRC,1,2,3'  
+[...]
+```
+There is no guarantuee that all symbols potentially used in TIMES are already contained in this list. In that case, a comprehensive error message that shows missing symbols should be given.
+
+* It lists all GAMS Symbols with type and domain information that should be shown in the output data cube. The domain has to be provided in a format that lists all the *extraordinary* domain sets and replaces non-extraordinary domain sets by numbers 1,2,...
+```
+Set cdOutput(soName<,typ,*) 'Cube Data' /
+*** Variables & Parameters
+'par_actl'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
+'par_actm'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
+'par_capl'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
+'par_pasti'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,1'               
+[...]
+```
+
+* It uses embedded Python code to compute a mapping between original GAMS Symbols and the input/output data cubes shown in the TIMES_MIRO demo app
+
+* 
+
 
 # License
 The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the TIMES_Demo submodule is licensed under GPL-3. See file `TIMES_Demo\LICENSE.txt` for more information.
