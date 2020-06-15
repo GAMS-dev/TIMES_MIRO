@@ -222,7 +222,7 @@ set scenario 'Collection of DD Files';
 set ddorder 'Order index for DD Files' / 1*500 /;
 
 $onEmpty
-$set DATASET demo
+$if not set DATASET $set DATASET demo
 $ifthen.data %DATASET%==dk
 $set DDPREFIX TIMES-DK_COMETS/model/
 $include dkdata
@@ -318,7 +318,7 @@ for cdRec in cd_input:
     if not dd_sym.dimension==len(dom):
       raise NameError('Dimension mismatch for ' + sym + ' in ' + dd + ': ' + str(dd_sym.dimension) + '<>' + str(len(dom)))
     for r in dd_sym:
-      key = [sym,dd] + ['\u00A0']*(len(xidom)+max_inputExtra)
+      key = [sym,dd] + ['-']*(len(xidom)+max_inputExtra)
       for idx in zip(range(dd_sym.dimension),dom):
         key[dinput_map[idx[1]]] = r.key(idx[0])
       if cdRec[1]=='Par':
@@ -564,7 +564,7 @@ for cdRec in cd_output:
   symName = cdRec[0]
   sym = out[symName]
   for r in sym:
-    key = [symName] + ['\u00A0']*(len(xodom)+max_outputExtra)
+    key = [symName] + ['-']*(len(xodom)+max_outputExtra)
     for idx in zip(range(sym.dimension),dom):
       key[doutput_map[idx[1]]] = r.key(idx[0])
     if cdRec[1]=='Par':
@@ -574,5 +574,5 @@ for cdRec in cd_output:
       if do_print: gams.printLog(str(key)+' '+str(r.value))
       gams.db['cubeOutput'].add_record(key).value = r.level
 $offembeddedCode cubeOutput
-*$if exist ./solve.lst put_utility 'incMsg' / 'solve.lst';
+$if exist ./solve.lst put_utility 'incMsg' / 'solve.lst';
 $endif
