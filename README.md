@@ -3,6 +3,10 @@ This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https
 To obtain the app, including the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
 > git clone --recurse-submodules https://github.com/GAMS-dev/TIMES_MIRO.git
 
+The app allows the user to load different data sets, to set TIMES options, to manipulate input data and to analyze output data. Furthermore, the user can decide whether the model should be solved locally or submitted to the [NEOS optimization server](https://neos-server.org/neos/). 
+
+The app itself works with a free GAMS demo license which can be requested through an online [form](https://www.gams.com/download/). The NEOS option provides a way to also solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license.
+
 ## Prerequisites
 In order to use the TIMES MIRO app you need
 * to clone this repository
@@ -46,7 +50,29 @@ Finally, the menu on the left also contains a solve button that allows to start 
 The input view is organized in eight tabs which are described below.
 
 ##### Input Widgets
-The Input widgets tab allows to specify some basic settings. Most of them should be self expalining but special attention should be paid to the option to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). Submitting the model to NEOS allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license.
+The Input widgets tab allows to specify some basic settings. Most of them should be self expalining but special attention should be paid to the option to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). 
+
+**Submitting the model to NEOS** allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license. In order to make this work properly, two minor modifications to the TIMES source have to be made (see TIMES_Model issue [#3](https://github.com/etsap-TIMES/TIMES_model/issues/3) and [#4](https://github.com/etsap-TIMES/TIMES_model/issues/4).
+
+A summary of the two required changes:
+
+**1.** In `TIMES_Demo\source\err_stat.mod` change line 35 from
+```
+FILE SCREEN / CON /;
+```
+to
+```
+FILE SCREEN / '' /;
+```
+
+**2.** In file `TIMES_Demo\source\prepxtra.mod` comment the `put_utility` command by changing line 81 from 
+```
+  PUT_UTILITY 'SHELL' / 'mv -f _dd_.gdx ' '%GDXPATH%%RUN_NAME%' @(Z+16) (GSECOND(F)+100):0:0 '.GDX' @(Z+14) (GMINUTE(F)+100):0:0 @(Z+12) (GHOUR(F)+100):0:0 @(Z+9) (GDAY(F)+100):0:0 "_" @(Z+7) (GMONTH(F)+100):0:0 @(Z+4) GYEAR(F):0:0 @Z '~Data_' @(Z+25) ;
+```
+to
+```
+*  PUT_UTILITY 'SHELL' / 'mv -f _dd_.gdx ' '%GDXPATH%%RUN_NAME%' @(Z+16) (GSECOND(F)+100):0:0 '.GDX' @(Z+14) (GMINUTE(F)+100):0:0 @(Z+12) (GHOUR(F)+100):0:0 @(Z+9) (GDAY(F)+100):0:0 "_" @(Z+7) (GMONTH(F)+100):0:0 @(Z+4) GYEAR(F):0:0 @Z '~Data_' @(Z+25) ;
+```
 
 ![inputwidgets](/pics/input_widgets.png?raw=true)
 
