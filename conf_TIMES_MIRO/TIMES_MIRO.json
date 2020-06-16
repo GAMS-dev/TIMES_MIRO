@@ -16,7 +16,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "dd", "timeslice", "milestonyr", "cubeinput", "scenddmap", "offeps", "_scalars", "extensions", "solveropt"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt" ]
   },
   "overwriteAliases": {
     "dd": {
@@ -182,5 +182,6 @@
     },
     "height": 700,
     "colWidths": 100
-  }
+  },
+  "extraClArgs": "debug=1492"
 }
