@@ -164,7 +164,7 @@
       "newHeaders": ["Symbol", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
     },
     "cubeoutput": {
-      "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "value"]
+      "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "UserConstraint", "value"]
     }
   },
   "handsontable": {
