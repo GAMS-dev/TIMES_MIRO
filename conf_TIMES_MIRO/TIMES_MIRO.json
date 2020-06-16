@@ -55,7 +55,8 @@
       "outType": "miroPivot",
       "options": {
         "domainFilter": {
-          "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts"]
+          "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts"],
+          "filterVal": "-"
         }
       },
       "height": 700
@@ -64,13 +65,14 @@
       "outType": "miroPivot",
       "options": {
         "domainFilter": {
-          "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts"]
+          "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts"],
+          "filterVal": "-"
         }
       },
       "height": 700
     }
   },
-  "saveTraceFile": true,
+  "saveTraceFile": false,
   "roundingDecimals": 2,
   "pivottable": {
     "bgColor": "transparent"
