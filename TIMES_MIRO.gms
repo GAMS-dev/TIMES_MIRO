@@ -217,14 +217,14 @@ os.environ['CUBEINPUTDOM'] = 'siName,typ,dd,' + ','.join(list(gams.get('xidom'))
 cd_output = list(gams.get('cdOutput'))
 xodom = set(gams.get('xodom'))
 max_outputExtra = check_and_calc_extra(cd_output, xodom)
-doutput_map = { r[1]:r[0]+1 for r in zip(range(len(xodom)),gams.get('xodom')) }
-doutput_map.update({ str(i+1):i+len(xodom)+1 for i in range(max_outputExtra)})
-os.environ['CUBEOUTPUTDOM'] = 'soName,' + ','.join(list(gams.get('xodom'))) + ',*'*max_outputExtra
+doutput_map = { r[1]:r[0]+2 for r in zip(range(len(xodom)),gams.get('xodom')) }
+doutput_map.update({ str(i+1):i+len(xodom)+2 for i in range(max_outputExtra)})
+os.environ['CUBEOUTPUTDOM'] = 'scenario,soName,' + ','.join(list(gams.get('xodom'))) + ',*'*max_outputExtra
 $offEmbeddedCode
 $if not errorFree $stop
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS);
-set scenario 'Collection of DD Files';
+set scenario 'TIMES Scenario';
 set ddorder 'Order index for DD Files' / 1*500 /;
 
 $onEmpty
@@ -252,8 +252,8 @@ set           offeps(dd)                      'dd read under offeps'          / 
 set           TimeSlice                       'ALL_TS'                        / ANNUAL,S,W,SD,SN,WD,WN/ ;
 set           MILESTONYR                      'Years for this model run'      / 2005, 2010, 2015, 2020, 2030, 2050 /;
 scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / 1960 /;
-singleton set gmsRunScenario(scenario)        'Selected scenario'             / demo12 /;
-set           extensions(*,*,*)                 'TIMES Extensions'            / ''.(REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
+set           gmsRunScenario(scenario)        'Selected scenario'             / demo12 /;
+set           extensions(*,*,*)               'TIMES Extensions'              / ''.(REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
                                                                                 SOLVE_NOW.YES, XTQA.YES, VAR_UC.YES, SOLVEDA.YES, DATAGDX.YES,
                                                                                 VEDAVDD.YES) /;
 singleton set gmsObj(*)      'Choice of objective function formulations'      / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
@@ -271,19 +271,6 @@ singleton set gmsRunOpt(*)   'Selection for local, short and long NEOS queue' / 
 * Skipped VDA DATAGDX VEDAVDD 
 $offExternalInput
 $offEmpty
-
-set actdd(dd), orderactdd(ddorder,dd);
-$onEmbeddedCode Python:
-actScen = list(gams.get('gmsRunScenario'))[0]
-actdd = []
-orderactdd = []
-for r in gams.get('scenddmap'):
-   if r[0]==actScen:
-     actdd.append(r[2])
-     orderactdd.append((r[1],r[2]))
-gams.set('actdd',actdd)
-gams.set('orderactdd',orderactdd)
-$offEmbeddedCode actdd orderactdd
 
 $onExternalOutput
 parameter cubeOutput(%sysEnv.CUBEOUTPUTDOM%);
@@ -365,6 +352,30 @@ $loadDC cubeInput
 $gdxIn
 $offExternalInput
 $ifE card(cubeInput)=0 $abort 'No data in input cube'
+$ifE card(gmsRunScenario)=0 $abort 'No scenario selected'
+
+set actdd(dd), orderactdd(ddorder,dd);
+$set SCENCNT 1
+$label SCENLOOPSTART
+
+$onMultiR
+$onEmbeddedCode Python:
+actScen = list(gams.get('gmsRunScenario'))[%SCENCNT%-1]
+actdd = []
+orderactdd = []
+for r in gams.get('scenddmap'):
+   if r[0]==actScen:
+     actdd.append(r[2])
+     orderactdd.append((r[1],r[2]))
+gams.set('actdd',actdd)
+gams.set('orderactdd',orderactdd)
+os.environ['GMSRUNNAME'] = actScen
+$offEmbeddedCode actdd orderactdd
+$offMulti
+$set GMSRUNNAME  %sysEnv.GMSRUNNAME%
+
+
+* Write DD files
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 gams.ws.my_eps = 0
@@ -418,11 +429,12 @@ for dd in gams.get('actdd'):
   dd_txt[dd].close()
 $offEmbeddedCode
 $if not errorFree $abort 'Errors. No point in continuing.'
+
+* Write timesdriver.gms
 $eval.set GMSSOLVER   gmsSolver.tl
 $eval     GMSRESLIM   gmsResLim   
 $eval     GMSBRATIO   gmsBRatio   
 $eval     GMSBOTIME   gmsBOTime   
-$eval.set GMSRUNNAME  gmsRunScenario.tl  
 $eval.set GMSOBJ      gmsObj.tl
 $eval.set GMSRUNOPT   gmsRunOpt.tl
 
@@ -464,6 +476,7 @@ $set RUN_NAME %GMSRUNNAME%
 $batInclude maindrv.mod mod
 $offecho
 
+* Execute timesdriver.gms
 $ifThenI.localSolve %GMSRUNOPT%==local
 $  call.checkErrorLevel gams timesdriver.gms idir1=%gams.idir1%TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 o=solve.lst gdx=out.gdx
 $else.localSolve
@@ -568,6 +581,9 @@ $    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx && gmsunzip -qq -o s
 $  endif.dryRun
 $endIf.localSolve
 
+* Collect results in cubeOutput
+$onMulti
+$log --- Collecting result for scenario %GMSRUNNAME%
 $onembeddedCode Python:
 gams.wsWorkingDir = '.'
 do_print = False
@@ -580,15 +596,20 @@ for cdRec in cd_output:
   symName = cdRec[0]
   sym = out[symName]
   for r in sym:
-    key = [symName] + ['-']*(len(xodom)+max_outputExtra)
+    key = [r'%GMSRUNNAME%',symName] + ['-']*(len(xodom)+max_outputExtra)
     for idx in zip(range(sym.dimension),dom):
       key[doutput_map[idx[1]]] = r.key(idx[0])
     if cdRec[1]=='Par':
       if do_print: gams.printLog(str(key)+' '+str(r.value))
       gams.db['cubeOutput'].add_record(key).value = r.value
     else: # equ.l or var.L
-      if do_print: gams.printLog(str(key)+' '+str(r.value))
+      if do_print: gams.printLog(str(key)+' '+str(r.level))
       gams.db['cubeOutput'].add_record(key).value = r.level
 $offembeddedCode cubeOutput
-$if exist ./solve.lst put_utility 'incMsg' / 'solve.lst';
+$offMulti
+$if exist ./solve.lst $hiddencall mv -f solve.lst solve%SCENCNT%.lst
+$eval SCENCNT %SCENCNT%+1
+$ifE %SCENCNT%<=card(gmsRunScenario) $goto SCENLOOPSTART
+scalar cnt /0/;
+loop(gmsRunScenario, cnt=cnt+1; put_utility 'incMsg' / 'solve' cnt:0:0 '.lst');
 $endif

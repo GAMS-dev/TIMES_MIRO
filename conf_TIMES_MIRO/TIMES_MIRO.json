@@ -16,7 +16,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps", "gmsrunscenario"]
   },
   "overwriteAliases": {
     "dd": {
@@ -48,6 +48,9 @@
     },
     "solveropt": {
       "newAlias": "Solver options"
+    },
+    "gmsrunscenario": {
+      "newAlias": "Selected scenario"
     }
   },
   "dataRendering": {
@@ -88,17 +91,6 @@
       "multiple": false,
       "label": "Solver to use"
     },
-    "gmsbratio": {
-      "widgetType": "slider",
-      "alias": "Basis indicator",
-      "min": 0,
-      "max": 1,
-      "default": 1,
-      "step": 0.01,
-      "ticks": false,
-      "noHcube": true,
-      "label": "Basis indicator (bRatio)"
-    },
     "gmsreslim": {
       "widgetType": "slider",
       "alias": "Time limit for solve",
@@ -109,6 +101,17 @@
       "ticks": false,
       "noHcube": true,
       "label": "Time limit for solve [seconds] (resLim)"
+    },
+    "gmsbratio": {
+      "widgetType": "slider",
+      "alias": "Basis indicator",
+      "min": 0,
+      "max": 1,
+      "default": 1,
+      "step": 0.01,
+      "ticks": false,
+      "noHcube": true,
+      "label": "Basis indicator (bRatio)"
     },
     "gmsbotime": {
       "widgetType": "textinput",
@@ -133,12 +136,12 @@
     "gmsrunscenario": {
       "widgetType": "dropdown",
       "alias": "Selected scenario",
+      "choices": "$scenddmap$scenario",
       "selected": "",
-      "noHcube": false,
+      "noHcube": true,
       "clearValue": false,
-      "multiple": false,
-      "label": "Select active scenario",
-      "choices": "$scenddmap$scenario"
+      "multiple": true,
+      "label": "Select active scenario"
     },
     "offeps": {
       "widgetType": "dropdown",
@@ -159,13 +162,12 @@
       "noHcube": true
     }
   },
-  "extraClArgs": "debug=1492",
   "overwriteHeaderAliases": {
     "cubeinput": {
-      "newHeaders": ["Symbol", "Type", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
+      "newHeaders": ["Symbol", "Type", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Lim", "Cur", "Gen", "value"]
     },
     "cubeoutput": {
-      "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "UserConstraint", "value"]
+      "newHeaders": ["Scenario", "Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "UserConstraint", "value"]
     }
   },
   "handsontable": {
