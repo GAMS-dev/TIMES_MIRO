@@ -16,7 +16,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt" ]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps"]
   },
   "overwriteAliases": {
     "dd": {
@@ -97,7 +97,7 @@
       "step": 0.01,
       "ticks": false,
       "noHcube": true,
-      "label": "Basis indicator"
+      "label": "Basis indicator (bRatio)"
     },
     "gmsreslim": {
       "widgetType": "slider",
@@ -108,7 +108,7 @@
       "step": 1,
       "ticks": false,
       "noHcube": true,
-      "label": "Time limit for solve [seconds]"
+      "label": "Time limit for solve [seconds] (resLim)"
     },
     "gmsbotime": {
       "widgetType": "textinput",
@@ -159,9 +159,10 @@
       "noHcube": true
     }
   },
+  "extraClArgs": "debug=1492",
   "overwriteHeaderAliases": {
     "cubeinput": {
-      "newHeaders": ["Symbol", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
+      "newHeaders": ["Symbol", "Type", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
     },
     "cubeoutput": {
       "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "UserConstraint", "value"]

@@ -760,7 +760,7 @@ set           TimeSlice     'ALL_TS'    /ANNUAL,R,S,F,W,RWD,RNW,SWD,SNW,FWD,FNW,
 set           MILESTONYR    'Years for this model run' / 2010,2012,2015,2020,2025,2030,2035,2040,2045,2050/;
 scalar        gmsBOTime     'Adjustment for total available time span of years available in the model' / 1970 /;
 singleton set gmsRunScenario(scenario) 'name of the model run' / Frozen_policy_scenarie /;
-set           extensions(*,*) 'TIMES Extensions' / VALIDATE.NO, REDUCE.YES, DSCAUTO.YES, DEBUG.NO, DUMPSOL.NO, SOLVE_NOW.YES, MODEL_NAME.TIMES
-                                                   XTQA.YES, VAR_UC.YES, OBLONG.YES, DAMAGE.NO, STAGES.NO, SOLVEDA.YES, DATAGDX.YES, VDA.YES, VEDAVDD.YES /;
+set           extensions(*,*,*) 'TIMES Extensions' / ''.(VALIDATE.NO, REDUCE.YES, DSCAUTO.YES, DEBUG.NO, DUMPSOL.NO, SOLVE_NOW.YES, MODEL_NAME.TIMES
+                                                   XTQA.YES, VAR_UC.YES, OBLONG.YES, DAMAGE.NO, STAGES.NO, SOLVEDA.YES, DATAGDX.YES, VDA.YES, VEDAVDD.YES) /;
 singleton set gmsObj(*)       'Choice of objective function formulations' / 'AUTO' /; // ALT, AUTO, LIN, MOD, STD
 $offExternalInput

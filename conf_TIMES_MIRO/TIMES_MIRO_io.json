@@ -111,6 +111,10 @@
 					"type":	"string",
 					"alias":	"Universal set"
 				},
+				"uni#2":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
 				"text":	{
 					"type":	"string",
 					"alias":	"Set text TIMES Extensions"
@@ -124,6 +128,10 @@
 				"siname":	{
 					"type":	"string",
 					"alias":	"domain of input symbol names"
+				},
+				"typ":	{
+					"type":	"string",
+					"alias":	"symbol type"
 				},
 				"dd":	{
 					"type":	"string",
@@ -180,6 +188,10 @@
 					"alias":	"Universal set"
 				},
 				"uni#1":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#2":	{
 					"type":	"string",
 					"alias":	"Universal set"
 				},
