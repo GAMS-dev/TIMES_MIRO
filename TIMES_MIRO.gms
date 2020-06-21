@@ -578,8 +578,8 @@ $  offEmbeddedCode
 $  ifthen.dryRun not "x%dryRun%"=="x"
 $    call cat "%dryRun%"
 $  else.dryRun
-$    call rm -f solve.log solve.lst solve.lxi out.gdx
-$    call gmsunzip -o solver-output%SCENCNT%.zip
+$    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx
+$    hiddencall gmsunzip -qq -o solver-output%SCENCNT%.zip
 $  endif.dryRun
 $endIf.localSolve
 

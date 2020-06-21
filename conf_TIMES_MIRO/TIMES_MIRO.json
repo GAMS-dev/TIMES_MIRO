@@ -23,7 +23,7 @@
       "newAlias": "DD Files"
     },
     "timeslice": {
-      "newAlias": "Timeslices"
+      "newAlias": "Time Slices"
     },
     "milestonyr": {
       "newAlias": "Years for this model run"
@@ -141,7 +141,7 @@
       "noHcube": true,
       "clearValue": false,
       "multiple": true,
-      "label": "Select active scenario"
+      "label": "Select active scenario(s)"
     },
     "offeps": {
       "widgetType": "dropdown",
@@ -164,10 +164,28 @@
   },
   "overwriteHeaderAliases": {
     "cubeinput": {
-      "newHeaders": ["Symbol", "Type", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Lim", "Cur", "Gen", "value"]
+      "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Lim", "Cur", "Gen", "value"]
+    },
+    "scenddmap": {
+      "newHeaders": ["Scenario", "Order", "DD File", "Comment"]
+    },
+    "timeslice": {
+      "newHeaders": ["Time Slice", "Comment"]
+    },
+    "dd": {
+      "newHeaders": ["DD File", "Comment"]
+    },
+    "milestonyr": {
+      "newHeaders": ["Year", "Comment"]
+    },
+    "extensions": {
+      "newHeaders": ["Scenario", "Extension", "Value", "Comment"]
+    },
+    "solveropt": {
+      "newHeaders": ["Solver", "Option ", "Value", "Comment"]
     },
     "cubeoutput": {
-      "newHeaders": ["Scenario", "Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "UserConstraint", "value"]
+      "newHeaders": ["Scenario", "Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "User Constraint", "value"]
     }
   },
   "handsontable": {
