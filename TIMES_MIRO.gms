@@ -355,6 +355,7 @@ $ifE card(cubeInput)=0 $abort 'No data in input cube'
 $ifE card(gmsRunScenario)=0 $abort 'No scenario selected'
 
 set actdd(dd), orderactdd(ddorder,dd);
+$hiddencall rm -f solve*.lst solver-output*.zip
 $set SCENCNT 1
 $label SCENLOOPSTART
 
@@ -571,13 +572,14 @@ else:
         status = neos.getJobStatus(jobNumber, password)
     
     msg = neos.getOutputFile(jobNumber, password, 'solver-output.zip')
-    with open('solver-output.zip', 'wb') as rf:
+    with open('solver-output%SCENCNT%.zip', 'wb') as rf:
         rf.write(msg.data)
 $  offEmbeddedCode
 $  ifthen.dryRun not "x%dryRun%"=="x"
 $    call cat "%dryRun%"
 $  else.dryRun
-$    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx && gmsunzip -qq -o solver-output.zip
+$    call rm -f solve.log solve.lst solve.lxi out.gdx
+$    call gmsunzip -o solver-output%SCENCNT%.zip
 $  endif.dryRun
 $endIf.localSolve
 
@@ -605,6 +607,7 @@ for cdRec in cd_output:
     else: # equ.l or var.L
       if do_print: gams.printLog(str(key)+' '+str(r.level))
       gams.db['cubeOutput'].add_record(key).value = r.level
+out.__del__() # release out.gdx
 $offembeddedCode cubeOutput
 $offMulti
 $if exist ./solve.lst $hiddencall mv -f solve.lst solve%SCENCNT%.lst
