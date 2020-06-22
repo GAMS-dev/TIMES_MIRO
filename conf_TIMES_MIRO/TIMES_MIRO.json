@@ -16,14 +16,14 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt" ]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps", "gmsrunscenario"]
   },
   "overwriteAliases": {
     "dd": {
       "newAlias": "DD Files"
     },
     "timeslice": {
-      "newAlias": "Timeslices"
+      "newAlias": "Time Slices"
     },
     "milestonyr": {
       "newAlias": "Years for this model run"
@@ -48,6 +48,9 @@
     },
     "solveropt": {
       "newAlias": "Solver options"
+    },
+    "gmsrunscenario": {
+      "newAlias": "Selected scenario"
     }
   },
   "dataRendering": {
@@ -88,17 +91,6 @@
       "multiple": false,
       "label": "Solver to use"
     },
-    "gmsbratio": {
-      "widgetType": "slider",
-      "alias": "Basis indicator",
-      "min": 0,
-      "max": 1,
-      "default": 1,
-      "step": 0.01,
-      "ticks": false,
-      "noHcube": true,
-      "label": "Basis indicator"
-    },
     "gmsreslim": {
       "widgetType": "slider",
       "alias": "Time limit for solve",
@@ -108,7 +100,18 @@
       "step": 1,
       "ticks": false,
       "noHcube": true,
-      "label": "Time limit for solve [seconds]"
+      "label": "Time limit for solve [seconds] (resLim)"
+    },
+    "gmsbratio": {
+      "widgetType": "slider",
+      "alias": "Basis indicator",
+      "min": 0,
+      "max": 1,
+      "default": 1,
+      "step": 0.01,
+      "ticks": false,
+      "noHcube": true,
+      "label": "Basis indicator (bRatio)"
     },
     "gmsbotime": {
       "widgetType": "textinput",
@@ -133,12 +136,12 @@
     "gmsrunscenario": {
       "widgetType": "dropdown",
       "alias": "Selected scenario",
+      "choices": "$scenddmap$scenario",
       "selected": "",
-      "noHcube": false,
+      "noHcube": true,
       "clearValue": false,
-      "multiple": false,
-      "label": "Select active scenario",
-      "choices": "$scenddmap$scenario"
+      "multiple": true,
+      "label": "Select active scenario(s)"
     },
     "offeps": {
       "widgetType": "dropdown",
@@ -161,10 +164,28 @@
   },
   "overwriteHeaderAliases": {
     "cubeinput": {
-      "newHeaders": ["Symbol", "DD File", "UserConstraint", "Region", "Year", "Process", "Commodity", "Time Slice", "*", "**", "***", "value"]
+      "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Lim", "Cur", "Gen", "value"]
+    },
+    "scenddmap": {
+      "newHeaders": ["Scenario", "Order", "DD File", "Comment"]
+    },
+    "timeslice": {
+      "newHeaders": ["Time Slice", "Comment"]
+    },
+    "dd": {
+      "newHeaders": ["DD File", "Comment"]
+    },
+    "milestonyr": {
+      "newHeaders": ["Year", "Comment"]
+    },
+    "extensions": {
+      "newHeaders": ["Scenario", "Extension", "Value", "Comment"]
+    },
+    "solveropt": {
+      "newHeaders": ["Solver", "Option ", "Value", "Comment"]
     },
     "cubeoutput": {
-      "newHeaders": ["Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "UserConstraint", "value"]
+      "newHeaders": ["Scenario", "Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "User Constraint", "value"]
     }
   },
   "handsontable": {
