@@ -175,6 +175,14 @@
 					"type":	"string",
 					"alias":	"Aliased with *"
 				},
+				"lim":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"cur":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
 				"uni":	{
 					"type":	"string",
 					"alias":	"Universal set"

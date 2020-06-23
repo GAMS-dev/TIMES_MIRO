@@ -164,7 +164,7 @@
   },
   "overwriteHeaderAliases": {
     "cubeinput": {
-      "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Lim", "Cur", "Gen", "value"]
+      "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Lim", "Cur", "Gen1", "Gen2", "Gen3", "value"]
     },
     "scenddmap": {
       "newHeaders": ["Scenario", "Order", "DD File", "Comment"]
