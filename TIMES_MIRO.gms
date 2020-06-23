@@ -5,71 +5,72 @@ set xidom          'Extraordinary input domains'  / UC_N UserConstraint, ALL_REG
     siName         'domain of input symbol names'
     soName         'domain of output symbol names'
 ;
+
 Set cdInput(siName<,typ,*) 'Cube Input Data' /
 REG             .'Set'.'ALL_REG'
 CUR             .'Set'.'1'
-UNITS           .'Set'.'1'                                               
-UNITS_ACT       .'Set'.'1'                                               
-UNITS_CAP       .'Set'.'1'                                               
-UNITS_COM       .'Set'.'1'                                               
-UNITS_MONY      .'Set'.'1'                                               
-ACT_BND         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1'                    
-ACT_COST        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-ACT_CUM         .'Par'.'ALL_REG,PRC,1,2,3'                               
-ACT_EFF         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'              
-ALL_REG         .'Set'.'ALL_REG'                                         
-B               .'Par'.'ALLYEAR'                                         
-COM             .'Set'.'COM_GRP'                                         
-COM_AGG         .'Par'.'ALL_REG,ALLYEAR,COM_GRP,1'                       
-COM_DESC        .'Set'.'ALL_REG,COM_GRP'                                 
-COM_FR          .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'                  
-COM_GMAP        .'Set'.'ALL_REG,COM_GRP,1'                               
-COM_GRP         .'Set'.'COM_GRP'                                         
-COM_IE          .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'                  
-COM_PEAK        .'Set'.'ALL_REG,COM_GRP'                                 
-COM_PKRSV       .'Par'.'ALL_REG,ALLYEAR,COM_GRP'                         
-COM_PROJ        .'Par'.'ALL_REG,ALLYEAR,COM_GRP'                         
-COM_TMAP        .'Set'.'ALL_REG,COM_GRP,1'                               
-COM_TSL         .'Set'.'ALL_REG,COM_GRP,1'                               
-COM_UNIT        .'Set'.'ALL_REG,COM_GRP,1'                               
-D               .'Par'.'ALLYEAR'                                         
-DATAYEAR        .'Set'.'ALLYEAR'                                         
-E               .'Par'.'ALLYEAR'                                         
+UNITS           .'Set'.'1'
+UNITS_ACT       .'Set'.'1'
+UNITS_CAP       .'Set'.'1'
+UNITS_COM       .'Set'.'1'
+UNITS_MONY      .'Set'.'1'
+ACT_BND         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1' // 1-Lim 2-Cur 3-Gen
+ACT_COST        .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+ACT_CUM         .'Par'.'ALL_REG,PRC,1,2,3' 
+ACT_EFF         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'
+ALL_REG         .'Set'.'ALL_REG'
+B               .'Par'.'ALLYEAR'
+COM             .'Set'.'COM_GRP'
+COM_AGG         .'Par'.'ALL_REG,ALLYEAR,COM_GRP,1'
+COM_DESC        .'Set'.'ALL_REG,COM_GRP'
+COM_FR          .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+COM_GMAP        .'Set'.'ALL_REG,COM_GRP,1'
+COM_GRP         .'Set'.'COM_GRP'
+COM_IE          .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+COM_PEAK        .'Set'.'ALL_REG,COM_GRP'
+COM_PKRSV       .'Par'.'ALL_REG,ALLYEAR,COM_GRP'
+COM_PROJ        .'Par'.'ALL_REG,ALLYEAR,COM_GRP'
+COM_TMAP        .'Set'.'ALL_REG,COM_GRP,1'
+COM_TSL         .'Set'.'ALL_REG,COM_GRP,1'
+COM_UNIT        .'Set'.'ALL_REG,COM_GRP,1'
+D               .'Par'.'ALLYEAR'
+DATAYEAR        .'Set'.'ALLYEAR'
+E               .'Par'.'ALLYEAR'
 FLO_SHAR        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,ALL_TS,2'          // reorder
-G_DRATE         .'Par'.'ALL_REG,ALLYEAR,1'                               
-G_DYEAR         .'Par'.''                                               
-G_YRFR          .'Par'.'ALL_REG,ALL_TS'                                  
-IRE_PRICE       .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1,2,3'        
-M               .'Par'.'ALLYEAR'                                         
-MODLYEAR        .'Set'.'ALLYEAR'                                         
-NCAP_AF         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1'                    
-NCAP_AFA        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_BND        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_COST       .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_FOM        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_PASTI      .'Par'.'ALL_REG,ALLYEAR,PRC'                             
-NCAP_PKCNT      .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS'                      
-NCAP_START      .'Par'.'ALL_REG,PRC'                                     
-NCAP_TLIFE      .'Par'.'ALL_REG,ALLYEAR,PRC'                             
+G_DRATE         .'Par'.'ALL_REG,ALLYEAR,1'
+G_DYEAR         .'Par'.''
+G_YRFR          .'Par'.'ALL_REG,ALL_TS'
+IRE_PRICE       .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1,2,3'
+M               .'Par'.'ALLYEAR'
+MODLYEAR        .'Set'.'ALLYEAR'
+NCAP_AF         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1'
+NCAP_AFA        .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+NCAP_BND        .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+NCAP_COST       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+NCAP_FOM        .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+NCAP_PASTI      .'Par'.'ALL_REG,ALLYEAR,PRC'
+NCAP_PKCNT      .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS'
+NCAP_START      .'Par'.'ALL_REG,PRC'
+NCAP_TLIFE      .'Par'.'ALL_REG,ALLYEAR,PRC'
 NRG_TMAP        .'Set'.'ALL_REG,1,COM_GRP'                               // reorder
-PASTYEAR        .'Set'.'ALLYEAR'                                         
-PRC             .'Set'.'PRC'                                             
-PRC_ACTFLO      .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP'                     
-PRC_ACTUNT      .'Set'.'ALL_REG,PRC,COM_GRP,1'                           
-PRC_CAPACT      .'Par'.'ALL_REG,PRC'                                     
-PRC_DESC        .'Set'.'ALL_REG,PRC'                                     
+PASTYEAR        .'Set'.'ALLYEAR'
+PRC             .'Set'.'PRC'
+PRC_ACTFLO      .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP'
+PRC_ACTUNT      .'Set'.'ALL_REG,PRC,COM_GRP,1'
+PRC_CAPACT      .'Par'.'ALL_REG,PRC'
+PRC_DESC        .'Set'.'ALL_REG,PRC'
 PRC_MAP         .'Set'.'ALL_REG,1,PRC'                                   // reorder
-PRC_RESID       .'Par'.'ALL_REG,ALLYEAR,PRC'                             
-PRC_TSL         .'Set'.'ALL_REG,PRC,1'                                   
-PRC_VINT        .'Set'.'ALL_REG,PRC'                                     
-TOP             .'Set'.'ALL_REG,PRC,COM_GRP,1'                           
+PRC_RESID       .'Par'.'ALL_REG,ALLYEAR,PRC'
+PRC_TSL         .'Set'.'ALL_REG,PRC,1'
+PRC_VINT        .'Set'.'ALL_REG,PRC'
+TOP             .'Set'.'ALL_REG,PRC,COM_GRP,1'
 TOP_IRE         .'Set'.'ALL_REG,COM_GRP,1,2,PRC'                         // reorder
 TS_GROUP        .'Set'.'ALL_REG,1,ALL_TS'                                // reorder
-TS_MAP          .'Set'.'ALL_REG,ALL_TS,1'                                
+TS_MAP          .'Set'.'ALL_REG,ALL_TS,1'
 UC_CAP          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC'                      // reorder
 UC_COMPRD       .'Par'.'UC_N,1,ALL_REG,ALLYEAR,COM_GRP,ALL_TS'           // reorder
 UC_FLO          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'       // reorder
-UC_N            .'Set'.'UC_N'                                            
+UC_N            .'Set'.'UC_N'
 UC_RHSRT        .'Par'.'ALL_REG,UC_N,ALLYEAR,1'                          // reorder
 UC_RHSRTS       .'Par'.'ALL_REG,UC_N,ALLYEAR,ALL_TS,1'                   // reorder
 UC_R_EACH       .'Set'.'ALL_REG,UC_N'                                    // reorder
@@ -101,81 +102,86 @@ uc_rhsts        .'Par'.'UC_N,ALLYEAR,ALL_TS,1'
 prc_noff        .'Set'.'ALL_REG,PRC,1,2'
 vda_flop        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS '
 flo_func        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,All_TS'
+uc_comnet       .'Par'.'UC_N,1,ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+ncap_isub       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
+uc_rhs          .'Par'.'UC_N,1'
+uc_t_sum        .'Set'.'ALL_REG,UC_N,ALLYEAR'
 * New with starter
 com_pkts        .'Set'.'ALL_REG,COM_GRP,ALL_TS'
+COM_BNDNET      .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS,1'
+NCAP_DISC       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
 /;
 
 Set cdOutput(soName<,typ,*) 'Cube Data' /
 *** Variables & Parameters
-'par_actl'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
-'par_actm'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
-'par_capl'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_pasti'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,1'               
-'par_capm'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_ncapl'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_ncapm'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_ncapr'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,1'               
+'par_actl'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'
+'par_actm'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'
+'par_capl'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'
+'par_pasti'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,1'
+'par_capm'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'
+'par_ncapl'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'
+'par_ncapm'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'
+'par_ncapr'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,2'
 'f_in'         . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP,ALL_TS'
 'f_out'        . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP,ALL_TS'
-'agg_out'      . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'p_out'        . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'  
-'par_rtcs'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comprdl'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comprdm'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comnetl'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comnetm'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_eout'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'par_cumcst'   . 'par'   . 'ALL_REG,1,ALLYEAR,2,COM_GRP'         
-*** Equations                                                 
-'eqg_combal'   . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_combalem' . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'eqe_combal'   . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_combalgm' . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'eq_peak'      . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_peakm'    . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
+'agg_out'      . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'p_out'        . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'
+'par_rtcs'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_comprdl'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_comprdm'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_comnetl'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_comnetm'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_eout'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'
+'par_cumcst'   . 'par'   . 'ALL_REG,1,ALLYEAR,2,COM_GRP'
+*** Equations
+'eqg_combal'   . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_combalem' . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'eqe_combal'   . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_combalgm' . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'eq_peak'      . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
+'par_peakm'    . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
 'par_ipric'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
-'par_cumflol'  . 'par'   . 'ALL_REG,PRC,COM_GRP,1,ALLYEAR'       
-'par_cumflom'  . 'par'   . 'ALL_REG,PRC,COM_GRP,1,ALLYEAR'       
-*** Parameters                                                  
-'par_top'      . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,1'       
-'par_caplo'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_capup'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'Cap_New'      . 'par'   . 'ALL_REG,1,PRC,ALLYEAR,2'             
-*** Costs                                                       
-'cst_invc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'             
-'cst_invx'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'             
-'cst_salv'     . 'par'   . 'ALL_REG,1,PRC'                       
-'cst_decc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'               
-'cst_fixc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'               
-'cst_fixx'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'               
-'cst_actc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'             
-'cst_floc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'cst_flox'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'cst_comc'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_comx'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_come'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_dam'      . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_irec'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'cst_pvp'      . 'par'   . '1,ALL_REG,PRC'                       
-'cst_pvc'      . 'par'   . '1,ALL_REG,COM_GRP'                  
-'cst_time'     . 'par'   . 'ALL_REG,ALLYEAR,ALL_TS,1'            
-'val_flo'      . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'ObjZ'         . 'var.l' .  ''                                     
-'reg_wobj'     . 'par'   . 'ALL_REG,1,COM_GRP'                   
-'reg_obj'      . 'par'   . 'ALL_REG'                             
-'reg_irec'     . 'par'   . 'ALL_REG'                             
-'reg_acost'    . 'par'   . 'ALL_REG,ALLYEAR,1'                   
-'par_ucsl'     . 'par'   . '1,ALL_REG,ALLYEAR,ALL_TS'            
-'par_ucsm'     . 'par'   . '1,ALL_REG,ALLYEAR,ALL_TS'            
-'par_ucmrk'    . 'par'   . 'ALL_REG,ALLYEAR,1,COM_GRP,ALL_TS'    
-'par_ucrtp'    . 'par'   . '1,ALL_REG,ALLYEAR,PRC,COM_GRP'       
-'par_ucmax'    . 'par'   . '1,ALL_REG,PRC,COM_GRP'               
-*** Climate and MACRO                                 
-'CM_RESULT'    . 'par'   . 'COM_GRP,ALLYEAR'                     
-'CM_MAXC_M'    . 'par'   . 'COM_GRP,ALLYEAR'                     
-'TM_RESULT'    . 'par'   . 'COM_GRP,ALL_REG,ALLYEAR'                     
+'par_cumflol'  . 'par'   . 'ALL_REG,PRC,COM_GRP,1,ALLYEAR'
+'par_cumflom'  . 'par'   . 'ALL_REG,PRC,COM_GRP,1,ALLYEAR'
+*** Parameters
+'par_top'      . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,1'
+'par_caplo'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'
+'par_capup'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'
+'Cap_New'      . 'par'   . 'ALL_REG,1,PRC,ALLYEAR,2'
+*** Costs
+'cst_invc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'
+'cst_invx'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'
+'cst_salv'     . 'par'   . 'ALL_REG,1,PRC'
+'cst_decc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'
+'cst_fixc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'
+'cst_fixx'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'
+'cst_actc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'
+'cst_floc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'
+'cst_flox'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'
+'cst_comc'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'
+'cst_comx'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'
+'cst_come'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'
+'cst_dam'      . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'
+'cst_irec'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'
+'cst_pvp'      . 'par'   . '1,ALL_REG,PRC'
+'cst_pvc'      . 'par'   . '1,ALL_REG,COM_GRP'
+'cst_time'     . 'par'   . 'ALL_REG,ALLYEAR,ALL_TS,1'
+'val_flo'      . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'
+'ObjZ'         . 'var.l' .  ''
+'reg_wobj'     . 'par'   . 'ALL_REG,2,COM_GRP'
+'reg_obj'      . 'par'   . 'ALL_REG'
+'reg_irec'     . 'par'   . 'ALL_REG'
+'reg_acost'    . 'par'   . 'ALL_REG,ALLYEAR,2'
+'par_ucsl'     . 'par'   . '2,ALL_REG,ALLYEAR,ALL_TS'
+'par_ucsm'     . 'par'   . '2,ALL_REG,ALLYEAR,ALL_TS'
+'par_ucmrk'    . 'par'   . 'ALL_REG,ALLYEAR,1,COM_GRP,ALL_TS'
+'par_ucrtp'    . 'par'   . '2,ALL_REG,ALLYEAR,PRC,COM_GRP'
+'par_ucmax'    . 'par'   . '2,ALL_REG,PRC,COM_GRP'
+*** Climate and MACRO
+'CM_RESULT'    . 'par'   . 'COM_GRP,ALLYEAR'
+'CM_MAXC_M'    . 'par'   . 'COM_GRP,ALLYEAR'
+'TM_RESULT'    . 'par'   . 'COM_GRP,ALL_REG,ALLYEAR'
 /;
-
 
 $onEmbeddedCode Python:
 import os
@@ -204,21 +210,21 @@ def check_and_calc_extra(cd, xdom):
 cd_input = list(gams.get('cdInput'))
 xidom = set(gams.get('xidom'))
 max_inputExtra = check_and_calc_extra(cd_input, xidom)
-dinput_map = { r[1]:r[0]+2 for r in zip(range(len(xidom)),gams.get('xidom')) }
-dinput_map.update({ str(i+1):i+len(xidom)+2 for i in range(max_inputExtra)})
-os.environ['CUBEINPUTDOM'] = 'siName,dd,' + ','.join(list(gams.get('xidom'))) + ',*'*max_inputExtra
+dinput_map = { r[1]:r[0]+3 for r in zip(range(len(xidom)),gams.get('xidom')) }
+dinput_map.update({ str(i+1):i+len(xidom)+3 for i in range(max_inputExtra)})
+os.environ['CUBEINPUTDOM'] = 'siName,typ,dd,' + ','.join(list(gams.get('xidom'))) + ',*'*max_inputExtra
 
 cd_output = list(gams.get('cdOutput'))
 xodom = set(gams.get('xodom'))
 max_outputExtra = check_and_calc_extra(cd_output, xodom)
-doutput_map = { r[1]:r[0]+1 for r in zip(range(len(xodom)),gams.get('xodom')) }
-doutput_map.update({ str(i+1):i+len(xodom)+1 for i in range(max_outputExtra)})
-os.environ['CUBEOUTPUTDOM'] = 'soName,' + ','.join(list(gams.get('xodom'))) + ',*'*max_outputExtra
+doutput_map = { r[1]:r[0]+2 for r in zip(range(len(xodom)),gams.get('xodom')) }
+doutput_map.update({ str(i+1):i+len(xodom)+2 for i in range(max_outputExtra)})
+os.environ['CUBEOUTPUTDOM'] = 'scenario,soName,' + ','.join(list(gams.get('xodom'))) + ',*'*max_outputExtra
 $offEmbeddedCode
 $if not errorFree $stop
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS);
-set scenario 'Collection of DD Files';
+set scenario 'TIMES Scenario';
 set ddorder 'Order index for DD Files' / 1*500 /;
 
 $onEmpty
@@ -229,6 +235,9 @@ $include dkdata
 $elseif.data %DATASET%==starter
 $set DDPREFIX D:\Users\mbussieck\Downloads\times_starter\
 $include starterdata
+$elseif.data %DATASET%==starter_extended
+$set DDPREFIX D:\Users\mbussieck\Downloads\GAMS_WrkMIRO\
+$include starterdata_extended
 $elseif.data  %DATASET%==mydata
 * Fill in your data
 $onExternalInput
@@ -243,17 +252,18 @@ set           offeps(dd)                      'dd read under offeps'          / 
 set           TimeSlice                       'ALL_TS'                        / ANNUAL,S,W,SD,SN,WD,WN/ ;
 set           MILESTONYR                      'Years for this model run'      / 2005, 2010, 2015, 2020, 2030, 2050 /;
 scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / 1960 /;
-singleton set gmsRunScenario(scenario)        'Selected scenario'             / demo12 /;
-set           extensions(*,*)                 'TIMES Extensions'              / REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
+set           gmsRunScenario(scenario)        'Selected scenario'             / demo12 /;
+set           extensions(*,*,*)               'TIMES Extensions'              / ''.(REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
                                                                                 SOLVE_NOW.YES, XTQA.YES, VAR_UC.YES, SOLVEDA.YES, DATAGDX.YES,
-                                                                                VEDAVDD.YES /;
+                                                                                VEDAVDD.YES) /;
 singleton set gmsObj(*)      'Choice of objective function formulations'      / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
 $offExternalInput
 $endif.data
 $onExternalInput
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%);
-set           solveropt(*,*) 'Solver options'                                 / scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
-                                                                                barcrossalg.1, barorder.2, threads.8 /;
+set           solveropt(*,*,*) 'Solver options'                               / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
+                                                                                barcrossalg.1, barorder.2, threads.8)
+                                                                                gurobi.method.2/;
 singleton set gmsSolver(*)   'Solver for TIMES'                               / cplex /;
 scalar        gmsResLim      'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio      'Basis indicator'                                / 1 /;
@@ -261,19 +271,6 @@ singleton set gmsRunOpt(*)   'Selection for local, short and long NEOS queue' / 
 * Skipped VDA DATAGDX VEDAVDD 
 $offExternalInput
 $offEmpty
-
-set actdd(dd), orderactdd(ddorder,dd);
-$onEmbeddedCode Python:
-actScen = list(gams.get('gmsRunScenario'))[0]
-actdd = []
-orderactdd = []
-for r in gams.get('scenddmap'):
-   if r[0]==actScen:
-     actdd.append(r[2])
-     orderactdd.append((r[1],r[2]))
-gams.set('actdd',actdd)
-gams.set('orderactdd',orderactdd)
-$offEmbeddedCode actdd orderactdd
 
 $onExternalOutput
 parameter cubeOutput(%sysEnv.CUBEOUTPUTDOM%);
@@ -290,7 +287,7 @@ $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 do_print = False
 dd_db = {}
-for dd in gams.get('actdd'):
+for dd in gams.get('dd'):
   s = 'grep -iv offeps ' + r'%DDPREFIX% '.rstrip()+dd+'.dd > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
   rc = os.system(s)
   if not rc==0:
@@ -303,8 +300,9 @@ for dd in gams.get('actdd'):
 noDD = []
 for cdRec in cd_input:
   sym = cdRec[0]
+  typ = cdRec[1]
   someDD = False
-  for dd in gams.get('actdd'):
+  for dd in gams.get('dd'):
     try:
       dd_sym = dd_db[dd][sym]
     except:
@@ -318,7 +316,7 @@ for cdRec in cd_input:
     if not dd_sym.dimension==len(dom):
       raise NameError('Dimension mismatch for ' + sym + ' in ' + dd + ': ' + str(dd_sym.dimension) + '<>' + str(len(dom)))
     for r in dd_sym:
-      key = [sym,dd] + ['-']*(len(xidom)+max_inputExtra)
+      key = [sym,typ,dd] + ['-']*(len(xidom)+max_inputExtra)
       for idx in zip(range(dd_sym.dimension),dom):
         key[dinput_map[idx[1]]] = r.key(idx[0])
       if cdRec[1]=='Par':
@@ -334,7 +332,7 @@ if len(noDD):
 # Check if some symbol in DD is not in our input map
 miss_sym = set()
 i_sym = set(s[0].lower() for s in cd_input)
-for dd in gams.get('actdd'):
+for dd in gams.get('dd'):
   for sym in dd_db[dd]:
     if not sym.name.lower() in i_sym:
       miss_sym.add(sym.name.lower())
@@ -353,6 +351,32 @@ $gdxIn _miro_gdxin_.gdx
 $loadDC cubeInput
 $gdxIn
 $offExternalInput
+$ifE card(cubeInput)=0 $abort 'No data in input cube'
+$ifE card(gmsRunScenario)=0 $abort 'No scenario selected'
+
+set actdd(dd), orderactdd(ddorder,dd);
+$hiddencall rm -f solve*.lst solver-output*.zip
+$set SCENCNT 1
+$label SCENLOOPSTART
+
+$onMultiR
+$onEmbeddedCode Python:
+actScen = list(gams.get('gmsRunScenario'))[%SCENCNT%-1]
+actdd = []
+orderactdd = []
+for r in gams.get('scenddmap'):
+   if r[0]==actScen:
+     actdd.append(r[2])
+     orderactdd.append((r[1],r[2]))
+gams.set('actdd',actdd)
+gams.set('orderactdd',orderactdd)
+os.environ['GMSRUNNAME'] = actScen
+$offEmbeddedCode actdd orderactdd
+$offMulti
+$set GMSRUNNAME  %sysEnv.GMSRUNNAME%
+
+
+* Write DD files
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 gams.ws.my_eps = 0
@@ -368,7 +392,7 @@ for dd in gams.get('actdd'):
   
 last_sym = ''
 for cr in cube_input:
-  if not cr.key(1) in act_dd:
+  if not cr.key(2) in act_dd:
      continue
   if not cr.key(0)==last_sym:
     if not last_sym=='':
@@ -383,8 +407,8 @@ for cr in cube_input:
       dom = []
     else:
       dom = cdr[2].split(',')
-  if not cr.key(1)==last_dd:
-    last_dd = cr.key(1)
+  if not cr.key(2)==last_dd:
+    last_dd = cr.key(2)
     dd_sym_written[last_dd] = True
     f = dd_txt[last_dd]
     if cdr[1]=='Par':
@@ -399,18 +423,19 @@ for cr in cube_input:
     f.write(' ' + str(cr.value) + '\n')
   else:
     f.write('\n')
-  
+
 for dd in gams.get('actdd'):
   if dd_sym_written[dd]:
     dd_txt[dd].write('/;\n')
   dd_txt[dd].close()
 $offEmbeddedCode
+$if not errorFree $abort 'Errors. No point in continuing.'
 
+* Write timesdriver.gms
 $eval.set GMSSOLVER   gmsSolver.tl
 $eval     GMSRESLIM   gmsResLim   
 $eval     GMSBRATIO   gmsBRatio   
 $eval     GMSBOTIME   gmsBOTime   
-$eval.set GMSRUNNAME  gmsRunScenario.tl  
 $eval.set GMSOBJ      gmsObj.tl
 $eval.set GMSRUNOPT   gmsRunOpt.tl
 
@@ -426,28 +451,33 @@ $onEmbeddedCode Python:
 with open('timesdriver.gms', 'a+') as td:
     td.write('file fslvopt / "%GMSSOLVER%.opt" /; put fslvopt "* Generated %GMSSOLVER% option file" /;\n$onPut\n')
     for sor in gams.get('solveropt'):
-      td.write(sor[0]+' '+sor[1]+'\n')
-    td.write('$offPut\nputClose;\n')      
-    td.write('$set OBJ %GMSOBJ%\n')      
+      if sor[0].lower() == '%GMSSOLVER%'.lower():
+        td.write(sor[1]+' '+sor[2]+'\n')
+    td.write('$offPut\nputClose;\n')
+    ext = {'obj':'%GMSOBJ%', 'botime':'%GMSBOTIME%', 'milestonyr':','.join(gams.get('MILESTONYR'))}
     for er in gams.get('extensions'):
-      td.write('$set '+er[0]+' '+er[1]+'\n')
+      if er[0] == '':
+        ext[er[1].lower()] = er[2]
+    for er in gams.get('extensions'):
+      if er[0].lower() == '%GMSRUNNAME%'.lower():
+        ext[er[1].lower()] = er[2]
+    for er in ext.items():
+      if not er[0].lower() == 'milestonyr':
+        td.write('$set '+er[0].upper() +' '+er[1]+'\n')
     td.write('$onMulti\nset ALL_TS /\n')
     for tsr in gams.get('TimeSlice'):
       td.write(tsr + '\n')
-    td.write('/;\n')
-    td.write('$set BOTIME %GMSBOTIME%\n$batInclude initsys.mod\n$batInclude initmty.mod\n')
+    td.write('/;\n$batInclude initsys.mod\n$batInclude initmty.mod\n')
     for ddr in gams.get('orderactdd'):
       td.write('$batInclude ' + ddr[1] + '.dd\n')
-    td.write('\nSet MILESTONYR /\n')
-    for msr in gams.get('MILESTONYR'):
-      td.write(msr + '\n')
-    td.write('/;\n')
+    td.write('\nSet MILESTONYR / ' + ext['milestonyr'] + '/;\n')
 $offEmbeddedCode
 $onecho >> timesdriver.gms 
 $set RUN_NAME %GMSRUNNAME%
 $batInclude maindrv.mod mod
 $offecho
 
+* Execute timesdriver.gms
 $ifThenI.localSolve %GMSRUNOPT%==local
 $  call.checkErrorLevel gams timesdriver.gms idir1=%gams.idir1%TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 o=solve.lst gdx=out.gdx
 $else.localSolve
@@ -542,16 +572,20 @@ else:
         status = neos.getJobStatus(jobNumber, password)
     
     msg = neos.getOutputFile(jobNumber, password, 'solver-output.zip')
-    with open('solver-output.zip', 'wb') as rf:
+    with open('solver-output%SCENCNT%.zip', 'wb') as rf:
         rf.write(msg.data)
 $  offEmbeddedCode
 $  ifthen.dryRun not "x%dryRun%"=="x"
 $    call cat "%dryRun%"
 $  else.dryRun
-$    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx && gmsunzip -qq -o solver-output.zip
+$    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx
+$    hiddencall gmsunzip -qq -o solver-output%SCENCNT%.zip
 $  endif.dryRun
 $endIf.localSolve
 
+* Collect results in cubeOutput
+$onMulti
+$log --- Collecting result for scenario %GMSRUNNAME%
 $onembeddedCode Python:
 gams.wsWorkingDir = '.'
 do_print = False
@@ -564,15 +598,21 @@ for cdRec in cd_output:
   symName = cdRec[0]
   sym = out[symName]
   for r in sym:
-    key = [symName] + ['-']*(len(xodom)+max_outputExtra)
+    key = [r'%GMSRUNNAME%',symName] + ['-']*(len(xodom)+max_outputExtra)
     for idx in zip(range(sym.dimension),dom):
       key[doutput_map[idx[1]]] = r.key(idx[0])
     if cdRec[1]=='Par':
       if do_print: gams.printLog(str(key)+' '+str(r.value))
       gams.db['cubeOutput'].add_record(key).value = r.value
     else: # equ.l or var.L
-      if do_print: gams.printLog(str(key)+' '+str(r.value))
+      if do_print: gams.printLog(str(key)+' '+str(r.level))
       gams.db['cubeOutput'].add_record(key).value = r.level
+out.__del__() # release out.gdx
 $offembeddedCode cubeOutput
-$if exist ./solve.lst put_utility 'incMsg' / 'solve.lst';
+$offMulti
+$if exist ./solve.lst $hiddencall mv -f solve.lst solve%SCENCNT%.lst
+$eval SCENCNT %SCENCNT%+1
+$ifE %SCENCNT%<=card(gmsRunScenario) $goto SCENLOOPSTART
+scalar cnt /0/;
+loop(gmsRunScenario, cnt=cnt+1; put_utility 'incMsg' / 'solve' cnt:0:0 '.lst');
 $endif

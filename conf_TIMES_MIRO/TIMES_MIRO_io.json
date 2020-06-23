@@ -21,7 +21,7 @@
 			"headers":	{
 				"scenario":	{
 					"type":	"string",
-					"alias":	"Collection of DD Files"
+					"alias":	"TIMES Scenario"
 				},
 				"ddorder":	{
 					"type":	"string",
@@ -81,9 +81,9 @@
 		},
 		"_scalars":	{
 			"alias":	"Input Scalars",
-			"symnames":	["gmsbotime", "gmsrunscenario", "gmsobj", "gmssolver", "gmsreslim", "gmsbratio", "gmsrunopt"],
-			"symtext":	["Adjustment for total available time span of years available in the model", "Selected scenario", "Choice of objective function formulations", "Solver for TIMES", "Time limit for solve", "Basis indicator", "Selection for local, short and long NEOS queue"],
-			"symtypes":	["parameter", "set", "set", "set", "parameter", "parameter", "set"],
+			"symnames":	["gmsbotime", "gmsobj", "gmssolver", "gmsreslim", "gmsbratio", "gmsrunopt"],
+			"symtext":	["Adjustment for total available time span of years available in the model", "Choice of objective function formulations", "Solver for TIMES", "Time limit for solve", "Basis indicator", "Selection for local, short and long NEOS queue"],
+			"symtypes":	["parameter", "set", "set", "parameter", "parameter", "set"],
 			"headers":	{
 				"scalar":	{
 					"type":	"string",
@@ -99,6 +99,20 @@
 				}
 			}
 		},
+		"gmsrunscenario":	{
+			"alias":	"Selected scenario",
+			"symtype":	"set",
+			"headers":	{
+				"scenario":	{
+					"type":	"string",
+					"alias":	"TIMES Scenario"
+				},
+				"text":	{
+					"type":	"string",
+					"alias":	"Set text Selected scenario"
+				}
+			}
+		},
 		"extensions":	{
 			"alias":	"TIMES Extensions",
 			"symtype":	"set",
@@ -108,6 +122,10 @@
 					"alias":	"Universal set"
 				},
 				"uni#1":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#2":	{
 					"type":	"string",
 					"alias":	"Universal set"
 				},
@@ -124,6 +142,10 @@
 				"siname":	{
 					"type":	"string",
 					"alias":	"domain of input symbol names"
+				},
+				"typ":	{
+					"type":	"string",
+					"alias":	"symbol type"
 				},
 				"dd":	{
 					"type":	"string",
@@ -183,6 +205,10 @@
 					"type":	"string",
 					"alias":	"Universal set"
 				},
+				"uni#2":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
 				"text":	{
 					"type":	"string",
 					"alias":	"Set text Solver options"
@@ -195,6 +221,10 @@
 			"alias":	"cubeoutput",
 			"symtype":	"parameter",
 			"headers":	{
+				"scenario":	{
+					"type":	"string",
+					"alias":	"TIMES Scenario"
+				},
 				"soname":	{
 					"type":	"string",
 					"alias":	"domain of output symbol names"
