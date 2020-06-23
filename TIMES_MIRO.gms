@@ -564,8 +564,11 @@ $elseif.data %DATASET%==starter
 $set DDPREFIX D:\Users\mbussieck\Downloads\times_starter\
 $include starterdata
 $elseif.data %DATASET%==starter_extended
-$set DDPREFIX D:\Users\mbussieck\Downloads\GAMS_WrkMIRO\
+$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO\
 $include starterdata_extended
+$elseif.data %DATASET%==starter20200621
+$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO20200621\
+$include starterdata20200621
 $elseif.data  %DATASET%==mydata
 * Fill in your data
 $onExternalInput
