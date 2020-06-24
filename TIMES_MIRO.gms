@@ -6,119 +6,6 @@ set xidom          'Extraordinary input domains'  / UC_N UserConstraint, ALL_REG
     soName         'domain of output symbol names'
 ;
 Set cdInput(siName<,typ,*) 'Cube Input Data' /
-$ontext
-REG             .'Set'.'ALL_REG'
-CUR             .'Set'.'1'
-UNITS           .'Set'.'1'                                               
-UNITS_ACT       .'Set'.'1'                                               
-UNITS_CAP       .'Set'.'1'                                               
-UNITS_COM       .'Set'.'1'                                               
-UNITS_MONY      .'Set'.'1'                                               
-ACT_BND         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1'                    
-ACT_COST        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-ACT_CUM         .'Par'.'ALL_REG,PRC,1,2,3'                               
-ACT_EFF         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'              
-ALL_REG         .'Set'.'ALL_REG'                                         
-B               .'Par'.'ALLYEAR'                                         
-COM             .'Set'.'COM_GRP'                                         
-COM_AGG         .'Par'.'ALL_REG,ALLYEAR,COM_GRP,1'                       
-COM_DESC        .'Set'.'ALL_REG,COM_GRP'                                 
-COM_FR          .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'                  
-COM_GMAP        .'Set'.'ALL_REG,COM_GRP,1'                               
-COM_GRP         .'Set'.'COM_GRP'                                         
-COM_IE          .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'                  
-COM_PEAK        .'Set'.'ALL_REG,COM_GRP'                                 
-COM_PKRSV       .'Par'.'ALL_REG,ALLYEAR,COM_GRP'                         
-COM_PROJ        .'Par'.'ALL_REG,ALLYEAR,COM_GRP'                         
-COM_TMAP        .'Set'.'ALL_REG,COM_GRP,1'                               
-COM_TSL         .'Set'.'ALL_REG,COM_GRP,1'                               
-COM_UNIT        .'Set'.'ALL_REG,COM_GRP,1'                               
-D               .'Par'.'ALLYEAR'                                         
-DATAYEAR        .'Set'.'ALLYEAR'                                         
-E               .'Par'.'ALLYEAR'                                         
-FLO_SHAR        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,ALL_TS,2'          // reorder
-G_DRATE         .'Par'.'ALL_REG,ALLYEAR,1'                               
-G_DYEAR         .'Par'.''                                               
-G_YRFR          .'Par'.'ALL_REG,ALL_TS'                                  
-IRE_PRICE       .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1,2,3'        
-M               .'Par'.'ALLYEAR'                                         
-MODLYEAR        .'Set'.'ALLYEAR'                                         
-NCAP_AF         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1'                    
-NCAP_AFA        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_BND        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_COST       .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_FOM        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-NCAP_PASTI      .'Par'.'ALL_REG,ALLYEAR,PRC'                             
-NCAP_PKCNT      .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS'                      
-NCAP_START      .'Par'.'ALL_REG,PRC'                                     
-NCAP_TLIFE      .'Par'.'ALL_REG,ALLYEAR,PRC'                             
-NRG_TMAP        .'Set'.'ALL_REG,1,COM_GRP'                               // reorder
-PASTYEAR        .'Set'.'ALLYEAR'                                         
-PRC             .'Set'.'PRC'                                             
-PRC_ACTFLO      .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP'                     
-PRC_ACTUNT      .'Set'.'ALL_REG,PRC,COM_GRP,1'                           
-PRC_CAPACT      .'Par'.'ALL_REG,PRC'                                     
-PRC_DESC        .'Set'.'ALL_REG,PRC'                                     
-PRC_MAP         .'Set'.'ALL_REG,1,PRC'                                   // reorder
-PRC_RESID       .'Par'.'ALL_REG,ALLYEAR,PRC'                             
-PRC_TSL         .'Set'.'ALL_REG,PRC,1'                                   
-PRC_VINT        .'Set'.'ALL_REG,PRC'                                     
-TOP             .'Set'.'ALL_REG,PRC,COM_GRP,1'                           
-TOP_IRE         .'Set'.'ALL_REG,COM_GRP,1,2,PRC'                         // reorder
-TS_GROUP        .'Set'.'ALL_REG,1,ALL_TS'                                // reorder
-TS_MAP          .'Set'.'ALL_REG,ALL_TS,1'                                
-UC_CAP          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC'                      // reorder
-UC_COMPRD       .'Par'.'UC_N,1,ALL_REG,ALLYEAR,COM_GRP,ALL_TS'           // reorder
-UC_FLO          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'       // reorder
-UC_N            .'Set'.'UC_N'                                            
-UC_RHSRT        .'Par'.'ALL_REG,UC_N,ALLYEAR,1'                          // reorder
-UC_RHSRTS       .'Par'.'ALL_REG,UC_N,ALLYEAR,ALL_TS,1'                   // reorder
-UC_R_EACH       .'Set'.'ALL_REG,UC_N'                                    // reorder
-VDA_EMCB        .'Par'.'ALL_REG,ALLYEAR,COM_GRP,1'
-* New with dk
-uc_r_sum        .'Set'.'UC_N,ALL_REG'
-flo_deliv       .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
-uc_ncap         .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC'
-ncap_itax       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
-ncap_chpr       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
-com_lim         .'Set'.'ALL_REG,COM_GRP,1'
-ncap_ftax       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
-flo_cost        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
-uc_act          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC,ALL_TS'
-ncap_iled       .'Par'.'ALL_REG,ALLYEAR,PRC'
-com_taxnet      .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS,1'
-vda_ceh         .'Par'.'ALL_REG,ALLYEAR,PRC'
-cap_bnd         .'Par'.'ALL_REG,ALLYEAR,PRC,1'
-uc_ire          .'Par'.'UC_N,1,ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,2'
-ncap_elife      .'Par'.'ALL_REG,ALLYEAR,PRC'
-flo_tax         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
-uc_attr         .'Set'.'ALL_REG,UC_N,1,2,3'
-g_curex         .'Par'.'1,2'
-ire_flo         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,2,ALL_TS'
-flo_sub         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
-ncap_drate      .'Par'.'ALL_REG,ALLYEAR,PRC'
-flo_emis        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,ALL_TS'
-uc_rhsts        .'Par'.'UC_N,ALLYEAR,ALL_TS,1'
-prc_noff        .'Set'.'ALL_REG,PRC,1,2'
-vda_flop        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS '
-flo_func        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,All_TS'
-uc_comnet       .'Par'.'UC_N,1,ALL_REG,ALLYEAR,COM_GRP,ALL_TS'
-ncap_isub       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
-uc_rhs          .'Par'.'UC_N,1'
-uc_t_sum        .'Set'.'ALL_REG,UC_N,ALLYEAR'
-* New with starter
-com_pkts        .'Set'.'ALL_REG,COM_GRP,ALL_TS'
-COM_BNDNET      .'Par'.'ALL_REG,ALLYEAR,COM_GRP,ALL_TS,1'
-NCAP_DISC       .'Par'.'ALL_REG,ALLYEAR,PRC,1'
-$offtext
-
-
-                
-
-
-
-
-* FF: Symbol list provided by EP (moved block with many sets to the beginning)
 ALL_REG         .'Set'.'ALL_REG'                   //FF Symbol was on old list but is missing on new list provided by EP
 REG             .'Set'.'ALL_REG'
 CUR             .'Set'.'1'
@@ -161,8 +48,25 @@ TOP_IRE         .'Set'.'ALL_REG,COM_GRP,1,2,PRC'
 *TS_GROUP        .'Set'.'ALL_REG,TSVL,ALL_TS'
 TS_GROUP        .'Set'.'ALL_REG,1,ALL_TS'                                
 *TS_MAP          .'Set'.'ALL_REG,ALL_TS,ALL_TS'
-TS_MAP          .'Set'.'ALL_REG,ALL_TS,1'  
+TS_MAP          .'Set'.'ALL_REG,ALL_TS,1'
 
+* missing symbols provided by EP on 20200623
+BS_DEMDET           .'Par'          .'ALL_REG,ALLYEAR,1,COM_GRP,ALL_TS'                 //      'Deterministic demands of reserves - EXOGEN and WMAXSI' 
+COM_TS              .'Set'          .'ALL_REG,COM_GRP,ALL_TS'                           //      'Timeslices for which a commodity is available'
+PRC_TS              .'Set'          .'ALL_REG,PRC,ALL_TS'                               //      'Timeslices for which a process is available'
+CLU                 .'Set'          .'PRC'                                              //      'Set of cluster technologies in ETL'
+DEM_SMAP            .'Set'          .'ALL_REG,1,COM_GRP'                                //      'Mapping of demands to sectors'
+ENV_MAP             .'Set'          .'ALL_REG,1,COM_GRP'                                //      'Mapping of environmental commodities to main types'
+PRC_DSCNCAP         .'Set'          .'ALL_REG,PRC'                                      //      'Set of processes modelled using the lumpy investment'
+PRC_GRP             .'Set'          .'1'                                                //      'Set of process groups'
+PRC_RCAP            .'Set'          .'ALL_REG,PRC'                                      //      'Set of processes with early retirement'
+TEG                 .'Set'          .'PRC'                                              //      'Set of processes with ETL'
+UC_T_EACH           .'Set'          .'ALL_REG,UC_N,ALLYEAR'                             //      'Indicator that a user constraint will be generated for each specified period'
+UC_T_SUCC           .'Set'          .'ALL_REG,UC_N,ALLYEAR'                             //      'Indicator that a user constraint will be generated between two successive periods t and t+1'
+UC_TS_EACH          .'Set'          .'ALL_REG,UC_N,ALL_TS'                              //      'Indicator that a user constraint will be generated for each time slice'
+UC_TS_SUM           .'Set'          .'ALL_REG,UC_N,ALL_TS'                              //      'Indicator that the user constraint will be generated by summing over the specified timeslices'
+*UC_TSL              .'Set'          .'ALL_REG,UC_N,1,TSLVL'                            //      'Indicator '
+UC_TSL              .'Set'          .'ALL_REG,UC_N,1,ALL_TS'                            //      'Indicator of the target timeslice level of a timeslice-dynamic user constraint '
 
 
 ACT_BND              .'Par'        .'ALL_REG,ALLYEAR,PRC,ALL_TS,LIM'                     //     'Bound on activity of a process' 
