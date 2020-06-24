@@ -57,6 +57,9 @@
     "cubeinput": {
       "outType": "miroPivot",
       "options": {
+	     "filter":{
+	        "typ": "set"
+	     },
         "domainFilter": {
           "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur"],
           "filterVal": "-"
@@ -67,6 +70,7 @@
     "cubeoutput": {
       "outType": "miroPivot",
       "options": {
+	    "enablePersistentViews":true,
         "domainFilter": {
           "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts"],
           "filterVal": "-"
