@@ -189,7 +189,7 @@
       "newHeaders": ["Solver", "Option ", "Value", "Comment"]
     },
     "cubeoutput": {
-      "newHeaders": ["Scenario", "Attribute", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
+      "newHeaders": ["Scenario", "Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
     }
   },
   "handsontable": {
