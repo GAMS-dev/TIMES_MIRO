@@ -235,13 +235,9 @@
 				},
 				"soname":	{
 					"type":	"string",
-					"alias":	"domain of output symbol names"
-				},
-				"all_reg":	{
-					"type":	"string",
 					"alias":	"Aliased with *"
 				},
-				"allyear":	{
+				"com_grp":	{
 					"type":	"string",
 					"alias":	"Aliased with *"
 				},
@@ -249,7 +245,15 @@
 					"type":	"string",
 					"alias":	"Aliased with *"
 				},
-				"com_grp":	{
+				"allyear":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"all_reg":	{
+					"type":	"string",
+					"alias":	"Aliased with *"
+				},
+				"vintage":	{
 					"type":	"string",
 					"alias":	"Aliased with *"
 				},
@@ -257,13 +261,9 @@
 					"type":	"string",
 					"alias":	"Aliased with *"
 				},
-				"uni":	{
+				"uc_n":	{
 					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#1":	{
-					"type":	"string",
-					"alias":	"Universal set"
+					"alias":	"Aliased with *"
 				},
 				"value":	{
 					"type":	"numeric",
