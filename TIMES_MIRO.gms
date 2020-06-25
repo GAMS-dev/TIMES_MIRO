@@ -1,9 +1,7 @@
 $eolCom //         
 set xidom          'Extraordinary input domains'  / UC_N UserConstraint, ALL_REG Region, ALLYEAR Period, PRC Process, COM_GRP Commodity, ALL_TS TimeSlice, LIM Limit Types, CUR Currencies/
-    xodom          'Extraordinary output domains' /                      ALL_REG Region, ALLYEAR Period, PRC Process, COM_GRP Commodity, ALL_TS TimeSlice/
-    typ            'symbol type'                  / 'Par', 'Set', 'Equ.l', 'Var.l' / // changes here require changes in Python code
+    typ            'symbol type'                  / 'Par', 'Set' / // changes here require changes in Python code
     siName         'domain of input symbol names'
-    soName         'domain of output symbol names'
 ;
 
 * List of TIMES input data symbols. 
@@ -326,78 +324,6 @@ VDA_EMCB        .'Par'.'ALL_REG,ALLYEAR,COM_GRP,1'                        //    
 VDA_FLOP        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'               //     	'General process transformation'
 /;
 
-Set cdOutput(soName<,typ,*) 'Cube Data' /
-*** Variables & Parameters
-'par_actl'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
-'par_actm'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
-'par_capl'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_pasti'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,1'               
-'par_capm'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_ncapl'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_ncapm'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_ncapr'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,1'               
-'f_in'         . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP,ALL_TS'
-'f_out'        . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP,ALL_TS'
-'agg_out'      . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'p_out'        . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS'  
-'par_rtcs'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comprdl'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comprdm'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comnetl'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_comnetm'  . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_eout'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'par_cumcst'   . 'par'   . 'ALL_REG,1,ALLYEAR,2,COM_GRP'         
-*** Equations                                                 
-'eqg_combal'   . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_combalem' . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'eqe_combal'   . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_combalgm' . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'eq_peak'      . 'equ.l' . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_peakm'    . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP,ALL_TS'      
-'par_ipric'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,1'
-'par_cumflol'  . 'par'   . 'ALL_REG,PRC,COM_GRP,1,ALLYEAR'       
-'par_cumflom'  . 'par'   . 'ALL_REG,PRC,COM_GRP,1,ALLYEAR'       
-*** Parameters                                                  
-'par_top'      . 'par'   . 'ALL_REG,ALLYEAR,PRC,COM_GRP,1'       
-'par_caplo'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_capup'    . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'Cap_New'      . 'par'   . 'ALL_REG,1,PRC,ALLYEAR,2'             
-*** Costs                                                       
-'cst_invc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'             
-'cst_invx'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'             
-'cst_salv'     . 'par'   . 'ALL_REG,1,PRC'                       
-'cst_decc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'               
-'cst_fixc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'               
-'cst_fixx'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC'               
-'cst_actc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,2'             
-'cst_floc'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'cst_flox'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'cst_comc'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_comx'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_come'     . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_dam'      . 'par'   . 'ALL_REG,ALLYEAR,COM_GRP'             
-'cst_irec'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'cst_pvp'      . 'par'   . '1,ALL_REG,PRC'                       
-'cst_pvc'      . 'par'   . '1,ALL_REG,COM_GRP'                  
-'cst_time'     . 'par'   . 'ALL_REG,ALLYEAR,ALL_TS,1'            
-'val_flo'      . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,COM_GRP'       
-'ObjZ'         . 'var.l' .  ''                                     
-'reg_wobj'     . 'par'   . 'ALL_REG,1,COM_GRP'                   
-'reg_obj'      . 'par'   . 'ALL_REG'                             
-'reg_irec'     . 'par'   . 'ALL_REG'                             
-'reg_acost'    . 'par'   . 'ALL_REG,ALLYEAR,1'                   
-'par_ucsl'     . 'par'   . '1,ALL_REG,ALLYEAR,ALL_TS'            
-'par_ucsm'     . 'par'   . '1,ALL_REG,ALLYEAR,ALL_TS'            
-'par_ucmrk'    . 'par'   . 'ALL_REG,ALLYEAR,1,COM_GRP,ALL_TS'    
-'par_ucrtp'    . 'par'   . '1,ALL_REG,ALLYEAR,PRC,COM_GRP'       
-'par_ucmax'    . 'par'   . '1,ALL_REG,PRC,COM_GRP'               
-*** Climate and MACRO                                 
-'CM_RESULT'    . 'par'   . 'COM_GRP,ALLYEAR'                     
-'CM_MAXC_M'    . 'par'   . 'COM_GRP,ALLYEAR'                     
-'TM_RESULT'    . 'par'   . 'COM_GRP,ALL_REG,ALLYEAR'                     
-/;
-
-
 
 $onEmbeddedCode Python:
 import os
@@ -430,12 +356,6 @@ dinput_map = { r[1]:r[0]+3 for r in zip(range(len(xidom)),gams.get('xidom')) }
 dinput_map.update({ str(i+1):i+len(xidom)+3 for i in range(max_inputExtra)})
 os.environ['CUBEINPUTDOM'] = 'siName,typ,dd,' + ','.join(list(gams.get('xidom'))) + ',*'*max_inputExtra
 
-cd_output = list(gams.get('cdOutput'))
-xodom = set(gams.get('xodom'))
-max_outputExtra = check_and_calc_extra(cd_output, xodom)
-doutput_map = { r[1]:r[0]+2 for r in zip(range(len(xodom)),gams.get('xodom')) }
-doutput_map.update({ str(i+1):i+len(xodom)+2 for i in range(max_outputExtra)})
-os.environ['CUBEOUTPUTDOM'] = 'scenario,soName,' + ','.join(list(gams.get('xodom'))) + ',*'*max_outputExtra
 $offEmbeddedCode
 $if not errorFree $stop
 
@@ -492,7 +412,8 @@ $offExternalInput
 $offEmpty
 
 $onExternalOutput
-parameter cubeOutput(%sysEnv.CUBEOUTPUTDOM%);
+alias (*,soName,Vintage)
+parameter cubeOutput(scenario,soName,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
 $offExternalOutput
 
 $ifThen "x%gams.IDCGDXInput%"=="x"
@@ -521,26 +442,30 @@ for cdRec in cd_input:
   sym = cdRec[0]
   typ = cdRec[1]
   someDD = False
+  if cdRec[2]=='':
+    dom = []
+  else:
+    dom = cdRec[2].split(',')
+  d_map = [(idx[0],dinput_map[idx[1]]) for idx in zip(range(len(dom)),dom)]
   for dd in gams.get('dd'):
     try:
       dd_sym = dd_db[dd][sym]
     except:
       if do_print: gams.printLog('No ' + sym + ' in ' + dd)
       continue
+    key = [sym,typ,dd] + ['-']*(len(xidom)+max_inputExtra)
     someDD = True
-    if cdRec[2]=='':
-      dom = []
-    else:
-      dom = cdRec[2].split(',')
+    if cdRec[0] == 'FLO_TAX':
+      gams.printLog(dd)
     if not dd_sym.dimension==len(dom):
       raise NameError('Dimension mismatch for ' + sym + ' in ' + dd + ': ' + str(dd_sym.dimension) + '<>' + str(len(dom)))
     for r in dd_sym:
-      key = [sym,typ,dd] + ['-']*(len(xidom)+max_inputExtra)
-      for idx in zip(range(dd_sym.dimension),dom):
-        key[dinput_map[idx[1]]] = r.key(idx[0])
+      rkey = r.keys
+      for idx in d_map:
+        key[idx[1]] = rkey[idx[0]]
       if cdRec[1]=='Par':
-        if do_print: gams.printLog(str(key)+' '+str(r.value))
         gams.db['cubeInput'].add_record(key).value = r.value
+        if do_print: gams.printLog(str(key)+' '+str(r.value))
       else:
         gams.db['cubeInput'].add_record(key).value = 1
         if do_print: gams.printLog(str(key))
@@ -803,31 +728,20 @@ $  endif.dryRun
 $endIf.localSolve
 
 * Collect results in cubeOutput
-$onMulti
 $log --- Collecting result for scenario %GMSRUNNAME%
+$call.checkErrorLevel gdx2veda out.gdx %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%times2veda.vdd
+$onMulti
+$oneps
 $onembeddedCode Python:
+import csv
 gams.wsWorkingDir = '.'
-do_print = False
-out = gams.ws.add_database_from_gdx('out.gdx')
-for cdRec in cd_output:
-  if cdRec[2]=='':
-    dom = []
-  else:
-    dom = cdRec[2].split(',')
-  symName = cdRec[0]
-  sym = out[symName]
-  for r in sym:
-    key = [r'%GMSRUNNAME%',symName] + ['-']*(len(xodom)+max_outputExtra)
-    for idx in zip(range(sym.dimension),dom):
-      key[doutput_map[idx[1]]] = r.key(idx[0])
-    if cdRec[1]=='Par':
-      if do_print: gams.printLog(str(key)+' '+str(r.value))
-      gams.db['cubeOutput'].add_record(key).value = r.value
-    else: # equ.l or var.L
-      if do_print: gams.printLog(str(key)+' '+str(r.level))
-      gams.db['cubeOutput'].add_record(key).value = r.level
-out.__del__() # release out.gdx
-$offembeddedCode cubeOutput
+with open('out.vd', newline='') as csvfile:
+    vddreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+    for row in vddreader:
+        if len(row)>0 and not row[0][0] == '*':
+            key = ['%GMSRUNNAME%'] + row[:-1]
+            gams.db['cubeOutput'].add_record(key).value = float(row[-1])
+$offEmbeddedCode cubeOutput
 $offMulti
 $if exist ./solve.lst $hiddencall mv -f solve.lst solve%SCENCNT%.lst
 $eval SCENCNT %SCENCNT%+1
