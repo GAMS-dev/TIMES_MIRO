@@ -412,8 +412,8 @@ $offExternalInput
 $offEmpty
 
 $onExternalOutput
-alias (*,soName,Vintage)
-parameter cubeOutput(scenario,soName,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
+alias (*,soName,sow,Vintage)
+parameter cubeOutput(scenario,soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
 $offExternalOutput
 
 $ifThen "x%gams.IDCGDXInput%"=="x"
@@ -615,6 +615,7 @@ with open('timesdriver.gms', 'a+') as td:
     for ddr in gams.get('orderactdd'):
       td.write('$batInclude ' + ddr[1] + '.dd\n')
     td.write('\nSet MILESTONYR / ' + ext['milestonyr'] + '/;\n')
+    os.environ['GMSSTAGES'] = ext.get('stages', 'no').upper()
 $offEmbeddedCode
 $onecho >> timesdriver.gms 
 $set RUN_NAME %GMSRUNNAME%
@@ -729,17 +730,26 @@ $endIf.localSolve
 
 * Collect results in cubeOutput
 $log --- Collecting result for scenario %GMSRUNNAME%
-$call.checkErrorLevel gdx2veda out.gdx %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%times2veda.vdd
+$ifThen.stages %sysEnv.GMSSTAGES% == NO
+$  call.checkErrorLevel gdx2veda out.gdx %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%times2veda.vdd
+$else.stages
+$  call.checkErrorLevel gdx2veda out.gdx %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%times2veda_stc.vdd
+$endif.stages
+
 $onMulti
 $oneps
 $onembeddedCode Python:
 import csv
 gams.wsWorkingDir = '.'
+have_stages = os.environ['GMSSTAGES'] == 'YES'
 with open('out.vd', newline='') as csvfile:
     vddreader = csv.reader(csvfile, delimiter=',', quotechar='"')
     for row in vddreader:
         if len(row)>0 and not row[0][0] == '*':
-            key = ['%GMSRUNNAME%'] + row[:-1]
+            if have_stages:
+                key = ['%GMSRUNNAME%'] + row[:-1]
+            else:
+                key = ['%GMSRUNNAME%',row[0],'-'] + row[1:-1]
             gams.db['cubeOutput'].add_record(key).value = float(row[-1])
 $offEmbeddedCode cubeOutput
 $offMulti
