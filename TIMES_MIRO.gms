@@ -404,6 +404,7 @@ set           solveropt(*,*,*) 'Solver options'                               / 
                                                                                 barcrossalg.1, barorder.2, threads.8)
                                                                                 gurobi.method.2/;
 singleton set gmsSolver(*)   'Solver for TIMES'                               / cplex /;
+singleton set gmsTIMESsrc(*) 'Location of TIME source'                        / '' '' /; // leave at '' for default
 scalar        gmsResLim      'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio      'Basis indicator'                                / 1 /;
 singleton set gmsRunOpt(*)   'Selection for local, short and long NEOS queue' / local /; // local, short, long
@@ -577,6 +578,8 @@ $if not errorFree $abort 'Errors. No point in continuing.'
 
 * Write timesdriver.gms
 $eval.set GMSSOLVER   gmsSolver.tl
+$eval.set GMSTIMESSRC gmsTIMESsrc.te
+$if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%TIMES_Demo%system.dirsep%source
 $eval     GMSRESLIM   gmsResLim   
 $eval     GMSBRATIO   gmsBRatio   
 $eval     GMSBOTIME   gmsBOTime   
@@ -624,9 +627,9 @@ $offecho
 
 * Execute timesdriver.gms
 $ifThenI.localSolve %GMSRUNOPT%==local
-$  call.checkErrorLevel gams timesdriver.gms idir1=%gams.idir1%TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 o=solve.lst gdx=out.gdx
+$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% er=99 ide=1 o=solve.lst gdx=out.gdx
 $else.localSolve
-$  call.checkErrorLevel gams timesdriver.gms idir1=%gams.idir1%TIMES_Demo%system.dirsep%source lo=%gams.lo% er=99 ide=1 a=c xs=times.g00
+$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% er=99 ide=1 a=c xs=times.g00
 $  set restartFile times.g00
 $  set wantGDX     yes
 
@@ -731,9 +734,9 @@ $endIf.localSolve
 * Collect results in cubeOutput
 $log --- Collecting result for scenario %GMSRUNNAME%
 $ifThen.stages %sysEnv.GMSSTAGES% == NO
-$  call.checkErrorLevel gdx2veda out.gdx %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%times2veda.vdd
+$  call.checkErrorLevel gdx2veda out.gdx %GMSTIMESSRC%times2veda.vdd
 $else.stages
-$  call.checkErrorLevel gdx2veda out.gdx %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%times2veda_stc.vdd
+$  call.checkErrorLevel gdx2veda out.gdx %GMSTIMESSRC%times2veda_stc.vdd
 $endif.stages
 
 $onMulti
