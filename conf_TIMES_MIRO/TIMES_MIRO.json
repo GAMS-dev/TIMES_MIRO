@@ -16,7 +16,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps", "gmsrunscenario"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps", "gmsrunscenario", "_scalars"]
   },
   "overwriteAliases": {
     "dd": {
@@ -57,9 +57,9 @@
     "cubeinput": {
       "outType": "miroPivot",
       "options": {
-	     "filter":{
-	        "typ": "set"
-	     },
+        "filter": {
+          "typ": "set"
+        },
         "domainFilter": {
           "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur"],
           "filterVal": "-"
@@ -70,7 +70,7 @@
     "cubeoutput": {
       "outType": "miroPivot",
       "options": {
-	    "enablePersistentViews":true,
+        "enablePersistentViews": true,
         "domainFilter": {
           "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts"],
           "filterVal": "-"
@@ -122,6 +122,12 @@
       "alias": "Time span adjustment",
       "value": "1960",
       "label": "Adjustment for total available time span of years available in the model"
+    },
+    "gmstimessrc": {
+      "widgetType": "textinput",
+      "alias": "Location of TIMES source",
+      "value": " ",
+      "label": "Location of TIMES source - leave blank for default location"
     },
     "gmsobj": {
       "widgetType": "dropdown",
@@ -189,9 +195,10 @@
       "newHeaders": ["Solver", "Option ", "Value", "Comment"]
     },
     "cubeoutput": {
-      "newHeaders": ["Scenario", "Symbol", "Region", "Year", "Process", "Commodity", "Time Slice", "Vintage", "User Constraint", "value"]
+      "newHeaders": ["Scenario", "Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
     }
   },
+  "extraClArgs": "debug=1492",
   "handsontable": {
     "stretchH": "none",
     "readonly": false,
@@ -207,6 +214,5 @@
     },
     "height": 700,
     "colWidths": 100
-  },
-  "extraClArgs": "debug=1492"
+  }
 }
