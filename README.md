@@ -1,11 +1,11 @@
 Table of Contents
 =================
 
-   * [TIMES_MIRO App](#times_miro-app)
+   * [TIMES MIRO App](#times_miro-app)
       * [Prerequisites](#prerequisites)
       * [Usage of the App](#usage-of-the-app)
-         * [Launch the deployed TIMES_MIRO app](#launch-the-deployed-times_miro-app)
-         * [Launch TIMES_MIRO from GAMS Studio](#launch-times_miro-from-gams-studio)
+         * [Launch the deployed TIMES MIRO app](#launch-the-deployed-times_miro-app)
+         * [Launch TIMES MIRO from GAMS Studio](#launch-times_miro-from-gams-studio)
          * [App Structure](#app-structure)
             * [Input View](#input-view)
                 * [Input Widgets](#input-widgets)
@@ -22,7 +22,7 @@ Table of Contents
       * [Code Structure](#code-structure)
    * [License](#license)
 
-# TIMES_MIRO App<a name="times_miro-app"></a>
+# TIMES MIRO App<a name="times_miro-app"></a>
 This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model.
 
 To obtain the app, including the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
@@ -41,13 +41,13 @@ In order to use the TIMES MIRO app you need
 ## Usage of the App<a name="usage-of-the-app"></a>
 The app comes with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set. Other data sets can be created from \*.dd files (see [below](#how-to-prepare-your-own-times-data-set-for-usage-with-the-app)).
 
-The TIMES_MIRO demo app can be launched in different ways.
+The TIMES MIRO demo app can be launched in different ways.
 
-### Launch the deployed TIMES_MIRO app<a name="launch-the-deployed-times_miro-app"></a>
-Download the deployed TIMES_MIRO app from https://github.com/GAMS-dev/TIMES_MIRO/releases, double click on `TIMES_MIRO.miroapp`, add the app to your MIRO Library and launch it. 
+### Launch the deployed TIMES MIRO app<a name="launch-the-deployed-times_miro-app"></a>
+Download the deployed TIMES MIRO app from https://github.com/GAMS-dev/TIMES_MIRO/releases, double click on `times_miro.miroapp`, add the app to your MIRO Library and launch it. 
 
-### Launch TIMES_MIRO from GAMS Studio<a name="launch-times_miro-from-gams-studio"></a>
-Clone this Github repository as described [above](#times_miro-app). To launch the TIMES_MIRO app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu.
+### Launch TIMES MIRO from GAMS Studio<a name="launch-times_miro-from-gams-studio"></a>
+Clone this Github repository as described [above](#times_miro-app). To launch the TIMES MIRO app, open `times_miro.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu.
 
 ![runbasemode](/static_times_miro/run_base_mode.png)
 
@@ -74,7 +74,7 @@ The Input widgets tab allows to specify some basic settings. Most of them should
 
 For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a directory separator (`\` or `/`), e.g.:
 
-![pathtosource](/static_times_miro/Times_source_folder_option.PNG)
+![pathtosource](/static_times_miro/Times_source_folder_option.png)
 
 
 Special attention also should be paid to the widget `Selection for local solve, short and long NEOS queue`: This allows to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). Submitting the model to NEOS allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license. In order to make this work properly, two minor modifications to the TIMES source have to be made (see TIMES_Model issue [#3](https://github.com/etsap-TIMES/TIMES_model/issues/3) and [#4](https://github.com/etsap-TIMES/TIMES_model/issues/4).
@@ -103,7 +103,7 @@ to
 This tab allows to browse and edit multiple combinations of dd files (and their order) that result in different scenarios.
 
 ##### Input<a name="input"></a>
-This is the central tab for browsing and editing input data. The concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Such important indices are predefined in the wrapper file `TIMES_MIRO.gms`.
+This is the central tab for browsing and editing input data. The concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Such important indices are predefined in the wrapper file `times_miro.gms`.
 Data can be browsed end edited in a table view that supports sorting and filtering:
 
 ![inputtable](/static_times_miro/input_table.png)
@@ -134,7 +134,7 @@ Once a TIMES model has been solved by clicking the *Solve Model* button, the Out
 Similar to the Input data, the concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). The cube is generated with the help of the tool [GDX2VEDA](https://www.gams.com/latest/docs/T_GDX2VEDA.html).
 Output data can be browsed in a standard table view or in a powerful pivot table. Views can be switched by the button in the upper right corner
 
-![inputcube](/static_times_miro/output_pivot.PNG =1200x603)
+![inputcube](/static_times_miro/output_pivot.png =1200x603)
 
 The output view also provides basic charting facilities. Supported chart types are:
 * bar chart
@@ -142,10 +142,10 @@ The output view also provides basic charting facilities. Supported chart types a
 * line chart
 * radar chart
 
-![inputcube](/static_times_miro/stacked_bar_chart.PNG =1200x518)
+![inputcube](/static_times_miro/stacked_bar_chart.png =1200x518)
 
 #### GAMS Interaction View<a name="gams-interaction-view"></a>
-The GAMS Interaction View is automatically focused during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the app is a combination of the lst files written when running the wrapper `TIMES_MIRO.gms` and the driver `timesdriver.gms`.
+The GAMS Interaction View is automatically focused during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the app is a combination of the lst files written when running the wrapper `times_miro.gms` and the driver `timesdriver.gms`.
 
 For more details on this view, please consult the [GAMS MIRO Documentation](https://www.gams.com/miro/start.html#miro-structure).
 
@@ -157,7 +157,7 @@ For more details on this view, please consult the [GAMS MIRO Documentation](http
 ## Code Structure<a name="code-structure"></a>
 The basic principle of the TIMES MIRO demo app is that it works as a wrapper around the existing TIME source code and the well established data handling concept that feeds the model with data via so-called *.dd files.
 
-The code sections referred to in the following overview are highlighted via corresponding comments in the wrapper file `TIMES_MIRO.gms`. Also note that there is difference between running the file through the app (this is what happens in the background when the user hits "solve") and running it through Studio. Running the file through studio is mainly useful to prepare new TIMES data sets for usage with the app. There is a placeholder in the code (search for `myData`) where new TIMES data sets can be configured. The contained TIMES_DEMO and TIMES-DK_COMETS datasets serve as documentation how to do this exactly.
+The code sections referred to in the following overview are highlighted via corresponding comments in the wrapper file `times_miro.gms`. Also note that there is difference between running the file through the app (this is what happens in the background when the user hits "solve") and running it through Studio. Running the file through studio is mainly useful to prepare new TIMES data sets for usage with the app. There is a placeholder in the code (search for `myData`) where new TIMES data sets can be configured. The contained TIMES_DEMO and TIMES-DK_COMETS datasets serve as documentation how to do this exactly.
 
 ![inputcube](/static_times_miro/code_structure.png =1200x729)
 
