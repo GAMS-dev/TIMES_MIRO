@@ -75,8 +75,6 @@ to
 *  PUT_UTILITY 'SHELL' / 'mv -f _dd_.gdx ' '%GDXPATH%%RUN_NAME%' @(Z+16) (GSECOND(F)+100):0:0 '.GDX' @(Z+14) (GMINUTE(F)+100):0:0 @(Z+12) (GHOUR(F)+100):0:0 @(Z+9) (GDAY(F)+100):0:0 "_" @(Z+7) (GMONTH(F)+100):0:0 @(Z+4) GYEAR(F):0:0 @Z '~Data_' @(Z+25) ;
 ```
 
-
-
 ##### Scenario DD File map
 This tab allows to browse and edit multiple combinations of dd files (and their order) that result in different scenarios.
 
@@ -99,7 +97,7 @@ The Timslices Tab shows the set of time slices for the current model. This is sh
 This tab allows to select the set of years for which the model will run. Those years areoften referred to as *milestone years*.
 
 ##### DD Files
-The DD Files Tab allows to specify the set of dd files and their order that should be used for the run.
+The DD Files Tab specifies a list of all dd files that is independent from scenarios.
 
 ##### TIMES Extensions
 This tab allows to enable/disable several TIMES extensions
@@ -109,17 +107,18 @@ This tab allows to change/define solver options to be used
 
 #### Output View
 Once a TIMES model has been solved by clicking the *Solve Model* button, the Output view is filled with data from that solve.
-Similar to the Input data, the concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Such important indices are predefined in the wrapper file `TIMES_MIRO.gms`.
-Output data can be browsed in a  a powerful pivot table view.
-*insert screenshot*
-In the upper right corner there is *switch view* button that allows to browse the data in table view that supports sorting and filtering.
-*insert screenshot*
+Similar to the Input data, the concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). The cube is generated with the help of the tool [GDX2VEDA](https://www.gams.com/latest/docs/T_GDX2VEDA.html).
+Output data can be browsed in a standard table view or in a powerful pivot table. Views can be switched by the button in the eupper right corner
+
+![inputcube](/pics/output_pivot.PNG?raw=true)
 
 The output view also provides basic charting facilities. Supported chart types are:
 * bar chart
 * stacked bar chart
 * line chart
 * radar chart
+
+![inputcube](/pics/stacked_bar_chart.PNG?raw=true)
 
 #### GAMS Interaction View
 The GAMS Intearction View is automatically focussed during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the App is a combination of the lst files written when running the wrapper `TIMES_MIRO.gms` and the driver `timesdriver.gms`.
