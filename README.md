@@ -123,127 +123,19 @@ The output view also provides basic charting facilities. Supported chart types a
 #### GAMS Interaction View
 The GAMS Intearction View is automatically focussed during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the App is a combination of the lst files written when running the wrapper `TIMES_MIRO.gms` and the driver `timesdriver.gms`.
 
-#### Compare Scenarios View
-*to be completed*
+For more details on this view, please consult the [GAMS MIRO Documentation](https://www.gams.com/miro/start.html#miro-structure).
 
-## Functionality
+#### Compare Scenarios View
+This view can be used to compare MIRO scenarios that are stored in the database side by side
+
+For more details on this view, please consult the [GAMS MIRO Documentation](https://www.gams.com/miro/start.html#miro-structure).
+
+## Code Structure
 The basic principle of the TIMES MIRO demo app is that it works as a wrapper around the existing TIME source code and the well established data handling concept that feeds the model with data via so-called *.dd files.
 
-*Add pic that illustrates structure*
+The code sections referred to in the following overview are highlighted via correspodning comments in the wrapper file `TIMES_MIRO.gms`. Also note that there is difference between running the file through the app (this is what happens in the background when th euser hits "solve") and running it through Studio. Running the file through studio is mainly useful to prepare new TIMES data sets for usage with the app. There is a placeholder in the code (search for `myData`) where new TIMES data sets can be configured. The contained TIMES_DEMO and TIMES-DK_COMETS datasets serve as documentation how to do this exactly.
 
-### The Driver File timesdriver.gms
-The TIMES run is controlled by a driver file. When running TIMES through the TIMES_MIRO app, the driver file `timesdriver.gms` is created automatically based on settings made in the Input View. The basic structire of this file can be described as follows
-```
-$TITLE  TIMES -- VERSION 4.1.0
-*<GAMS Options>
-option resLim=1000, profile=1, solveOpt=REPLACE, bRatio=1;
-option limRow=0, limCol=0, solPrint=OFF, solver=cplex;
-$offListing
-
-*<Create Solver Option file>
-file fslvopt / "cplex.opt" /; put fslvopt "* Generated cplex option file" /;
-$onPut
-scaind 0
-rerun YES
-iis YES
-lpmethod 4
-baralg 1
-barcrossalg 1
-barorder 2
-threads 8
-$offPut
-
-$onMulti
-*<Define Timeslices>
-set ALL_TS /
-ANNUAL
-S
-W
-SD
-SN
-WD
-WN
-/;
-
-*<Adjustment for total available time span of years available in the model>
-$set BOTIME 1960
-
-*<DD Files>
-$batInclude initsys.mod
-$batInclude initmty.mod
-$batInclude base.dd
-$batInclude newtechs.dd
-$batInclude trade_param.dd
-$batInclude dem_ref.dd
-$batInclude syssettings.dd
-$batInclude peak_rsv.dd
-$batInclude refinery.dd
-$batInclude demproj_dtcar.dd
-$batInclude uc_nuc_maxcap.dd
-$batInclude bounds-uc_wsets.dd
-
-*<Years for this model run>
-Set MILESTONYR /
-2005
-2010
-2015
-2020
-2030
-2050
-/;
-
-*<define RUN_NAME>
-$set RUN_NAME demo12
-
-*<batinclude of TIMES source code>
-$ BATINCLUDE maindrv.mod mod
-```
-
-### The Wrapper File TIMES_MIRO.gms
-This file is at the heart of the TIMES_MIRO demo app.
-* It defines and uses the extraordinary domain sets that are used in the cube view for input and output data.
-```
-set xidom          'Extraordinary input domains'  / UC_N UserConstraint, ALL_REG Region, ALLYEAR Period, PRC Process, COM_GRP Commodity, ALL_TS TimeSlice/
-    xodom          'Extraordinary output domains' /                      ALL_REG Region, ALLYEAR Period, PRC Process, COM_GRP Commodity, ALL_TS TimeSlice/
-[...]
-;
-```
-* It lists all GAMS Symbols with type and domain information that should be shown in the input data cube. The domain has to be provided in a format that lists all the *extraordinary* domain sets and replaces non-extraordinary domain sets by numbers 1,2,...
-```
-Set cdInput(siName<,typ,*) 'Cube Input Data' /
-REG             .'Set'.'ALL_REG'
-CUR             .'Set'.'1'
-UNITS           .'Set'.'1'                                               
-UNITS_ACT       .'Set'.'1'                                               
-UNITS_CAP       .'Set'.'1'                                               
-UNITS_COM       .'Set'.'1'                                               
-UNITS_MONY      .'Set'.'1'                                               
-ACT_BND         .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,1'                    
-ACT_COST        .'Par'.'ALL_REG,ALLYEAR,PRC,1'                           
-ACT_CUM         .'Par'.'ALL_REG,PRC,1,2,3'  
-[...]
-```
-There is no guarantuee that all symbols potentially used in TIMES are already contained in this list. In that case, a comprehensive error message that shows missing symbols should be given.
-
-* It lists all GAMS Symbols with type and domain information that should be shown in the output data cube. The domain has to be provided in a format that lists all the *extraordinary* domain sets and replaces non-extraordinary domain sets by numbers 1,2,...
-```
-Set cdOutput(soName<,typ,*) 'Cube Data' /
-*** Variables & Parameters
-'par_actl'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
-'par_actm'     . 'par'   . 'ALL_REG,1,ALLYEAR,PRC,ALL_TS'        
-'par_capl'     . 'par'   . 'ALL_REG,ALLYEAR,PRC'                 
-'par_pasti'    . 'par'   . 'ALL_REG,ALLYEAR,PRC,1'               
-[...]
-```
-
-* It uses embedded Python code to compute a mapping between original GAMS Symbols and the input/output data cubes shown in the TIMES_MIRO demo app
-
-* ... *to be completed* 
-
-#### How to prepare your own TIMES data set for usage with the app?
-*to be completed*
-
-
+![inputcube](/pics/code_structure.png?raw=true)
 
 # License
 The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the TIMES_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See files `TIMES_Demo\LICENSE.txt` as well as `TIMES-DK_COMETS\LICENSE` for more information.
