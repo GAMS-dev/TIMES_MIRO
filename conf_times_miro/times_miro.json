@@ -16,7 +16,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps", "gmsrunscenario"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps", "gmsrunscenario", "_scalars"]
   },
   "overwriteAliases": {
     "dd": {
@@ -70,7 +70,7 @@
     "cubeoutput": {
       "outType": "miroPivot",
       "options": {
-	    "enablePersistentViews":true,
+        "enablePersistentViews": true,
         "domainFilter": {
           "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts"],
           "filterVal": "-"
@@ -122,6 +122,12 @@
       "alias": "Time span adjustment",
       "value": "1960",
       "label": "Adjustment for total available time span of years available in the model"
+    },
+    "gmstimessrc": {
+      "widgetType": "textinput",
+      "alias": "Location of TIMES source",
+      "value": " ",
+      "label": "Location of TIMES source - leave blank for default location"
     },
     "gmsobj": {
       "widgetType": "dropdown",
@@ -192,6 +198,12 @@
       "newHeaders": ["Scenario", "Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
     }
   },
+  "extraClArgs": "debug=1492",
+  "readme": {
+    "tabTitle": "Readme",
+    "filename": "README.md",
+    "enableMath": false
+  },
   "handsontable": {
     "stretchH": "none",
     "readonly": false,
@@ -207,6 +219,5 @@
     },
     "height": 700,
     "colWidths": 100
-  },
-  "extraClArgs": "debug=1492"
+  }
 }

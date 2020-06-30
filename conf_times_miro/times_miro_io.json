@@ -81,9 +81,9 @@
 		},
 		"_scalars":	{
 			"alias":	"Input Scalars",
-			"symnames":	["gmsbotime", "gmsobj", "gmssolver", "gmsreslim", "gmsbratio", "gmsrunopt"],
-			"symtext":	["Adjustment for total available time span of years available in the model", "Choice of objective function formulations", "Solver for TIMES", "Time limit for solve", "Basis indicator", "Selection for local, short and long NEOS queue"],
-			"symtypes":	["parameter", "set", "set", "parameter", "parameter", "set"],
+			"symnames":	["gmsbotime", "gmsobj", "gmssolver", "gmstimessrc", "gmsreslim", "gmsbratio", "gmsrunopt"],
+			"symtext":	["Adjustment for total available time span of years available in the model", "Choice of objective function formulations", "Solver for TIMES", "Location of TIME source", "Time limit for solve", "Basis indicator", "Selection for local, short and long NEOS queue"],
+			"symtypes":	["parameter", "set", "set", "set", "parameter", "parameter", "set"],
 			"headers":	{
 				"scalar":	{
 					"type":	"string",
