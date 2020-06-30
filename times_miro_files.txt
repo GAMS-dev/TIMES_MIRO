@@ -143,7 +143,7 @@ TIMES_Demo/source/eqmacro.tm
 TIMES_Demo/source/mod_vars.abs
 TIMES_Demo/source/timslice.mod
 TIMES_Demo/source/eqbndcom.mod
-TIMES_MIRO.gms
+times_miro.gms
 TIMES_Demo/source/initmty.abs
 TIMES_Demo/source/init_ext.abs
 TIMES_Demo/source/pp_actef.vda
