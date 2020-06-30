@@ -39,7 +39,7 @@ In order to use the TIMES MIRO app you need
 * to install GAMS MIRO 1.1.0 or newer (https://www.gams.com/miro/download.html)
 
 ## Usage of the App
-The App comes with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set. Other data sets can be created from \*.dd files (see [below](#how-to-prepare-your-own-times-data-set-for-usage-with-the-app)).
+The app comes with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set. Other data sets can be created from \*.dd files (see [below](#how-to-prepare-your-own-times-data-set-for-usage-with-the-app)).
 
 The TIMES_MIRO demo app can be launched in different ways.
 
@@ -53,7 +53,7 @@ Clone this Github repository as described [above](#times_miro-app). To launch th
 
 ### App Structure
 After launching the app as described above, the app should open inside the browser
-The App follows the common [MIRO App Structure](https://www.gams.com/miro/start.html#miro-structure) with a navigation bar on th eleft side to switch between the following views:
+The app follows the common [MIRO App Structure](https://www.gams.com/miro/start.html#miro-structure) with a navigation bar on the left side to switch between the following views:
 * Input View
 * Output View
 * GAMS Interaction View
@@ -68,11 +68,11 @@ Finally, the menu on the left also contains a solve button that allows to start 
 The input view is organized in multiple tabs which are described below.
 
 ##### Input Widgets
-The Input widgets tab allows to specify some basic settings. Most of them should be self explaining but the two highlighted in the following screenshet are explained in detail below.
+The Input widgets tab allows to specify some basic settings. Most of them should be self explaining but the two highlighted in the following screenshot are explained in detail below.
 
 ![inputwidgets](/pics/input_widgets.png?raw=true)
 
-For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a dircetory separator (`\` or `/`), e.g.:
+For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a directory separator (`\` or `/`), e.g.:
 
 ![pathtosource](/pics/Times_source_folder_option.PNG?raw=true)
 
@@ -115,7 +115,7 @@ In the upper right corner there is *switch view* button that allows to browse th
 Currently, editing the data in the pivot table view is not supported.
 
 ##### Timeslices
-The Timslices Tab shows the set of time slices for the current model. This is shown for the sake of completeness but should not be edited.  The set of timeslices and the representation of the intra-annual resolution is preconfigured and of central to many model parameters. A re-configuration of this set would require extensive modifications in the input parameters
+The timslices Tab shows the set of time slices for the current model. This is shown for the sake of completeness but should not be edited.  The set of timeslices and the representation of the intra-annual resolution is pre-configured and of central to many model parameters. A re-configuration of this set would require extensive modifications in the input parameters
 
 ##### Years for this model run
 This tab allows to select the set of years for which the model will run. Those years areoften referred to as *milestone years*.
@@ -145,7 +145,7 @@ The output view also provides basic charting facilities. Supported chart types a
 ![inputcube](/pics/stacked_bar_chart.PNG?raw=true)
 
 #### GAMS Interaction View
-The GAMS Intearction View is automatically focussed during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the App is a combination of the lst files written when running the wrapper `TIMES_MIRO.gms` and the driver `timesdriver.gms`.
+The GAMS Interaction View is automatically focused during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the app is a combination of the lst files written when running the wrapper `TIMES_MIRO.gms` and the driver `timesdriver.gms`.
 
 For more details on this view, please consult the [GAMS MIRO Documentation](https://www.gams.com/miro/start.html#miro-structure).
 
@@ -157,7 +157,7 @@ For more details on this view, please consult the [GAMS MIRO Documentation](http
 ## Code Structure
 The basic principle of the TIMES MIRO demo app is that it works as a wrapper around the existing TIME source code and the well established data handling concept that feeds the model with data via so-called *.dd files.
 
-The code sections referred to in the following overview are highlighted via correspodning comments in the wrapper file `TIMES_MIRO.gms`. Also note that there is difference between running the file through the app (this is what happens in the background when th euser hits "solve") and running it through Studio. Running the file through studio is mainly useful to prepare new TIMES data sets for usage with the app. There is a placeholder in the code (search for `myData`) where new TIMES data sets can be configured. The contained TIMES_DEMO and TIMES-DK_COMETS datasets serve as documentation how to do this exactly.
+The code sections referred to in the following overview are highlighted via corresponding comments in the wrapper file `TIMES_MIRO.gms`. Also note that there is difference between running the file through the app (this is what happens in the background when the user hits "solve") and running it through Studio. Running the file through studio is mainly useful to prepare new TIMES data sets for usage with the app. There is a placeholder in the code (search for `myData`) where new TIMES data sets can be configured. The contained TIMES_DEMO and TIMES-DK_COMETS datasets serve as documentation how to do this exactly.
 
 ![inputcube](/pics/code_structure.png?raw=true)
 
