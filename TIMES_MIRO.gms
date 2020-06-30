@@ -579,7 +579,7 @@ $if not errorFree $abort 'Errors. No point in continuing.'
 * Write timesdriver.gms
 $eval.set GMSSOLVER   gmsSolver.tl
 $eval.set GMSTIMESSRC gmsTIMESsrc.te
-$if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%TIMES_Demo%system.dirsep%source
+$if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%
 $eval     GMSRESLIM   gmsResLim   
 $eval     GMSBRATIO   gmsBRatio   
 $eval     GMSBOTIME   gmsBOTime   
