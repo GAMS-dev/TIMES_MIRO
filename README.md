@@ -1,3 +1,27 @@
+Table of Contents
+=================
+
+   * [TIMES_MIRO App](#times_miro-app)
+      * [Prerequisites](#prerequisites)
+      * [Usage of the App](#usage-of-the-app)
+         * [Launch the deployed TIMES_MIRO app](#launch-the-deployed-times_miro-app)
+         * [Launch TIMES_MIRO from GAMS Studio](#launch-times_miro-from-gams-studio)
+         * [App Structure](#app-structure)
+            * [Input View](#input-view)
+               * [Input Widgets](#input-widgets)
+               * [Scenario DD File map](#scenario-dd-file-map)
+               * [Input](#input)
+               * [Timeslices](#timeslices)
+               * [Years for this model run](#years-for-this-model-run)
+               * [DD Files](#dd-files)
+               * [TIMES Extensions](#times-extensions)
+               * [Solver Options](#solver-options)
+            * [Output View](#output-view)
+            * [GAMS Interaction View](#gams-interaction-view)
+            * [Compare Scenarios View](#compare-scenarios-view)
+      * [Code Structure](#code-structure)
+   * [License](#license)
+
 # TIMES_MIRO App
 This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model.
 
