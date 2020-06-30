@@ -108,7 +108,7 @@ This tab allows to change/define solver options to be used
 #### Output View
 Once a TIMES model has been solved by clicking the *Solve Model* button, the Output view is filled with data from that solve.
 Similar to the Input data, the concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). The cube is generated with the help of the tool [GDX2VEDA](https://www.gams.com/latest/docs/T_GDX2VEDA.html).
-Output data can be browsed in a standard table view or in a powerful pivot table. Views can be switched by the button in the eupper right corner
+Output data can be browsed in a standard table view or in a powerful pivot table. Views can be switched by the button in the upper right corner
 
 ![inputcube](/pics/output_pivot.PNG?raw=true)
 
