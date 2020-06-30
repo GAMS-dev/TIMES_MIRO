@@ -57,9 +57,9 @@
     "cubeinput": {
       "outType": "miroPivot",
       "options": {
-        "filter": {
-          "typ": "set"
-        },
+	     "filter":{
+	        "typ": "Set"
+	     },
         "domainFilter": {
           "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur"],
           "filterVal": "-"
@@ -199,6 +199,11 @@
     }
   },
   "extraClArgs": "debug=1492",
+  "readme": {
+    "tabTitle": "Readme",
+    "filename": "README.md",
+    "enableMath": false
+  },
   "handsontable": {
     "stretchH": "none",
     "readonly": false,
