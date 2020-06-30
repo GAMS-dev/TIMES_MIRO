@@ -199,6 +199,11 @@
     }
   },
   "extraClArgs": "debug=1492",
+  "readme": {
+    "tabTitle": "Readme",
+    "filename": "README.md",
+    "enableMath": false
+  },
   "handsontable": {
     "stretchH": "none",
     "readonly": false,
