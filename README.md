@@ -1,4 +1,4 @@
-# TIMES MIRO App
+# TIMES_MIRO App
 This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model.
 
 To obtain the app, including the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
@@ -15,26 +15,25 @@ In order to use the TIMES MIRO app you need
 * to install GAMS MIRO 1.1.0 or newer (https://www.gams.com/miro/download.html)
 
 ## Usage of the App
-The App can be launched with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set.
+The App comes with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set. Other data sets can be created from \*.dd files (see [below](#how-to-prepare-your-own-times-data-set-for-usage-with-the-app)).
 
-### Launching the App
 The TIMES_MIRO demo app can be launched in different ways.
 
-#### Launch the deployed TIMES_MIRO app
-Double click on `TIMES_MIRO.miroapp`. Click on *Load Data* and select either the *demo* or the *dk* data from the database.
+### Launch the deployed TIMES_MIRO app
+Download the deployed TIMES_MIRO app from https://github.com/GAMS-dev/TIMES_MIRO/releases, double click on `TIMES_MIRO.miroapp`, add the app to your MIRO Library and launch it. 
 
-#### Launch TIMES_MIRO from GAMS Studio
-To launch the TIMES_MIRO app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu.
+### Launch TIMES_MIRO from GAMS Studio
+Clone this Github repository as described [above](#times_miro-app). To launch the TIMES_MIRO app, open `TIMES_MIRO.gms` in [GAMS Studio](https://www.gams.com/latest/docs/T_STUDIO.html) and press F8 or select *MIRO --> Run base mode* from the ribbon menu.
 
 ![runbasemode](/pics/run_base_mode.png?raw=true)
 
-### Structure of the App
+### App Structure
 After launching the app as described above, the app should open inside the browser
-The menu on the left allows to navigate between
+The App follows the common [MIRO App Structure](https://www.gams.com/miro/start.html#miro-structure) with a navigation bar on th eleft side to switch between the following views:
 * Input View
 * Output View
 * GAMS Interaction View
-* Compare Scenarios View
+* Compare Scenarios View 
 
 Furthermore it allows to load data from different data sources (e.g. the MIRO Database or a GDX file).
 Finally, the menu on the left also contains a solve button that allows to start a run based on settings and data specified in the input view.
@@ -45,7 +44,9 @@ Finally, the menu on the left also contains a solve button that allows to start 
 The input view is organized in multiple tabs which are described below.
 
 ##### Input Widgets
-The Input widgets tab allows to specify some basic settings. Most of them should be self explaining.
+The Input widgets tab allows to specify some basic settings. Most of them should be self explaining but the two highlighted in the following screenshet are explained in detail below.
+
+![inputwidgets](/pics/input_widgets.png?raw=true)
 
 For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule.
 
@@ -71,7 +72,7 @@ to
 *  PUT_UTILITY 'SHELL' / 'mv -f _dd_.gdx ' '%GDXPATH%%RUN_NAME%' @(Z+16) (GSECOND(F)+100):0:0 '.GDX' @(Z+14) (GMINUTE(F)+100):0:0 @(Z+12) (GHOUR(F)+100):0:0 @(Z+9) (GDAY(F)+100):0:0 "_" @(Z+7) (GMONTH(F)+100):0:0 @(Z+4) GYEAR(F):0:0 @Z '~Data_' @(Z+25) ;
 ```
 
-![inputwidgets](/pics/input_widgets.png?raw=true)
+
 
 ##### Scenario DD File map
 This tab allows to browse and edit multiple combinations of dd files (and their order) that result in different scenarios.
