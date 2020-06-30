@@ -48,9 +48,9 @@ The Input widgets tab allows to specify some basic settings. Most of them should
 
 ![inputwidgets](/pics/input_widgets.png?raw=true)
 
-For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||`, e.g.
+For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a dircetory separator (`\` or `/`), e.g.:
 
-![pathtosource](/pics/Times_source_folder_option.png?raw=true)
+![pathtosource](/pics/Times_source_folder_option.PNG?raw=true)
 
 
 Special attention also should be paid to the widget `Selection for local solve, short and long NEOS queue`: This allows to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). Submitting the model to NEOS allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license. In order to make this work properly, two minor modifications to the TIMES source have to be made (see TIMES_Model issue [#3](https://github.com/etsap-TIMES/TIMES_model/issues/3) and [#4](https://github.com/etsap-TIMES/TIMES_model/issues/4).
