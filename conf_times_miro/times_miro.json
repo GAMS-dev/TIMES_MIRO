@@ -58,7 +58,7 @@
       "outType": "miroPivot",
       "options": {
 	     "filter":{
-	        "typ": "set"
+	        "typ": "Set"
 	     },
         "domainFilter": {
           "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur"],
