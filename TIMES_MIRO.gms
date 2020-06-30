@@ -1,4 +1,7 @@
-$eolCom //         
+$eolCom //
+*#################################
+*#  1) INPUT CUBE CONFIGURATION  #
+*#################################
 set xidom          'Extraordinary input domains'  / UC_N UserConstraint, ALL_REG Region, ALLYEAR Period, PRC Process, COM_GRP Commodity, ALL_TS TimeSlice, LIM Limit Types, CUR Currencies/
     typ            'symbol type'                  / 'Par', 'Set' / // changes here require changes in Python code
     siName         'domain of input symbol names'
@@ -359,6 +362,13 @@ os.environ['CUBEINPUTDOM'] = 'siName,typ,dd,' + ','.join(list(gams.get('xidom'))
 $offEmbeddedCode
 $if not errorFree $stop
 
+*############################################################################################
+*#  2) LOAD DATA                                                                            #
+*#     a) if run through MIRO, the data will be loaded from the MIRO App                    #
+*#     b) if run through Studio, data specified via --DATASET will be read, a GDX file that #
+*#        can be loaded into the MIRO app will be created and then the run terminates.      #
+*############################################################################################
+
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
 set scenario 'TIMES Scenario';
 set ddorder 'Order index for DD Files' / 1*500 /;
@@ -375,7 +385,7 @@ $elseif.data %DATASET%==starter_extended
 $set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO\
 $include starterdata_extended
 $elseif.data %DATASET%==starter20200621
-$set DDPREFIX C:\Users\user\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO20200621\
+$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO20200621\
 $include starterdata20200621
 $elseif.data  %DATASET%==mydata
 * Fill in your data
@@ -417,7 +427,10 @@ alias (*,soName,sow,Vintage)
 parameter cubeOutput(scenario,soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
 $offExternalOutput
 
+*if this file is run through Studio and command line parameter is not set, the data from the *.dd files specified above will
+*be translated into a GDX file that can be imported into MIRO
 $ifThen "x%gams.IDCGDXInput%"=="x"
+* 2b) read data from *.dd files specified above
 $onecho > "%gams.scrDir%mkdd.%gams.scrExt%"
 $onmulti
 $oneps
@@ -490,6 +503,7 @@ $gdxOut _miro_gdxin_.gdx
 $unLoad
 $gdxOut
 $else
+* 2a) load data from MIRO
 $onEPS
 $onExternalInput
 $gdxIn _miro_gdxin_.gdx
@@ -521,7 +535,11 @@ $offMulti
 $set GMSRUNNAME  %sysEnv.GMSRUNNAME%
 
 
-* Write DD files
+
+*######################################
+*#  3) Write TIMES Data (*.dd filed)  #
+*######################################
+
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 gams.ws.my_eps = 0
@@ -576,7 +594,10 @@ for dd in gams.get('actdd'):
 $offEmbeddedCode
 $if not errorFree $abort 'Errors. No point in continuing.'
 
-* Write timesdriver.gms
+
+*#############################################
+*#  4) Write TIMES Driver (timesdriver.gms)  #
+*#############################################
 $eval.set GMSSOLVER   gmsSolver.tl
 $eval.set GMSTIMESSRC gmsTIMESsrc.te
 $if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%
@@ -625,10 +646,17 @@ $set RUN_NAME %GMSRUNNAME%
 $batInclude maindrv.mod mod
 $offecho
 
-* Execute timesdriver.gms
+
+*#####################################################################
+*#  5) Execute TIMES driver                                          #
+*#     a) execute locally                                            #
+*#     b) compile locally and submit workfile to NEOS for execution  # 
+*#####################################################################
+* 5a) execute locally
 $ifThenI.localSolve %GMSRUNOPT%==local
 $  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% er=99 ide=1 o=solve.lst gdx=out.gdx
 $else.localSolve
+* 5b) compile locally and submit workfile to NEOS
 $  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% er=99 ide=1 a=c xs=times.g00
 $  set restartFile times.g00
 $  set wantGDX     yes
@@ -731,7 +759,10 @@ $    hiddencall gmsunzip -qq -o solver-output%SCENCNT%.zip
 $  endif.dryRun
 $endIf.localSolve
 
-* Collect results in cubeOutput
+*###############################################
+*#  6) Collect results and prepare output cube # 
+*###############################################
+
 $log --- Collecting result for scenario %GMSRUNNAME%
 $ifThen.stages %sysEnv.GMSSTAGES% == NO
 $  call.checkErrorLevel gdx2veda out.gdx %GMSTIMESSRC%times2veda.vdd
