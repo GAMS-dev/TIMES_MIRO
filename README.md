@@ -83,9 +83,13 @@ This tab allows to browse and edit multiple combinations of dd files (and their 
 ##### Input
 This is the central tab for browsing and editing input data. The concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Such important indices are predefined in the wrapper file `TIMES_MIRO.gms`.
 Data can be browsed end edited in a table view that supports sorting and filtering:
-*insert screenshot*
+
+![inputtable](/pics/input_table.png?raw=true)
+
 In the upper right corner there is *switch view* button that allows to browse the data in a powerful pivot table view.
-*insert screenshot*
+
+![inputcube](/pics/input_cube.png?raw=true)
+
 Currently, editing the data in the pivot table view is not supported.
 
 ##### Timeslices
