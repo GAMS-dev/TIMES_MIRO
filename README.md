@@ -70,7 +70,7 @@ The input view is organized in multiple tabs which are described below.
 ##### Input Widgets<a name="input-widgets"></a>
 The Input widgets tab allows to specify some basic settings. Most of them should be self explaining but the two highlighted in the following screenshot are explained in detail below.
 
-![inputwidgets](/static_times_miro/input_widgets.png =1200x629)
+![inputwidgets](/static_times_miro/input_widgets.png)
 
 For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a directory separator (`\` or `/`), e.g.:
 
@@ -110,7 +110,7 @@ Data can be browsed end edited in a table view that supports sorting and filteri
 
 In the upper right corner there is *switch view* button that allows to browse the data in a powerful pivot table view.
 
-![inputcube](/static_times_miro/input_cube.png =1200x597)
+![inputcube](/static_times_miro/input_cube.png)
 
 Currently, editing the data in the pivot table view is not supported.
 
@@ -134,7 +134,7 @@ Once a TIMES model has been solved by clicking the *Solve Model* button, the Out
 Similar to the Input data, the concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). The cube is generated with the help of the tool [GDX2VEDA](https://www.gams.com/latest/docs/T_GDX2VEDA.html).
 Output data can be browsed in a standard table view or in a powerful pivot table. Views can be switched by the button in the upper right corner
 
-![inputcube](/static_times_miro/output_pivot.png =1200x603)
+![inputcube](/static_times_miro/output_pivot.png)
 
 The output view also provides basic charting facilities. Supported chart types are:
 * bar chart
@@ -142,7 +142,7 @@ The output view also provides basic charting facilities. Supported chart types a
 * line chart
 * radar chart
 
-![inputcube](/static_times_miro/stacked_bar_chart.png =1200x518)
+![inputcube](/static_times_miro/stacked_bar_chart.png)
 
 #### GAMS Interaction View<a name="gams-interaction-view"></a>
 The GAMS Interaction View is automatically focused during a run. It shows the log file while it is written. The log and lst file can be accessed after a run. Note that the lst file shown in the app is a combination of the lst files written when running the wrapper `times_miro.gms` and the driver `timesdriver.gms`.
@@ -159,7 +159,7 @@ The basic principle of the TIMES MIRO demo app is that it works as a wrapper aro
 
 The code sections referred to in the following overview are highlighted via corresponding comments in the wrapper file `times_miro.gms`. Also note that there is difference between running the file through the app (this is what happens in the background when the user hits "solve") and running it through Studio. Running the file through studio is mainly useful to prepare new TIMES data sets for usage with the app. There is a placeholder in the code (search for `myData`) where new TIMES data sets can be configured. The contained TIMES_DEMO and TIMES-DK_COMETS datasets serve as documentation how to do this exactly.
 
-![inputcube](/static_times_miro/code_structure.png =1200x729)
+![inputcube](/static_times_miro/code_structure.png)
 
 # License<a name="license"></a>
 The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the TIMES_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See files `TIMES_Demo\LICENSE.txt` as well as `TIMES-DK_COMETS\LICENSE` for more information.
