@@ -472,7 +472,7 @@ recordcode = 0
 extensions = []
 with open('myrun.gms','w') as frun:
   for l in rl:
-    if len(l.rstrip()) == 0:
+    if len(l.rstrip()) == 0 or l[0]=="*":
       continue
     if 'batinclude' in l.lower():
       if '_ts.dd' in l.lower():
