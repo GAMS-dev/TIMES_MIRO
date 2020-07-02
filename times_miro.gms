@@ -439,6 +439,7 @@ $offExternalOutput
 
 $eval.set DDPREFIX gmsddlocation.te
 $eval.set RUNFILE gmsrunlocation.te
+$setNames "%RUNFILE%" fp fn fe
 
 *if this file is run through Studio and command line parameter is not set, the data from the *.dd files specified above will
 *be translated into a GDX file that can be imported into MIRO
@@ -598,10 +599,12 @@ if len(miss_sym):
   printme('*** Unmapped symbols in dd files: ' + str(miss_sym))
   raise NameError('Unmapped symbols in dd files')
 $offEmbeddedCode cubeInput
-$eval.set SCENFILE gmsRunScenario.tl
-$gdxOut %SCENFILE%.gdx
+$gdxOut "%fp%%fn%.gdx"
 $unLoad
 $gdxOut
+$log ---
+$log --- Scenario exported to "%fp%%fn%.gdx". Please import into MIRO.
+$log ---
 $else
 * 2a) load data from MIRO
 $onEPS
