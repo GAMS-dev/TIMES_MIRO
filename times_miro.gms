@@ -475,8 +475,6 @@ for cdRec in cd_input:
       continue
     key = [sym,typ,dd] + ['-']*(len(xidom)+max_inputExtra)
     someDD = True
-    if cdRec[0] == 'FLO_TAX':
-      gams.printLog(dd)
     if not dd_sym.dimension==len(dom):
       raise NameError('Dimension mismatch for ' + sym + ' in ' + dd + ': ' + str(dd_sym.dimension) + '<>' + str(len(dom)))
     for r in dd_sym:
