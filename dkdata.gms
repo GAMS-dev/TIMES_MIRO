@@ -764,8 +764,6 @@ set           extensions(*,*,*) 'TIMES Extensions' / ''.(VALIDATE.NO, REDUCE.YES
                                                    XTQA.YES, VAR_UC.YES, OBLONG.YES, DAMAGE.NO, STAGES.NO, SOLVEDA.YES, DATAGDX.YES, VDA.YES, VEDAVDD.YES) /;
 singleton set gmsObj(*)       'Choice of objective function formulations' / 'AUTO' /; // ALT, AUTO, LIN, MOD, STD
 $onMulti
-$set DDPREFIX 
-$onMulti
 singleton set gmsddlocation(*)                'Location of DD files'          / '' 'TIMES-DK_COMETS/model/'/;
 singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
 $offMulti
