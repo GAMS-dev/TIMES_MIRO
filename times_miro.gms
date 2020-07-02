@@ -373,6 +373,17 @@ alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
 set scenario 'TIMES Scenario';
 set ddorder 'Order index for DD Files' / 1*500 /;
 
+$onExternalInput
+set           solveropt(*,*,*) 'Solver options'                               / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
+                                                                                barcrossalg.1, barorder.2, threads.8)
+                                                                                gurobi.method.2/;
+singleton set gmsSolver(*)   'Solver for TIMES'                               / cplex /;
+singleton set gmsTIMESsrc(*) 'Location of TIME source'                        / '' '' /; // leave at '' for default
+scalar        gmsResLim      'Time limit for solve'                           / 1000 /;
+scalar        gmsBRatio      'Basis indicator'                                / 1 /;
+singleton set gmsRunOpt(*)   'Selection for local, short and long NEOS queue' / local /; // local, short, long
+$offExternalInput
+
 $onEmpty
 $if not set DATASET $set DATASET demo
 $ifthen.data %DATASET%==dk
@@ -387,6 +398,9 @@ $include starterdata_extended
 $elseif.data %DATASET%==starter20200621
 $set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO20200621\
 $include starterdata20200621
+$elseif.data %DATASET%==swiss
+$set DDPREFIX E:\WC\TIMES_MIRO\swiss\
+$include swissdata.gms
 $elseif.data  %DATASET%==mydata
 * Fill in your data
 $onExternalInput
@@ -410,14 +424,6 @@ $offExternalInput
 $endif.data
 $onExternalInput
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%);
-set           solveropt(*,*,*) 'Solver options'                               / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
-                                                                                barcrossalg.1, barorder.2, threads.8)
-                                                                                gurobi.method.2/;
-singleton set gmsSolver(*)   'Solver for TIMES'                               / cplex /;
-singleton set gmsTIMESsrc(*) 'Location of TIME source'                        / '' '' /; // leave at '' for default
-scalar        gmsResLim      'Time limit for solve'                           / 1000 /;
-scalar        gmsBRatio      'Basis indicator'                                / 1 /;
-singleton set gmsRunOpt(*)   'Selection for local, short and long NEOS queue' / local /; // local, short, long
 * Skipped VDA DATAGDX VEDAVDD 
 $offExternalInput
 $offEmpty
