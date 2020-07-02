@@ -627,14 +627,20 @@ with open('timesdriver.gms', 'a+') as td:
         td.write(sor[1]+' '+sor[2]+'\n')
     td.write('$offPut\nputClose;\n')
     ext = {'obj':'%GMSOBJ%', 'botime':'%GMSBOTIME%', 'milestonyr':','.join(gams.get('MILESTONYR'))}
-    for er in gams.get('extensions'):
+    for er in gams.get('extensions',keyFormat=KeyFormat.FLAT, valueFormat=ValueFormat.FLAT):
       if er[0] == '':
-        ext[er[1].lower()] = er[2]
+        if er[1].lower() in ['premain','postmain']:
+          ext[er[1].lower()+er[2]] = er[3]
+        else:
+          ext[er[1].lower()] = er[2]
     for er in gams.get('extensions'):
       if er[0].lower() == '%GMSRUNNAME%'.lower():
-        ext[er[1].lower()] = er[2]
+        if er[1].lower() in ['premain','postmain']:
+          ext[er[1].lower()+er[2]] = er[3]
+        else:
+          ext[er[1].lower()] = er[2]
     for er in ext.items():
-      if not er[0].lower() == 'milestonyr':
+      if not (er[0] == 'milestonyr' or 'premain' in er[0] or 'postmain' in er[0]):
         td.write('$set '+er[0].upper() +' '+er[1]+'\n')
     td.write('$onMulti\nset ALL_TS /\n')
     for tsr in gams.get('TimeSlice'):
@@ -644,12 +650,24 @@ with open('timesdriver.gms', 'a+') as td:
       td.write('$batInclude ' + ddr[1] + '.dd\n')
     td.write('\nSet MILESTONYR / ' + ext['milestonyr'] + '/;\n')
     os.environ['GMSSTAGES'] = ext.get('stages', 'no').upper()
+    for i in range(50):
+      s = ext.get('premain'+str(i+1), '')
+      if '' == s:
+        break
+      td.write(s+'\n')
 $offEmbeddedCode
 $onecho >> timesdriver.gms 
 $set RUN_NAME %GMSRUNNAME%
 $batInclude maindrv.mod mod
 $offecho
-
+$onEmbeddedCode Python:
+with open('timesdriver.gms', 'a+') as td:
+    for i in range(50):
+      s = ext.get('postmain'+str(i+1), '')
+      if '' == s:
+        break
+      td.write(s+'\n')
+$offEmbeddedCode
 
 *#####################################################################
 *#  5) Execute TIMES driver                                          #
