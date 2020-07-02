@@ -129,6 +129,18 @@
       "value": " ",
       "label": "Location of TIMES source - leave blank for default location"
     },
+    "gmsddlocation": {
+      "widgetType": "textinput",
+      "alias": "Location of DD files (for initialization)",
+      "value": " ",
+      "label": "Location of DD files"
+    },
+    "gmsrunlocation": {
+      "widgetType": "textinput",
+      "alias": "Location of RUN file (for initialization)",
+      "value": " ",
+      "label": "Location of RUN file"
+    },
     "gmsobj": {
       "widgetType": "dropdown",
       "alias": "Objective function formulation",

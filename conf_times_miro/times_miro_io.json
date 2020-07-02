@@ -1,6 +1,48 @@
 {
 	"modelTitle":	"G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m",
 	"inputSymbols":	{
+		"solveropt":	{
+			"alias":	"Solver options",
+			"symtype":	"set",
+			"headers":	{
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#1":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#2":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"text":	{
+					"type":	"string",
+					"alias":	"Set text Solver options"
+				}
+			}
+		},
+		"_scalars":	{
+			"alias":	"Input Scalars",
+			"symnames":	["gmssolver", "gmstimessrc", "gmsreslim", "gmsbratio", "gmsrunopt", "gmsddlocation", "gmsrunlocation", "gmsbotime", "gmsobj"],
+			"symtext":	["Solver for TIMES", "Location of TIME source", "Time limit for solve", "Basis indicator", "Selection for local, short and long NEOS queue", "Location of DD files", "Location of Run file", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations"],
+			"symtypes":	["set", "set", "parameter", "parameter", "set", "set", "set", "parameter", "set"],
+			"headers":	{
+				"scalar":	{
+					"type":	"string",
+					"alias":	"Scalar Name"
+				},
+				"description":	{
+					"type":	"string",
+					"alias":	"Scalar Description"
+				},
+				"value":	{
+					"type":	"string",
+					"alias":	"Scalar Value"
+				}
+			}
+		},
 		"dd":	{
 			"alias":	"DD Files",
 			"symtype":	"set",
@@ -76,26 +118,6 @@
 				"text":	{
 					"type":	"string",
 					"alias":	"Set text Years for this model run"
-				}
-			}
-		},
-		"_scalars":	{
-			"alias":	"Input Scalars",
-			"symnames":	["gmsbotime", "gmsobj", "gmssolver", "gmstimessrc", "gmsreslim", "gmsbratio", "gmsrunopt"],
-			"symtext":	["Adjustment for total available time span of years available in the model", "Choice of objective function formulations", "Solver for TIMES", "Location of TIME source", "Time limit for solve", "Basis indicator", "Selection for local, short and long NEOS queue"],
-			"symtypes":	["parameter", "set", "set", "set", "parameter", "parameter", "set"],
-			"headers":	{
-				"scalar":	{
-					"type":	"string",
-					"alias":	"Scalar Name"
-				},
-				"description":	{
-					"type":	"string",
-					"alias":	"Scalar Description"
-				},
-				"value":	{
-					"type":	"string",
-					"alias":	"Scalar Value"
 				}
 			}
 		},
@@ -198,28 +220,6 @@
 				"value":	{
 					"type":	"numeric",
 					"alias":	"cubeinput"
-				}
-			}
-		},
-		"solveropt":	{
-			"alias":	"Solver options",
-			"symtype":	"set",
-			"headers":	{
-				"uni":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#1":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#2":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"text":	{
-					"type":	"string",
-					"alias":	"Set text Solver options"
 				}
 			}
 		}
