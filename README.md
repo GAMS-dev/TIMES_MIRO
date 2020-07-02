@@ -68,16 +68,29 @@ Finally, the menu on the left also contains a solve button that allows to start 
 The input view is organized in multiple tabs which are described below.
 
 ##### Input Widgets<a name="input-widgets"></a>
-The Input widgets tab allows to specify some basic settings. Most of them should be self explaining but the two highlighted in the following screenshot are explained in detail below.
+The Input widgets tab allows to specify some basic settings. Most of them should be self explaining but the 4 highlighted in the following screenshot are explained in detail below.
 
 ![inputwidgets](static_times_miro/input_widgets.png)
 
-For the widget `Location of TIMES source - leave blank for default location`, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a directory separator (`\` or `/`), e.g.:
+`Location of DD files` and `Location of RUN file`:
+
+These two widgets can be used to prepare a new TIMES data set for import into the app from existing \*.dd files and a \*.RUN file.
+`Location of DD files` is used to point to a directory containing a set of \*.dd files.
+`Location of RUN file` is used to point to a \*.RUN file (file extension can be different).
+These two widgets only have an impact if there is currently no other TIMES MIRO scenario is active, i.e. that for example the input tab shows no data. To close a currently active MIRO scenario, click the cross in the upper right corner (purple circle in the screenshot above).
+If the user hits "Solve Model" an input cube will be created from the \*.dd files taht can be found in the corresponding directory and a TIMES scenario will be defined by automatically extracting TIMES extensions, active \*.dd files, etc. from the \*.RUN file. Note that this approach is convenient but also fragile because if the RUN file contains unexpected content, things might fail
+
+
+`Location of TIMES source - leave blank for default location`:
+
+For this widget, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a directory separator (`\` or `/`), e.g.:
 
 ![pathtosource](static_times_miro/Times_source_folder_option.png)
 
 
-Special attention also should be paid to the widget `Selection for local solve, short and long NEOS queue`: This allows to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). Submitting the model to NEOS allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license. In order to make this work properly, two minor modifications to the TIMES source have to be made (see TIMES_Model issue [#3](https://github.com/etsap-TIMES/TIMES_model/issues/3) and [#4](https://github.com/etsap-TIMES/TIMES_model/issues/4).
+`Selection for local solve, short and long NEOS queue`:
+
+This widget allows to either solve the model locally or to submit it to the [NEOS Server for Optimization](https://neos-server.org/neos/). Submitting the model to NEOS allows to solve models that go beyond the [GAMS demo limits](https://www.gams.com/latest/docs/UG_License.html#General_Information) with a free GAMS demo license. In order to make this work properly, two minor modifications to the TIMES source have to be made (see TIMES_Model issue [#3](https://github.com/etsap-TIMES/TIMES_model/issues/3) and [#4](https://github.com/etsap-TIMES/TIMES_model/issues/4).
 
 A summary of the two required changes (assuming that the TIMES source from the default location is used):
 
