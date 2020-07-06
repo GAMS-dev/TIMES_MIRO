@@ -695,7 +695,7 @@ $if not errorFree $abort 'Errors. No point in continuing.'
 *#############################################
 $eval.set GMSSOLVER   gmsSolver.tl
 $eval.set GMSTIMESSRC gmsTIMESsrc.te
-$if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%TIMES_Demo%system.dirsep%source%system.dirsep%
+$if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%times_model%system.dirsep%
 $eval     GMSRESLIM   gmsResLim   
 $eval     GMSBRATIO   gmsBRatio   
 $eval     GMSBOTIME   gmsBOTime   
@@ -767,10 +767,10 @@ $offEmbeddedCode
 *#####################################################################
 * 5a) execute locally
 $ifThenI.localSolve %GMSRUNOPT%==local
-$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% er=99 ide=1 o=solve.lst gdx=out.gdx
+$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% filecase=2 er=99 ide=1 o=solve.lst gdx=out.gdx
 $else.localSolve
 * 5b) compile locally and submit workfile to NEOS
-$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% er=99 ide=1 a=c xs=times.g00
+$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% filecase=2 er=99 ide=1 a=c xs=times.g00
 $  set restartFile times.g00
 $  set wantGDX     yes
 
