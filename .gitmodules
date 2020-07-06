@@ -4,3 +4,6 @@
 [submodule "TIMES-DK_COMETS"]
 	path = TIMES-DK_COMETS
 	url = https://github.com/energy-modelling-club/TIMES-DK_COMETS.git
+[submodule "TIMES_model"]
+	path = times_model
+	url = https://github.com/etsap-TIMES/TIMES_model.git
