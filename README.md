@@ -25,7 +25,7 @@ Table of Contents
 # TIMES MIRO App<a name="times_miro-app"></a>
 This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model.
 
-To obtain the app, including the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
+To obtain the app, including the TIMES source from the [TIMES_model](https://github.com/etsap-TIMES/TIMES_model) repositury plus the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
 > git clone --recurse-submodules https://github.com/GAMS-dev/TIMES_MIRO.git
 
 The app allows the user to load different data sets, to set TIMES options, to manipulate input data and to analyze output data. Furthermore, the user can decide whether the model should be solved locally or submitted to the [NEOS optimization server](https://neos-server.org/neos/). 
@@ -83,7 +83,7 @@ If the user hits "Solve Model" an input cube will be created from the \*.dd file
 
 `Location of TIMES source - leave blank for default location`:
 
-For this widget, it should be noted that the default location refers to the the 'source' subdirectory that comes with the [TIMES_Demo repository](https://github.com/etsap-TIMES/TIMES_Demo) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a directory separator (`\` or `/`), e.g.:
+For this widget, it should be noted that the default location refers to the the 'times_model' subdirectory that comes with the [TIMES_Model repository](https://github.com/etsap-TIMES/TIMES_model) which is embedded as a git submodule. If another TIMES source should be used, the path to the corresponding folder can be entered to this field. Due to the implementation of this option via a [singleton set](https://www.gams.com/miro/model.html#display-sinset), the *double pipe syntax* has to be used, i.e. the path to the folder has to be entered after two pipe symbols `||` and the path needs to end with a directory separator (`\` or `/`), e.g.:
 
 ![pathtosource](static_times_miro/Times_source_folder_option.png)
 
