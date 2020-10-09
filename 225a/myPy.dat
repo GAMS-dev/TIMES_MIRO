@@ -1,0 +1,50 @@
+gams.wsWorkingDir = '.'
+gams.ws.my_eps = 0
+offeps = set(gams.get('offeps'))
+dd_txt = { dd:open(dd+'.dd','w') for dd in gams.get('actdd') }
+cube_input = gams.db['cubeInput']
+act_dd = set()
+for dd in gams.get('actdd'):
+  dd_txt[dd].write('$onEmpty\n$onEps\n$onWarning\n$set SCENARIO_NAME "' + dd + '"\n')
+  act_dd.add(dd)
+  if dd in offeps:
+    dd_txt[dd].write('$offEps\n')
+  
+last_sym = ''
+for cr in cube_input:
+  if not cr.key(2) in act_dd:
+     continue
+  if not cr.key(0)==last_sym:
+    if not last_sym=='':
+      for dd in gams.get('actdd'):
+        if dd_sym_written[dd]:
+          dd_txt[dd].write('/;\n')
+    dd_sym_written = { dd:False for dd in gams.get('actdd') }
+    last_sym = cr.key(0)
+    cdr = next(r for r in cd_input if r[0]==last_sym)
+    last_dd = ''
+    if cdr[2]=='':
+      dom = []
+    else:
+      dom = cdr[2].split(',')
+  if not cr.key(2)==last_dd:
+    last_dd = cr.key(2)
+    dd_sym_written[last_dd] = True
+    f = dd_txt[last_dd]
+    if cdr[1]=='Par':
+      f.write('Parameter ' + cdr[0] + ' /\n')
+    else: 
+      f.write('Set ' + cdr[0] + ' /\n')
+
+  keys = [cr.key(dinput_map[d]) for d in dom]
+  if len(dom):
+    f.write("'" + "'.'".join(keys) + "'")
+  if cdr[1]=='Par':
+    f.write(' ' + str(cr.value) + '\n')
+  else:
+    f.write('\n')
+
+for dd in gams.get('actdd'):
+  if dd_sym_written[dd]:
+    dd_txt[dd].write('/;\n')
+  dd_txt[dd].close()

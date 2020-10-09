@@ -1,0 +1,12 @@
+Input=times_miro.gms
+ScrDir=225a
+SysDir=C:\GAMS\win64\31.2
+CurDir=""
+ScriptNext=225a\gamsnext.cmd
+LogOption=3
+InputDir1="C:\Users\Wilms\OneDrive - uni-bonn.de\Arbeit\TIMES_MIRO"
+ExecMode=0
+Debug=1492
+LstTitleLeftAligned=1
+IDCGDXInput=_miro_gdxin_.gdx
+IDCGDXOutput=_miro_gdxout_.gdx

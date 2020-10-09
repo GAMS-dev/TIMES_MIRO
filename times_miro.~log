@@ -1,0 +1,114 @@
+--- Job times_miro.gms Start 10/09/20 09:35:26 31.2.0 r8ba6aed WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\win64\31.2\gmsprmNT.txt
+    C:\Users\Wilms\Documents\GAMS\gamsconfig.yaml
+--- GAMS Parameters defined
+    Input C:\Users\Wilms\OneDrive - uni-bonn.de\Arbeit\TIMES_MIRO\times_miro.gms
+    PageSize 0
+    ScrDir C:\Users\Wilms\OneDrive - uni-bonn.de\Arbeit\TIMES_MIRO\225b\
+    SysDir C:\GAMS\win64\31.2\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+    IDCGenerateJSON conf_times_miro/times_miro_io.json
+    IDCGenerateGDX data_times_miro/default.gdx
+GAMS 31.2.0   Copyright (C) 1987-2020 GAMS Development. All rights reserved
+Licensee: Working Student (R / Shiny Programming)        S200818/0001CN-GEN
+          GAMS Software GmbH                                         DCE804
+          C:\Users\Wilms\Documents\GAMS\gamslice.txt
+          Evaluation license: Not for commercial or production use
+--- Starting compilation
+--- times_miro.gms(362) 3 Mb
+--- Initialize embedded library embpycclib64.dll
+--- Execute embedded library embpycclib64.dll
+--- times_miro.gms(601) 3 Mb
+--- Initialize embedded library embpycclib64.dll
+--- Execute embedded library embpycclib64.dll
+--- times_miro.gms(601) 3 Mb  5 secs
+--- times_miro.gms(601) 3 Mb  5 secs--- Symbols not in any dd: ['clu', 'com_type', 'prc_grp', 'teg', 'com_lim', 'com_off', 'com_pkts', 'com_ts', 'dem_smap', 'env_map', 'prc_aoff', 'prc_dscncap', 'prc_foff', 'prc_noff', 'prc_nstts', 'prc_pkaf', 'prc_pkno', 'prc_rcap', 'prc_stgips', 'prc_stgtss', 'prc_ts', 'uc_attr', 'uc_dynbnd', 'uc_r_sum', 'uc_t_each', 'uc_t_succ', 'uc_t_sum', 'uc_ts_each', 'uc_ts_sum', 'uc_tsl', 'act_cstpl', 'act_cstrmp', 'act_cstsd', 'act_cstup', 'act_lospl', 'act_lossd', 'act_maxnon', 'act_minld', 'act_sdtime', 'act_time', 'act_ups', 'bs_bndprs', 'bs_capact', 'bs_delta', 'bs_demdet', 'bs_detwt', 'bs_lambda', 'bs_maint', 'bs_omega', 'bs_rmax', 'bs_rtype', 'bs_share', 'bs_sigma', 'bs_stime', 'cap_bnd', 'ccap0', 'ccapm', 'cluster', 'cm_co2gtc', 'cm_const', 'cm_exoforc', 'cm_history', 'cm_linfor', 'cm_maxc', 'cm_maxco2c', 'com_bndnet', 'com_bndprd', 'com_bprice', 'com_cstbal', 'com_cstnet', 'com_cstprd', 'com_cumnet', 'com_cumprd', 'com_elast', 'com_elastx', 'com_pkflx', 'com_step', 'com_subprd', 'com_taxnet', 'com_taxprd', 'com_voc', 'dam_bqty', 'dam_cost', 'dam_elast', 'dam_step', 'dam_voc', 'flo_bnd', 'flo_cost', 'flo_cum', 'flo_deliv', 'flo_emis', 'flo_fr', 'flo_func', 'flo_funcx', 'flo_mark', 'flo_pkcoi', 'flo_sub', 'flo_tax', 'g_chngmony', 'g_curex', 'g_cycle', 'g_offthd', 'g_overlap', 'gr_demfr', 'gr_endfr', 'gr_genfr', 'gr_genlev', 'gr_genmap', 'gr_thmin', 'gr_vargen', 'gr_xbnd', 'ire_bnd', 'ire_ccvt', 'ire_flo', 'ire_flosum', 'ire_tscvt', 'ire_xbnd', 'multi', 'ncap_afac', 'ncap_afc', 'ncap_afcs', 'ncap_afm', 'ncap_afs', 'ncap_afx', 'ncap_chpr', 'ncap_cled', 'ncap_com', 'ncap_cpx', 'ncap_dcost', 'ncap_delif', 'ncap_disc', 'ncap_dlag', 'ncap_dlagc', 'ncap_dlife', 'ncap_drate', 'ncap_elife', 'ncap_fdr', 'ncap_fomm', 'ncap_fomx', 'ncap_fsub', 'ncap_fsubm', 'ncap_fsubx', 'ncap_ftax', 'ncap_ftaxm', 'ncap_ftaxx', 'ncap_icom', 'ncap_iled', 'ncap_isub', 'ncap_itax', 'ncap_ocom', 'ncap_olife', 'ncap_pasty', 'ncap_semi', 'ncap_valu', 'prat', 'prc_mark', 'prc_react', 'prc_refit', 'r_curex', 'rcap_bnd', 'reg_bndcst', 'reg_cumcst', 'reg_fixt', 'rpt_opt', 's_cap_bnd', 's_cm_const', 's_cm_maxc', 's_cm_maxco2c', 's_com_cumnet', 's_com_cumprd', 's_com_fr', 's_com_proj', 's_com_tax', 's_dam_cost', 's_flo_cum', 's_flo_func', 's_ncap_afs', 's_ncap_cost', 's_uc_rhs', 's_uc_rhsr', 's_uc_rhsrt', 's_uc_rhsrts', 's_uc_rhst', 's_uc_rhsts', 's_ucobj', 'sc0', 'seg', 'shape', 'stg_chrg', 'stg_eff', 'stg_loss', 'stg_maxcyc', 'stg_sift', 'stgin_bnd', 'stgout_bnd', 'sw_lambda', 'sw_prob', 'sw_sprob', 'sw_start', 'sw_subs', 'tm_arbm', 'tm_defval', 'tm_depr', 'tm_dmtol', 'tm_esub', 'tm_expbnd', 'tm_expf', 'tm_gdp0', 'tm_gr', 'tm_ivetol', 'tm_kgdp', 'tm_kpvs', 'tm_qfac', 'tm_scale_cst', 'tm_scale_nrg', 'tm_scale_util', 'ts_cycle', 'uc_act', 'uc_actbet', 'uc_cli', 'uc_comcon', 'uc_comnet', 'uc_cumact', 'uc_cumcom', 'uc_cumflo', 'uc_flobet', 'uc_ire', 'uc_ncap', 'uc_rhs', 'uc_rhsr', 'uc_rhsrs', 'uc_rhss', 'uc_rhst', 'uc_rhsts', 'uc_time', 'uc_ucn', 'vda_ceh', 'vda_flop']
+
+--- times_miro.gms(605) 4 Mb
+---
+--- Scenario exported to "TIMES_Demo/model/demo12.gdx". Please import into MIRO.
+---
+--- times_miro.gms(608) 4 Mb
+--- Starting execution - empty program
+--- GDX File C:\Users\Wilms\OneDrive - uni-bonn.de\Arbeit\TIMES_MIRO\data_times_miro/default.gdx
+*** Status: Normal completion
+--- Job times_miro.gms Stop 10/09/20 09:35:32 elapsed 0:00:06.328
+
+Warnung in validateGraphConfig(configGraphsOut[[i]])
+ 
+  Persistent views in the MIRO Pivot renderer is an experimental feature. 
+              Do not use this feature in deployed applications, as they may break in future MIRO versions without warning!
+TRACE [2020-10-09 09:35:50] Logging facility initialised.
+DEBUG [2020-10-09 09:35:52] Database connection established.
+DEBUG [2020-10-09 09:35:52] Access Control initialised.
+INFO [2020-10-09 09:35:52] New data: 'default.gdx' is being stored in the database. Please wait a until the import is finished.
+DEBUG [2020-10-09 09:35:56] Db: Data was imported from table: '_sys_metadata_times_miro' (Db.importDataset).
+DEBUG [2020-10-09 09:35:56] Db: 6263 rows in table: '_sys_metadata_times_miro' were deleted. (Db.deleteRows)
+DEBUG [2020-10-09 09:35:57] Db: Metadata (table: '_sys_metadata_times_miro') was written to database. (Db.writeMetadata).
+DEBUG [2020-10-09 09:35:57] Db: Metadata (table: '_sys_metadata_times_miro') was added for scenario: 'default' (Scenario.writeMetadata).
+DEBUG [2020-10-09 09:35:57] Db: Data was added to table: 'timesmiro_solveropt' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:58] Db: Data was added to table: 'timesmiro_dd' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:58] Db: Data was added to table: 'timesmiro_scenddmap' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:58] Db: Data was added to table: 'timesmiro_timeslice' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:58] Db: Data was added to table: 'timesmiro_milestonyr' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:59] Db: Data was added to table: 'timesmiro_gmsrunscenario' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:59] Db: Data was added to table: 'timesmiro_extensions' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:59] Db: Data was added to table: 'timesmiro_cubeinput' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:59] Db: Data was added to table: 'timesmiro__scalars' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:35:59] Db: Data was imported from table: '_sys_scenlocks_times_miro' (Db.importDataset).
+DEBUG [2020-10-09 09:36:00] Db: Wilms: Lock was added for scenario: '1' (Scenario.lock).
+INFO [2020-10-09 09:36:00] New data: 'dk.gdx' is being stored in the database. Please wait a until the import is finished.
+DEBUG [2020-10-09 09:36:02] Scenario: '1' unlocked.
+DEBUG [2020-10-09 09:36:02] Db: 1 rows in table: '_sys_scenlocks_times_miro' were deleted. (Db.deleteRows)
+DEBUG [2020-10-09 09:36:17] Db: Data was imported from table: '_sys_metadata_times_miro' (Db.importDataset).
+DEBUG [2020-10-09 09:36:42] Db: 1364432 rows in table: '_sys_metadata_times_miro' were deleted. (Db.deleteRows)
+DEBUG [2020-10-09 09:36:42] Db: Metadata (table: '_sys_metadata_times_miro') was written to database. (Db.writeMetadata).
+DEBUG [2020-10-09 09:36:42] Db: Metadata (table: '_sys_metadata_times_miro') was added for scenario: 'dk' (Scenario.writeMetadata).
+DEBUG [2020-10-09 09:36:42] Db: Data was added to table: 'timesmiro_solveropt' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:36:43] Db: Data was added to table: 'timesmiro_dd' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:36:43] Db: Data was added to table: 'timesmiro_scenddmap' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:36:43] Db: Data was added to table: 'timesmiro_offeps' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:36:43] Db: Data was added to table: 'timesmiro_timeslice' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:36:43] Db: Data was added to table: 'timesmiro_milestonyr' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:36:43] Db: Data was added to table: 'timesmiro_gmsrunscenario' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:36:43] Db: Data was added to table: 'timesmiro_extensions' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:37:05] Db: Data was added to table: 'timesmiro_cubeinput' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:37:05] Db: Data was added to table: 'timesmiro__scalars' (Db.exportScenDataset).
+DEBUG [2020-10-09 09:37:05] Db: Data was imported from table: '_sys_scenlocks_times_miro' (Db.importDataset).
+DEBUG [2020-10-09 09:37:06] Db: Wilms: Lock was added for scenario: '2' (Scenario.lock).
+DEBUG [2020-10-09 09:37:13] Scenario: '2' unlocked.
+DEBUG [2020-10-09 09:37:13] Db: 1 rows in table: '_sys_scenlocks_times_miro' were deleted. (Db.deleteRows)
+INFO [2020-10-09 09:37:38] Session started (model: 'times_miro', user: 'Wilms', workdir: 'C:/Users/Wilms/OneDrive - uni-bonn.de/Arbeit/TIMES_MIRO').
+DEBUG [2020-10-09 09:37:38] Working directory was created: 'C:/Users/Wilms/OneDrive - uni-bonn.de/Arbeit/TIMES_MIRO'.
+DEBUG [2020-10-09 09:37:38] Db: Data was imported from table: '_sys_metadata_times_miro' (Db.importDataset).
+DEBUG [2020-10-09 09:37:48] Sidebar menu item: 'inputData' selected.
+DEBUG [2020-10-09 09:37:49] Loading and rendering scenarios: '1'.
+DEBUG [2020-10-09 09:37:49] Db: A table named: 'timesmiro_cubeoutput' does not exist in the database (Db.importDataset).
+DEBUG [2020-10-09 09:37:49] Db: Data was imported from table: 'timesmiro_solveropt' (Db.importDataset).
+DEBUG [2020-10-09 09:37:50] Db: Data was imported from table: 'timesmiro_dd' (Db.importDataset).
+DEBUG [2020-10-09 09:37:50] Db: Data was imported from table: 'timesmiro_scenddmap' (Db.importDataset).
+DEBUG [2020-10-09 09:37:50] Db: Data was imported from table: 'timesmiro_offeps' (Db.importDataset).
+DEBUG [2020-10-09 09:37:50] Db: Data was imported from table: 'timesmiro_timeslice' (Db.importDataset).
+DEBUG [2020-10-09 09:37:50] Db: Data was imported from table: 'timesmiro_milestonyr' (Db.importDataset).
+DEBUG [2020-10-09 09:37:51] Db: Data was imported from table: 'timesmiro_gmsrunscenario' (Db.importDataset).
+DEBUG [2020-10-09 09:37:51] Db: Data was imported from table: 'timesmiro_extensions' (Db.importDataset).
+DEBUG [2020-10-09 09:37:51] Db: Data was imported from table: 'timesmiro_cubeinput' (Db.importDataset).
+DEBUG [2020-10-09 09:37:51] Db: Data was imported from table: 'timesmiro__scalars' (Db.importDataset).
+DEBUG [2020-10-09 09:37:51] Db: A table named: '_sys_scripts_times_miro' does not exist in the database (Db.importDataset).
+DEBUG [2020-10-09 09:37:51] Scenario: 'New Scenario' closed.
+DEBUG [2020-10-09 09:37:53] Db: Data was imported from table: '_sys_metadata_times_miro' (Db.importDataset).
+DEBUG [2020-10-09 09:37:53] Db: Data was imported from table: '_sys_scenlocks_times_miro' (Db.importDataset).
+DEBUG [2020-10-09 09:37:53] Db: Wilms: Lock was added for scenario: '1' (Scenario.lock).
+DEBUG [2020-10-09 09:37:54] Dataset: solveropt loaded successfully (mode: scen, overwrite: FALSE)
+DEBUG [2020-10-09 09:37:55] Dataset: dd loaded successfully (mode: scen, overwrite: FALSE)
+DEBUG [2020-10-09 09:37:55] Dataset: scenddmap loaded successfully (mode: scen, overwrite: FALSE)
+DEBUG [2020-10-09 09:37:55] Dataset: timeslice loaded successfully (mode: scen, overwrite: FALSE)
+DEBUG [2020-10-09 09:37:55] Dataset: milestonyr loaded successfully (mode: scen, overwrite: FALSE)
+DEBUG [2020-10-09 09:37:55] Dataset: gmsrunscenario loaded successfully (mode: scen, overwrite: FALSE)
+DEBUG [2020-10-09 09:37:55] Dataset: extensions loaded successfully (mode: scen, overwrite: FALSE)
+DEBUG [2020-10-09 09:37:55] Dataset: cubeinput loaded successfully (mode: scen, overwrite: FALSE)
