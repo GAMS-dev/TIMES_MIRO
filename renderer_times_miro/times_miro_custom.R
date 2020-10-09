@@ -107,7 +107,7 @@ times_miroOutput <- function(id, height = NULL, options = NULL, path = NULL){
   ) 
 }
 
-renderTimes_miro <- function(input, output, session, data, options = NULL, path = NULL, ...){ 
+renderTimes_miro <- function(input, output, session, data, options = NULL, path = NULL, rendererEnv = NULL, ...){
   
   # Create inputs first
   data$PRC <- as.character(data$PRC)
@@ -173,11 +173,13 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   })
   
   # Observer
-  observeEvent(input$com_button, {
+  rendererEnv[[ns("comBtn")]] <- observe({
+    input$com_button
     updateTabsetPanel(session, "Switch", selected = "Commodity centric view")
     updateSelectInput(session, "com", selected = input$com_button)
   })
-  observeEvent(input$prc_button, {
+  rendererEnv[[ns("prcBtn")]] <- observe({
+    input$prc_button
     updateTabsetPanel(session, "Switch", selected = "Process centric view")
     updateSelectInput(session, "prc", selected = input$prc_button)
   })
@@ -255,7 +257,6 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   
   # Data in the Header
   data_prc <- reactive({
-    
     data_prc_temp <- purrr::map(col_names_header, ~ {
       string_prc <- data %>% 
         dplyr::filter(siName != "TOP", PRC == input$prc) %>% 
@@ -274,7 +275,6 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   output$data_prc <- renderTable(data_prc(), rownames = TRUE, colnames = FALSE)
   
   data_com <- reactive({
-    
     data_com_temp <- purrr::map(col_names_header, ~ {
       string_com <- data %>% 
         dplyr::filter(siName != "TOP", COM_GRP == input$com) %>% 
@@ -290,7 +290,4 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   })
   
   output$data_com <- renderTable(data_com(), rownames = TRUE, colnames = FALSE)
-  
-  
-  
 }
