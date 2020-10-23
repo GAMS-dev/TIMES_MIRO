@@ -15,7 +15,7 @@ times_miroOutput <- function(id, height = NULL, options = NULL, path = NULL){
       tabPanel("Process centric view",
                sidebarLayout(
                  sidebarPanel(
-                   uiOutput(ns("select_prc"))
+                   uiOutput(ns("sel_prc"))
                  ),
                  mainPanel(
                    fluidRow(
@@ -61,7 +61,7 @@ times_miroOutput <- function(id, height = NULL, options = NULL, path = NULL){
       tabPanel(ns("Commodity centric view"),
                sidebarLayout(
                  sidebarPanel(
-                   uiOutput(ns("select_com"))
+                   uiOutput(ns("sel_com"))
                  ),
                  mainPanel(
                    fluidRow(
@@ -109,131 +109,160 @@ times_miroOutput <- function(id, height = NULL, options = NULL, path = NULL){
 
 renderTimes_miro <- function(input, output, session, data, options = NULL, path = NULL, ...){ 
   
+  force(data)
   # Create inputs first
-  data$PRC <- as.character(data$PRC)
-  data$COM_GRP <- as.character(data$COM_GRP)
-  data$IO <- as.character(data$.i12)
+  data <- mutate_if(data, is.factor, as.character)
+  print(data)
+  print("###########################")
+  
   processes <- reactive({data %>% 
-      dplyr::filter(siName == "TOP") %>% 
-      dplyr::pull(PRC) %>% 
+      dplyr::filter(siname == "TOP") %>% 
+      dplyr::pull(prc) %>% 
       unique() %>% 
       sort()})
   
   commodities <- reactive({data %>% 
-      dplyr::filter(siName == "TOP") %>% 
-      dplyr::pull(COM_GRP) %>% 
+      dplyr::filter(siname == "TOP") %>% 
+      dplyr::pull(com_grp) %>% 
       unique() %>% 
       sort()})
   
-  output$select_prc <- renderUI({
-    selectInput("prc", 
-                "Select process",
-                processes(),
-                "")
+  output$sel_prc <- renderUI({
+    
+    selectInput(inputId = session$ns("prc"), 
+                label = "Select process",
+                choices = processes(),
+    )
+    
   })
   
-  output$select_com <- renderUI({
-    selectInput("com", 
-                "Select commodity",
-                processes(),
-                "")
+  output$sel_com <- renderUI({
+    
+    selectInput(inputId = session$ns("com"), 
+                label = "Select commodity",
+                choices = commodities(),
+    )
+    
   })
+  
+  print(session$ns("prc"))
+  print(session$ns("com"))
+  print("####################################")
+  # print(data %>% dplyr::filter(com_grp == session$ns("com")) %>% dplyr::pull(prc))
+  print("####################################")
   
   
   # Color of Letter
   cols <- c("green", "yellow", "red", "blue", "white")
-  purrr::mapping_cols_com <- sample(cols, length(LETTERS), replace = TRUE)
-  purrr::mapping_cols_prc <- sample(cols, length(LETTERS), replace = TRUE)
-  names(purrr::mapping_cols_com) <- LETTERS
-  names(purrr::mapping_cols_prc) <- LETTERS
+  mapping_cols_com <- sample(cols, length(LETTERS), replace = TRUE)
+  mapping_cols_prc <- sample(cols, length(LETTERS), replace = TRUE)
+  names(mapping_cols_com) <- LETTERS
+  names(mapping_cols_prc) <- LETTERS
   
   # Create a reactive for selected process and commodity
   prc_com_in <- reactive({
+    
+    req(input$prc)
     data %>% 
-      dplyr::filter(PRC == input$prc, IO == "IN", siName == "TOP") %>% 
-      dplyr::pull(COM_GRP)
+      dplyr::filter(prc == input$prc, uni == "IN", siname == "TOP") %>% 
+      dplyr::pull(com_grp)
+    
   })
   
   prc_com_out <- reactive({
+    
+    req(input$prc)
     data %>% 
-      dplyr::filter(PRC == input$prc, IO == "OUT", siName == "TOP") %>% 
-      dplyr::pull(COM_GRP)
+      dplyr::filter(prc == input$prc, uni == "OUT", siname == "TOP") %>% 
+      dplyr::pull(com_grp)
+    
   })
   
   com_prc_in <- reactive({
-    dplyr::data %>% 
-      dplyr::filter(COM_GRP == input$com, IO == "OUT", siName == "TOP") %>% 
-      dplyr::pull(PRC)
+    
+    req(input$com)
+    data %>% 
+      dplyr::filter(com_grp == input$com, uni == "OUT", siname == "TOP") %>% 
+      dplyr::pull(prc)
+    
   })
   
   com_prc_out <- reactive({
+    
+    req(input$com)
     data %>% 
-      dplyr::filter(COM_GRP == input$com, IO == "IN", siName == "TOP") %>% 
-      dplyr::pull(PRC)
+      dplyr::filter(com_grp == input$com, uni == "IN", siname == "TOP") %>% 
+      dplyr::pull(prc)
+    
   })
   
   # Observer
   observeEvent(input$com_button, {
+    
     updateTabsetPanel(session, "Switch", selected = "Commodity centric view")
     updateSelectInput(session, "com", selected = input$com_button)
+    
   })
+  
   observeEvent(input$prc_button, {
+    
     updateTabsetPanel(session, "Switch", selected = "Process centric view")
     updateSelectInput(session, "prc", selected = input$prc_button)
+    
   })
   
   # Render buttons
   # Processes
-  output$prc_in <- renderUI({
-    purrr::map(prc_com_in(), ~ tags$button(id = paste0("com_", .x), .x, 
-                                           onclick = paste0("Shiny.setInputValue('com_button', '", .x, "')")))
-  })
-  
-  output$prc_out <- renderUI({
-    purrr::map(prc_com_out(), ~ tags$button(id = paste0("com_", .x), .x, 
-                                            onclick = paste0("Shiny.setInputValue('com_button', '", .x, "')")))
-  })
-  
-  # Commodities
-  output$com_in <- renderUI({
-    purrr::map(com_prc_in(), ~ tags$button(id = paste0("prc_", .x), .x, 
-                                           onclick = paste0("Shiny.setInputValue('prc_button', '", .x, "')")))
-  })
-  
-  output$com_out <- renderUI({
-    purrr::map(com_prc_out(), ~ tags$button(id = paste0("prc_", .x), .x, 
-                                            onclick = paste0("Shiny.setInputValue('prc_button', '", .x, "')")))
-  })
+  # output$prc_in <- renderUI({
+  #   purrr::map(prc_com_in(), ~ tags$button(id = session$ns(paste0("com_", .x)), .x, 
+  #                                          onclick = paste0("Shiny.setInputValue('com_button', '", .x, "')")))
+  # })
+  # 
+  # output$prc_out <- renderUI({
+  #   purrr::map(prc_com_out(), ~ tags$button(id = session$ns(paste0("com_", .x)), .x, 
+  #                                           onclick = paste0("Shiny.setInputValue('com_button', '", .x, "')")))
+  # })
+  # 
+  # # Commodities
+  # output$com_in <- renderUI({
+  #   purrr::map(com_prc_in(), ~ tags$button(id = session$ns(paste0("prc_", .x)), .x, 
+  #                                          onclick = paste0("Shiny.setInputValue('prc_button', '", .x, "')")))
+  # })
+  # 
+  # output$com_out <- renderUI({
+  #   purrr::map(com_prc_out(), ~ tags$button(id = session$ns(paste0("prc_", .x)), .x, 
+  #                                           onclick = paste0("Shiny.setInputValue('prc_button', '", .x, "')")))
+  # })
   
   output$prc_in <- renderUI({
     tags$ul(purrr::map(prc_com_in(), ~ tags$li(
-      id = paste0("com_", .x), .x,
-      onclick = paste0("Shiny.setInputValue('com_button', '", .x, "', {priority: 'event'})"),
-      style = paste0("display:block; width:100%; border: 1px solid black; background: ", purrr::mapping_cols_prc[substr(.x, 1, 1)], ";"))),
+      id = session$ns(paste0("com_", .x)), .x,
+      onclick = paste0("Shiny.setInputValue('", session$ns("com_button"), "', '", .x, "', {priority: 'event'})"),
+      style = paste0("display:block; width:100%; border: 1px solid black; background: ", mapping_cols_prc[substr(.x, 1, 1)], ";"))),
       style = "list-style-type:none;")
   })
   
   output$prc_out <- renderUI({
     tags$ul(purrr::map(prc_com_out(), ~ tags$li(
       id = paste0("com_", .x), .x,
-      onclick = paste0("Shiny.setInputValue('com_button', '", .x, "', {priority: 'event'})"),
-      style = paste0("display:block; width:100%; border: 1px solid black; background: ", purrr::mapping_cols_prc[substr(.x, 1, 1)], ";"))),
+      onclick = paste0("Shiny.setInputValue('", session$ns("com_button"), "', '", .x, "', {priority: 'event'})"),,
+      style = paste0("display:block; width:100%; border: 1px solid black; background: ", mapping_cols_prc[substr(.x, 1, 1)], ";"))),
       style = "list-style-type:none;")
   })
   
   output$com_in <- renderUI({
     tags$ul(purrr::map(com_prc_in(), ~ tags$li(
       id = paste0("prc_", .x), .x,
-      onclick = paste0("Shiny.setInputValue('prc_button', '", .x, "', {priority: 'event'})"),
-      style = paste0("display:block; width:100%; border: 1px solid black; background: ", purrr::mapping_cols_com[substr(.x, 1, 1)], ";"))),
+      onclick = paste0("Shiny.setInputValue('", session$ns("prc_button"), "', '", .x, "', {priority: 'event'})"),,
+      style = paste0("display:block; width:100%; border: 1px solid black; background: ", mapping_cols_com[substr(.x, 1, 1)], ";"))),
       style = "list-style-type:none;")
   })
   
   output$com_out <- renderUI({
     tags$ul(purrr::map(com_prc_out(), ~ tags$li(
       id = paste0("prc_", .x), .x,
-      onclick = paste0("Shiny.setInputValue('prc_button', '", .x, "', {priority: 'event'})"),
-      style = paste0("display:block; width:100%; border: 1px solid black; background: ", purrr::mapping_cols_com[substr(.x, 1, 1)], ";"))),
+      onclick = paste0("Shiny.setInputValue('", session$ns("prc_button"), "', '", .x, "', {priority: 'event'})"),,
+      style = paste0("display:block; width:100%; border: 1px solid black; background: ", mapping_cols_com[substr(.x, 1, 1)], ";"))),
       style = "list-style-type:none;")
   })
   
@@ -243,11 +272,11 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   # Select data
   # Process centric view
   output$Data_prc <- renderTable(data %>% 
-                                   dplyr::filter(siName != "TOP", PRC == input$prc))
+                                   dplyr::filter(siname != "TOP", prc == input$prc))
   
   # Commodity centric view
   output$Data_com <- renderTable(data %>% 
-                                   dplyr::filter(siName != "TOP", COM_GRP == input$com))
+                                   dplyr::filter(siname != "TOP", com_grp == input$com))
   
   # Header of the flowchart
   output$prc <- renderText(input$prc)
@@ -255,10 +284,10 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   
   # Data in the Header
   data_prc <- reactive({
-    
+    req(input$prc)
     data_prc_temp <- purrr::map(col_names_header, ~ {
       string_prc <- data %>% 
-        dplyr::filter(siName != "TOP", PRC == input$prc) %>% 
+        dplyr::filter(siname != "TOP", prc == input$prc) %>% 
         dplyr::pull(.x) %>% unique()
       string_prc <- string_prc[!grepl("-", string_prc)]
       paste0(string_prc, collapse = ", ")
@@ -273,11 +302,13 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   
   output$data_prc <- renderTable(data_prc(), rownames = TRUE, colnames = FALSE)
   
+  names_header <- c("Scenario", "Sector", "Type", "Activity Unit", "Timeslice LVL")
+  col_names_header <- c("dd", "uni#2", "uni#1", "uni", "all_ts")
   data_com <- reactive({
-    
+    req(input$com)
     data_com_temp <- purrr::map(col_names_header, ~ {
       string_com <- data %>% 
-        dplyr::filter(siName != "TOP", COM_GRP == input$com) %>% 
+        dplyr::filter(siname != "TOP", com_grp == input$com) %>% 
         dplyr::pull(.x) %>% unique()
       string_com <- string_com[!grepl("-", string_com)]
       paste0(string_com, collapse = ", ")
@@ -290,7 +321,5 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   })
   
   output$data_com <- renderTable(data_com(), rownames = TRUE, colnames = FALSE)
-  
-  
   
 }

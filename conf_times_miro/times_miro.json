@@ -65,10 +65,6 @@
       },
       "height": 700
     },
-    "cubeinput": {
-      "outType": "times_miro",
-      "packages": ["dplyr", "shiny"]
-    },
     "solveropt": {
       "outType": "miroPivot",
       "height": 700,
@@ -77,6 +73,10 @@
         "pivotRenderer": "table",
         "rows": ["uni", "uni#1", "uni#2"]
       }
+    },
+    "cubeinput": {
+      "outType": "times_miro",
+      "packages": ["purrr", "dplyr"]
     }
   },
   "saveTraceFile": false,
@@ -219,15 +219,11 @@
   "handsontable": {
     "stretchH": "none",
     "readonly": false,
-    "highlightCol": true,
-    "highlightRow": true,
-    "columnSorting": true,
     "manualColumnResize": true,
     "contextMenu": {
       "enabled": true,
       "allowRowEdit": true,
-      "allowColEdit": true,
-      "allowReadOnly": false
+      "allowColEdit": true
     },
     "height": 700,
     "colWidths": 100
