@@ -153,7 +153,17 @@
     },
     "cubeinput": {
       "widgetType": "table",
-      "bigData": true
+      "tableType": "pivot",
+      "options": {
+        "enableHideEmptyCols": true,
+       "filter":{
+          "typ": "Set"
+       },
+        "domainFilter": {
+          "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur"],
+          "filterVal": "-"
+        }
+      }
     },
     "gmsrunscenario": {
       "widgetType": "dropdown",
