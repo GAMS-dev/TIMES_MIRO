@@ -32,7 +32,8 @@ times_miroOutput <- function(id, height = NULL, options = NULL, path = NULL){
                             uiOutput(ns("prc_in"))
                      ),
                      column(width = 2,
-                            icon("arrow-right")
+                        tags$div(id = ns("prc_in_arrow"),
+                          icon("arrow-right"))
                      ),
                      column(width = 2,
                             uiOutput(ns("sel_button_prc"))
@@ -197,6 +198,11 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
   })
   
   output$prc_in <- renderUI({
+    if(length(prc_com_in())){
+      showEl(session, paste0("#", ns("prc_in_arrow")))
+    }else{
+      hideEl(session, paste0("#", ns("prc_in_arrow")))
+    }
     tags$ul(lapply(prc_com_in(), function(x){
       tags$li(x,
       onclick = paste0("Shiny.setInputValue('", ns("com_button"), "', '",
@@ -240,8 +246,8 @@ renderTimes_miro <- function(input, output, session, data, options = NULL, path 
     }))
   })
   
-  output$sel_button_prc <- renderUI(actionButton(ns("sel_button_prc"), input$prc))
-  output$sel_button_com <- renderUI(actionButton(ns("sel_button_com"), input$com))
+  output$sel_button_prc <- renderUI(tags$div(style = "border: 2px solid black;padding: 5px;text-align: center;", input$prc))
+  output$sel_button_com <- renderUI(tags$div(style = "border: 2px solid black;padding: 5px;text-align: center;", input$com))
   
   # Select data
   # Process centric view
