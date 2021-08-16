@@ -3,9 +3,9 @@
   "excelIncludeMeta": true,
   "excelIncludeEmptySheets": true,
   "autoGenInputGraphs": true,
-  "pageTitle": "TIMES MIRO Demo App",
+  "pageTitle": "TIMES MIRO App",
   "storeLogFilesDuration": 7,
-  "defCompMode": "split",
+  "defCompMode": "pivot",
   "activateModules": {
     "loadLocal": true,
     "logFile": true,
@@ -16,7 +16,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "offeps", "gmsrunscenario", "_scalars"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt"]
   },
   "overwriteAliases": {
     "dd": {
@@ -51,32 +51,63 @@
     },
     "gmsrunscenario": {
       "newAlias": "Selected scenario"
+    },
+    "gmssolver": {
+      "newAlias": "Solver for TIMES"
+    },
+    "gmstimessrc": {
+      "newAlias": "Location of TIME source"
+    },
+    "gmsreslim": {
+      "newAlias": "Time limit for solve"
+    },
+    "gmsbratio": {
+      "newAlias": "Basis indicator"
+    },
+    "gmsrunopt": {
+      "newAlias": "Selection for local, short and long NEOS queue"
+    },
+    "gmsddlocation": {
+      "newAlias": "Location of DD files"
+    },
+    "gmsrunlocation": {
+      "newAlias": "Location of Run file"
+    },
+    "gmsbotime": {
+      "newAlias": "Adjustment for total available time span of years available in the model"
+    },
+    "gmsobj": {
+      "newAlias": "Choice of objective function formulations"
     }
   },
   "dataRendering": {
     "cubeinput": {
-      "outType": "miroPivot",
-      "options": {
-	     "filter":{
-	        "typ": "Set"
-	     },
-        "domainFilter": {
-          "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur"],
-          "filterVal": "-"
-        }
-      },
-      "height": 700
+      "outType": "mirorenderer_cubeinput"
     },
     "cubeoutput": {
       "outType": "miroPivot",
+      "height": 700,
       "options": {
-        "enablePersistentViews": true,
-        "domainFilter": {
-          "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts"],
-          "filterVal": "-"
-        }
-      },
-      "height": 700
+        "aggregationFunction": "count",
+        "pivotRenderer": "table",
+        "enableHideEmptyCols": true,
+        "hideEmptyCols": true,
+        "emptyUEL": "-",
+        "rows": ["scenario", "soname", "sow", "com_grp", "prc", "allyear", "all_reg", "vintage", "all_ts", "uc_n"]
+      }
+    },
+    "solveropt": {
+      "outType": "miroPivot",
+      "height": 700,
+      "options": {
+        "aggregationFunction": "count",
+        "pivotRenderer": "table",
+        "enableHideEmptyCols": false,
+        "hideEmptyCols": false,
+        "hidePivotControls": false,
+        "emptyUEL": "-",
+        "rows": ["uni", "uni#1", "uni#2"]
+      }
     }
   },
   "saveTraceFile": false,
@@ -153,7 +184,19 @@
     },
     "cubeinput": {
       "widgetType": "table",
-      "bigData": true
+      "tableType": "pivot",
+      "options": {
+        "enableHideEmptyCols": true,
+        "hideEmptyCols": true,
+        "emptyUEL": "-",
+        "filter": {
+          "typ": "Set"
+        },
+        "domainFilter": {
+          "domains": ["uc_n", "all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur"],
+          "filterVal": "-"
+        }
+      }
     },
     "gmsrunscenario": {
       "widgetType": "dropdown",
@@ -210,24 +253,25 @@
       "newHeaders": ["Scenario", "Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
     }
   },
-  "extraClArgs": "debug=1492",
+  "extraClArgs": ["debug=1492"],
   "readme": {
     "tabTitle": "Readme",
     "filename": "README.md",
     "enableMath": false
   },
+  "defaultRendererOutput": "miroPivot",
+  "pivotCompSettings": {
+    "enableHideEmptyCols": true,
+    "emptyUEL": "-"
+  },
   "handsontable": {
     "stretchH": "none",
     "readonly": false,
-    "highlightCol": true,
-    "highlightRow": true,
-    "columnSorting": true,
     "manualColumnResize": true,
     "contextMenu": {
       "enabled": true,
       "allowRowEdit": true,
-      "allowColEdit": true,
-      "allowReadOnly": false
+      "allowColEdit": true
     },
     "height": 700,
     "colWidths": 100
