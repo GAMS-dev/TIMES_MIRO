@@ -26,8 +26,12 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                   max-width: 100%;
               }
               .custom-css .flow-chart {
-                  margin: 30pt 0 30pt 0;
+                  margin: 10px 25pt 30pt 0;
                   min-height:250px;
+                  padding-left: 50px;
+                  padding-right: 50px;
+                  background-color: #f1f1f18f;
+                  box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 10%);
               }
               .custom-css .side-padding{
                   padding-left: 15px;
@@ -40,31 +44,49 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                 border-radius: 20px;
                 padding: 5px;
                 display: block;
-                background-color: #fff;
                 box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
                 margin: 4px 3px;
                 border: 1px solid;
                 cursor: pointer;
+                color: #1d2121;
+              }
+              .node-el {
+                 border: 2px solid black;
+                 padding: 5px;
+                 text-align: center;
+                 background-color: #fff;
+              }
+              .flow-arrow {
+                  text-align: center;
+                  font-size:40px;
               }
               @media (prefers-color-scheme:dark){
-                  .custom-css .com-proc-item {
+                  .custom-css .com-proc-item,
+                  .node-el {
                       background-color: #393e46;
+                  }
+                  .custom-css .flow-chart {
+                      background-color: #4e545d;
+                  }
+                  .flow-arrow {
+                      color: #1d2121;
                   }
               }
               .custom-css .com-proc-item:hover {
                   background-color: #e7e7e7;
                   border-color: #adadad;
-                  color: #000;
+                  color: #1d2121;
                   transition: all .5s ease;
               }
               .flow-item-list {
-                  background-color: #f1f1f18f;
-                  box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 10%);
                   padding: 5px;
               }
               .custom-list {
                 margin: 0;
                 padding: 0;
+              }
+              .flow-row {
+                  margin: 10pt 0 35pt 0;
               }
               ")
     )
@@ -79,38 +101,47 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
              tabPanel("Process centric view", value = "tp_prc", style = "position:relative;",
                       icon = icon("cogs"),
                       tags$div(class = "small-space"),
-                      fluidRow(class = "row-custom", 
-                        column(3, 
-                               selectInput(ns("sel_prc"), "Select process",
-                                           choices = c())
+                      
+                      fluidRow(class = "row-custom", style = "margin-top: 5pt;",
+                               column(9, 
+                                      fluidRow(class="row-custom", 
+                                                      selectInput(ns("sel_prc"), "Select process",
+                                                                  choices = c(), width = "350px")
+                                               )        
+                                      ),
+                               column(3, id = ns("ddInfoProc"), 
+                                      style = "float:right;",
+                                      h3(style = "margin-top:0;",
+                                         textOutput(ns("selectedProcess"))),
+                                      h4(textOutput(ns("processDesc")))
+                               )
+                      ),
+                      fluidRow(class = "flow-row",
+                        column(9, 
+                               # Process View. Flowchart
+                               fluidRow(id = ns("flowChartProc2"), 
+                                        class = "align-items-center flow-chart side-padding",
+                                        column(width = 4, class = "flow-item-list",
+                                               uiOutput(ns("prc_in"))
+                                        ),
+                                        column(width = 1, class = "flow-arrow", 
+                                               icon("long-arrow-alt-right")
+                                        ),
+                                        column(width = 2, 
+                                               uiOutput(ns("sel_button_prc"))
+                                        ),
+                                        column(width = 1, class = "flow-arrow", 
+                                               icon("long-arrow-alt-right")
+                                        ),
+                                        column(width = 4, class = "flow-item-list",
+                                               uiOutput(ns("prc_out"))
+                                        )
+                               )        
                         ),
-                        column(4, id = ns("ddInfoProc"), 
+                        column(3, id = ns("ddInfoProc2"), 
                                style = "float:right;",
-                               h3(style = "margin-top:0;",
-                                  textOutput(ns("selectedProcess"))),
-                               h4(textOutput(ns("processDesc"))),
                                dataTableOutput(ns("ddInfoPrc"))
                         )
-                      ),
-                      # Process View. Flowchart
-                      fluidRow(id = ns("flowChartProc"), 
-                               class = "align-items-center flow-chart side-padding",
-                               column(width = 3, class = "flow-item-list",
-                                      uiOutput(ns("prc_in"))
-                               ),
-                               column(width = 2, style = "text-align: center;",
-                                      tags$div(id = ns("prc_in_arrow"), style = "font-size:40px;", 
-                                               icon("long-arrow-alt-right"))
-                               ),
-                               column(width = 2,
-                                      uiOutput(ns("sel_button_prc"))
-                               ),
-                               column(width = 2, style = "text-align: center; font-size:40px;",
-                                      icon("long-arrow-alt-right")
-                               ),
-                               column(width = 3, class = "flow-item-list",
-                                      uiOutput(ns("prc_out"))
-                               )
                       ),
                       # Data View process
                       fluidRow(class = "row-custom side-padding",
@@ -121,36 +152,45 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
              tabPanel("Commodity centric view", value = "tp_com", style = "position:relative;",
                       icon = icon("coins"),
                       tags$div(class = "small-space"),
-                      fluidRow(class = "row-custom",
-                        column(3, 
-                               selectInput(ns("sel_com"), "Select commodity",
-                                           choices = c())
-                        ),
-                        column(4,  id = ns("ddInfoCom"), 
-                               style = "float:right;",
-                               h3(style = "margin-top:0;",
-                                  textOutput(ns("selectedCommodity"))),
-                               h4(textOutput(ns("commodityDesc"))),
-                               dataTableOutput(ns("ddInfoCom"))
-                        )
+                      fluidRow(class = "row-custom", style = "margin-top: 5pt;",
+                               column(9, 
+                                      fluidRow(class="row-custom", 
+                                               selectInput(ns("sel_com"), "Select commodity",
+                                                           choices = c(), width = "350px")
+                                      )        
+                               ),
+                               column(3, id = ns("ddInfoCom"), 
+                                      style = "float:right;",
+                                      h3(style = "margin-top:0;",
+                                         textOutput(ns("selectedCommodity"))),
+                                      h4(textOutput(ns("commodityDesc")))
+                               )
                       ),
-                      # Commodity View. Flowchart
-                      fluidRow(id = ns("flowChartCom"), 
-                               class = "align-items-center flow-chart side-padding",
-                               column(width = 3, class = "flow-item-list",
-                                      uiOutput(ns("com_in"))
+                      fluidRow(class = "flow-row",
+                               column(9, 
+                                      # Commodity View. Flowchart
+                                      fluidRow(id = ns("flowChartCom2"), 
+                                               class = "align-items-center flow-chart side-padding",
+                                               column(width = 4, class = "flow-item-list",
+                                                      uiOutput(ns("com_in"))
+                                               ),
+                                               column(width = 1, class = "flow-arrow", 
+                                                      icon("long-arrow-alt-right")
+                                               ),
+                                               column(width = 2,
+                                                      uiOutput(ns("sel_button_com"))
+                                               ),
+                                               column(width = 1, class = "flow-arrow", 
+                                                      icon("long-arrow-alt-right")
+                                               ),
+                                               column(width = 4, class = "flow-item-list",
+                                                      uiOutput(ns("com_out"))
+                                               )
+                                      )        
                                ),
-                               column(width = 2, style = "text-align: center;font-size:40px;",
-                                      icon("long-arrow-alt-right")
-                               ),
-                               column(width = 2,
-                                      uiOutput(ns("sel_button_com"))
-                               ),
-                               column(width = 2, style = "text-align: center;font-size:40px;",
-                                      icon("long-arrow-alt-right")
-                               ),
-                               column(width = 3, class = "flow-item-list",
-                                      uiOutput(ns("com_out"))
+                               column(3, id = ns("ddInfoCom2"), 
+                                      style = "float:right;",
+                                      dataTableOutput(ns("ddInfoCom"))
                                )
                       ),
                       # Data commodity view
@@ -331,8 +371,8 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     }
   })
   
-  output$sel_button_prc <- renderUI(tags$div(style = "border: 2px solid black;padding: 5px;text-align: center;", input$sel_prc))
-  output$sel_button_com <- renderUI(tags$div(style = "border: 2px solid black;padding: 5px;text-align: center;", input$sel_com))
+  output$sel_button_prc <- renderUI(tags$div(class = "node-el", input$sel_prc))
+  output$sel_button_com <- renderUI(tags$div(class = "node-el", input$sel_com))
   
   # Select data
   # Process-centric view data table
@@ -392,7 +432,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   output$ddInfoPrc <- renderDataTable({
     req(input$sel_prc, !identical(input$sel_prc, "All"))
 
-    print(noTopData %>% dplyr::filter(prc == input$sel_prc))
     data_prc_temp <- noTopData %>% dplyr::filter(prc == input$sel_prc)
 
     scen <- data_prc_temp %>% dplyr::pull("dd") %>% unique()
@@ -450,18 +489,17 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       add_row(key = "Vintage", value = paste(vintage, collapse = ", ")) %>%
       add_row(key = "PCG", value = paste(pcg, collapse = ", ")) %>%
       add_row(key = "Region", value = paste(region, collapse = ", "))
-    print(tableData)
     
     tableObj <- DT::datatable(tableData, rownames = FALSE, colnames = c("", ""),
                               class = "compact", 
                               options = list(pageLength = 15,
                                              dom = 't', bSort=FALSE,
                                              autoWidth = FALSE,
-                                             columnDefs = list(list(width = '25%', 
+                                             columnDefs = list(list(width = '30%', 
                                                                     targets = c(0)), 
-                                                               list(width = '75%', 
+                                                               list(width = '70%', 
                                                                     targets = c(1))))) %>%
-      DT::formatStyle(names(tableData),lineHeight='80%') 
+      DT::formatStyle(names(tableData),lineHeight='95%') 
     return(tableObj)
   })
   
@@ -512,11 +550,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                               class = "compact", 
                               options = list(dom = 't', bSort=FALSE,
                                              autoWidth = FALSE,
-                                             columnDefs = list(list(width = '25%', 
+                                             columnDefs = list(list(width = '30%', 
                                                                     targets = c(0)), 
-                                                               list(width = '75%', 
+                                                               list(width = '70%', 
                                                                     targets = c(1))))) %>%
-      DT::formatStyle(names(tableData),lineHeight='80%') 
+      DT::formatStyle(names(tableData),lineHeight='95%') 
     return(tableObj)
   })
   
@@ -525,9 +563,13 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(identical(input$sel_prc, "All")){
       hideEl(session, paste0("#", session$ns("flowChartProc")))
       hideEl(session, paste0("#", session$ns("ddInfoProc")))
+      hideEl(session, paste0("#", session$ns("flowChartProc2")))
+      hideEl(session, paste0("#", session$ns("ddInfoProc2")))
     }else{
       showEl(session, paste0("#", session$ns("flowChartProc")))
       showEl(session, paste0("#", session$ns("ddInfoProc")))
+      showEl(session, paste0("#", session$ns("flowChartProc2")))
+      showEl(session, paste0("#", session$ns("ddInfoProc2")))
     }
   })
   observeEvent(input$sel_com, {
@@ -535,9 +577,13 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(identical(input$sel_com, "All")){
       hideEl(session, paste0("#", session$ns("flowChartCom")))
       hideEl(session, paste0("#", session$ns("ddInfoCom")))
+      hideEl(session, paste0("#", session$ns("flowChartCom2")))
+      hideEl(session, paste0("#", session$ns("ddInfoCom2")))
     }else{
       showEl(session, paste0("#", session$ns("flowChartCom")))
       showEl(session, paste0("#", session$ns("ddInfoCom")))
+      showEl(session, paste0("#", session$ns("flowChartCom2")))
+      showEl(session, paste0("#", session$ns("ddInfoCom2")))
     }
   })
 }
