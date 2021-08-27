@@ -1,5 +1,5 @@
 mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path = NULL){
-  ns <- NS(id)
+    ns <- NS(id)
   
   # set default height
   if(is.null(height)){
@@ -26,8 +26,10 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                   max-width: 100%;
               }
               .custom-css .flow-chart {
-                  margin: 10px 25pt 30pt 0;
                   min-height:250px;
+              }
+              .custom-css .flow-chart-outer {
+                  margin: 10px 25pt 30pt 0;
                   padding-left: 50px;
                   padding-right: 50px;
                   background-color: #f1f1f18f;
@@ -49,12 +51,14 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                 border: 1px solid;
                 cursor: pointer;
                 color: #1d2121;
+                overflow-wrap: break-word;
               }
               .node-el {
                  border: 2px solid black;
                  padding: 5px;
                  text-align: center;
                  background-color: #fff;
+                 overflow-wrap: break-word;
               }
               .flow-arrow {
                   text-align: center;
@@ -86,7 +90,20 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                 padding: 0;
               }
               .flow-row {
-                  margin: 10pt 0 35pt 0;
+                margin: 10pt 0 35pt 0;
+              }
+              .legend-row {
+                padding-top: 25pt;
+                text-align: center;
+              }
+              .legend-row ul {
+                display: inline;
+              }
+              .legend-row .legend-item {
+                line-height: 10px;
+                cursor: auto;
+                padding: 5px 15px;
+                display: inline-block;
               }
               ")
     )
@@ -119,24 +136,31 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       fluidRow(class = "flow-row",
                         column(9, 
                                # Process View. Flowchart
-                               fluidRow(id = ns("flowChartProc2"), 
-                                        class = "align-items-center flow-chart side-padding",
-                                        column(width = 4, class = "flow-item-list",
+                               fluidRow(id = ns("flowChartProc2"), class = "flow-chart-outer",
+                                        fluidRow(class = "align-items-center flow-chart side-padding",
+                                        column(width = 4,
+                                               class = "flow-item-list",
                                                uiOutput(ns("prc_in"))
                                         ),
-                                        column(width = 1, class = "flow-arrow", 
-                                               icon("long-arrow-alt-right")
+                                        column(width = 1, 
+                                               class = "flow-arrow", 
+                                               tags$div(id = ns("prc_in_arrow"), 
+                                                        icon("long-arrow-alt-right"))
                                         ),
                                         column(width = 2, 
                                                uiOutput(ns("sel_button_prc"))
                                         ),
-                                        column(width = 1, class = "flow-arrow", 
-                                               icon("long-arrow-alt-right")
+                                        column(width = 1, class = "flow-arrow",
+                                               tags$div(id = ns("prc_out_arrow"), 
+                                                        icon("long-arrow-alt-right"))
                                         ),
                                         column(width = 4, class = "flow-item-list",
                                                uiOutput(ns("prc_out"))
-                                        )
-                               )        
+                                        )),
+                                        fluidRow(class = "legend-row side-padding",
+                                          uiOutput(ns("prcViewLegend"))
+                                        )  
+                               )      
                         ),
                         column(3, id = ns("ddInfoProc2"), 
                                style = "float:right;",
@@ -145,7 +169,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       ),
                       # Data View process
                       fluidRow(class = "row-custom side-padding",
-                               dataTableOutput(ns("data_prc")),
+                               dataTableOutput(ns("data_prc"))
                       )),
              
              # Commodity Tab
@@ -169,24 +193,30 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       fluidRow(class = "flow-row",
                                column(9, 
                                       # Commodity View. Flowchart
-                                      fluidRow(id = ns("flowChartCom2"), 
-                                               class = "align-items-center flow-chart side-padding",
-                                               column(width = 4, class = "flow-item-list",
-                                                      uiOutput(ns("com_in"))
-                                               ),
-                                               column(width = 1, class = "flow-arrow", 
-                                                      icon("long-arrow-alt-right")
-                                               ),
-                                               column(width = 2,
-                                                      uiOutput(ns("sel_button_com"))
-                                               ),
-                                               column(width = 1, class = "flow-arrow", 
-                                                      icon("long-arrow-alt-right")
-                                               ),
-                                               column(width = 4, class = "flow-item-list",
-                                                      uiOutput(ns("com_out"))
+                                      fluidRow(id = ns("flowChartCom2"), class = "flow-chart-outer",
+                                               fluidRow(class = "align-items-center flow-chart side-padding",
+                                                        column(width = 4, class = "flow-item-list",
+                                                               uiOutput(ns("com_in"))
+                                                        ),
+                                                        column(width = 1, 
+                                                               class = "flow-arrow", 
+                                                               tags$div(id = ns("com_in_arrow"), 
+                                                                        icon("long-arrow-alt-right"))
+                                                        ),
+                                                        column(width = 2,
+                                                               uiOutput(ns("sel_button_com"))
+                                                        ),
+                                                        column(width = 1, class = "flow-arrow", 
+                                                               tags$div(id = ns("com_out_arrow"), 
+                                                                        icon("long-arrow-alt-right"))
+                                                        ),
+                                                        column(width = 4, class = "flow-item-list",
+                                                               uiOutput(ns("com_out"))
+                                                        )),
+                                               fluidRow(class = "legend-row side-padding",
+                                                        uiOutput(ns("comViewLegend"))
                                                )
-                                      )        
+                                      )
                                ),
                                column(3, id = ns("ddInfoCom2"), 
                                       style = "float:right;",
@@ -195,8 +225,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       ),
                       # Data commodity view
                       fluidRow(class = "row-custom side-padding",
-                        dataTableOutput(ns("data_com")),
-                        
+                        dataTableOutput(ns("data_com"))
                       )
              )
            )
@@ -204,8 +233,13 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
   )
 }
 
-renderMirorenderer_cubeinput <- function(input, output, session, data, options = NULL, path = NULL, rendererEnv = NULL, ...){
+renderMirorenderer_cubeinput <- function(input, output, session, data, options = NULL, path = NULL, rendererEnv = NULL, views = NULL, outputScalarsFull = NULL, ...){
   ns <- session$ns
+  prcViewTypeIn <- reactiveVal(character(0L))
+  prcViewTypeOut <- reactiveVal(character(0L))
+  comViewTypeIn <- reactiveVal(character(0L))
+  comViewTypeOut <- reactiveVal(character(0L))
+  rv <- reactiveValues(update = 1)
   
   # Create inputs first
   data <- mutate_if(data, is.factor, as.character)
@@ -251,7 +285,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   processInData <- topData %>% dplyr::filter(uni == "IN")
   processOutData <- topData %>% dplyr::filter(uni == "OUT") 
   
-  colorMap <- c("pre" = "#ffe699", "ire" = "#c6e0b4", "ele" = "#305496", "dmd" = "#acb9ca", "nrg" = "#f4b084", "env" = "#c6e0b4", "dem" = "#acb9ca")
+  colorMap <- c("pre" = "#ffe699", "ire" = "#c6e0b4", "ele" = "#305496", "dmd" = "#acb9ca", "nrg" = "#f4b084", "env" = "#c6e0b4", "dem" = "#acb9ca", "unknown" = "noData")
   #"elc" subtype of NRG?
   darkColors <- ("#305496")
   
@@ -267,6 +301,8 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       }else{
         hideEl(session, paste0("#", ns("prc_in_arrow")))
       }
+      isolate(prcViewTypeIn(character(0)))
+      allTypes <<- c()
       tags$ul(class = if(length(prc_com_in)) "custom-list", 
               lapply(prc_com_in, function(x){
                 type <- noTopData %>%
@@ -274,7 +310,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   filter(tolower(siname) == "com_tmap") %>% 
                   dplyr::pull("com_grp") %>% unique()
                 color <- unname(colorMap[tolower(type)])
-                if(is.null(color)) color <- ""
+                if(!length(color)) color <- ""
+                allTypes <<- unique(c(allTypes, type))
+                if(identical(x, prc_com_in[length(prc_com_in)])){
+                  isolate(prcViewTypeIn(allTypes))
+                }
                 tags$li(x,
                         onclick = paste0("Shiny.setInputValue('", ns("com_button"), "', '",
                                          x, "', {priority: 'event'})"),
@@ -294,7 +334,13 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(!identical(input$sel_prc, "All")){
       prc_com_out <- processOutData %>% dplyr::filter(prc == input$sel_prc) %>% 
         dplyr::pull(com_grp) %>% unique() %>% sort()
-
+      if(length(prc_com_out)){
+        showEl(session, paste0("#", ns("prc_out_arrow")))
+      }else{
+        hideEl(session, paste0("#", ns("prc_out_arrow")))
+      }
+      isolate(prcViewTypeOut(character(0)))
+      allTypes <<- c()
       tags$ul(class = if(length(prc_com_out)) "custom-list", 
               lapply(prc_com_out, function(x){
                 type <- noTopData %>%
@@ -302,7 +348,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   filter(tolower(siname) == "com_tmap") %>% 
                   dplyr::pull("com_grp") %>% unique()
                 color <- unname(colorMap[tolower(type)])
-                if(is.null(color)) color <- ""
+                if(!length(color)) color <- ""
+                allTypes <<- unique(c(allTypes, type))
+                if(identical(x, prc_com_out[length(prc_com_out)])){
+                  isolate(prcViewTypeOut(allTypes))
+                }
                 tags$li(x,
                         onclick = paste0("Shiny.setInputValue('", ns("com_button"), "', '",
                                          x, "', {priority: 'event'})"),
@@ -322,7 +372,13 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(!identical(input$sel_com, "All")){
       com_prc_in <- processOutData %>% dplyr::filter(com_grp == input$sel_com) %>% 
         dplyr::pull(prc) %>% unique() %>% sort()
-
+      if(length(com_prc_in)){
+        showEl(session, paste0("#", ns("com_in_arrow")))
+      }else{
+        hideEl(session, paste0("#", ns("com_in_arrow")))
+      }
+      isolate(comViewTypeIn(character(0)))
+      allTypes <<- c()
       tags$ul(class = if(length(com_prc_in)) "custom-list", 
               lapply(com_prc_in, function(x){
                 type <- noTopData %>%
@@ -330,7 +386,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   dplyr::filter(tolower(siname) == "prc_map") %>%
                   dplyr::pull("uni") %>% unique()
                 color <- unname(colorMap[tolower(type)])
-                if(is.null(color)) color <- ""
+                if(!length(color)) color <- ""
+                allTypes <<- unique(c(allTypes, type))
+                if(identical(x, com_prc_in[length(com_prc_in)])){
+                  isolate(comViewTypeIn(allTypes))
+                }
                 tags$li(x,
                         onclick = paste0("Shiny.setInputValue('", ns("prc_button"), "', '",
                                          x, "', {priority: 'event'})"),
@@ -349,7 +409,13 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(!identical(input$sel_com, "All")){
       com_prc_out <- processInData %>% dplyr::filter(com_grp == input$sel_com) %>% 
         dplyr::pull(prc) %>% unique() %>% sort()
-
+      if(length(com_prc_out)){
+        showEl(session, paste0("#", ns("com_out_arrow")))
+      }else{
+        hideEl(session, paste0("#", ns("com_out_arrow")))
+      }
+      isolate(comViewTypeOut(character(0)))
+      allTypes <<- c()
       tags$ul(class = if(length(com_prc_out)) "custom-list", 
               lapply(com_prc_out, function(x){
                 type <- noTopData %>%
@@ -357,7 +423,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   dplyr::filter(tolower(siname) == "prc_map") %>%
                   dplyr::pull("uni") %>% unique()
                 color <- unname(colorMap[tolower(type)])
-                if(is.null(color)) color <- ""
+                if(!length(color)) color <- ""
+                allTypes <<- unique(c(allTypes, type))
+                if(identical(x, com_prc_out[length(com_prc_out)])){
+                  isolate(comViewTypeOut(allTypes))
+                }
                 tags$li(x,
                         onclick = paste0("Shiny.setInputValue('", ns("prc_button"), "', '",
                                          x, "', {priority: 'event'})"),
@@ -369,6 +439,39 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     }else{
       return()
     }
+  })
+  
+  output$prcViewLegend <- renderUI({
+    req(input$sel_prc)
+    if(identical(input$sel_prc, "All")){
+      return()
+    }
+    tags$ul(
+      lapply(unique(c(prcViewTypeIn(), prcViewTypeOut())), function(x){
+        color <- unname(colorMap[tolower(x)])
+        if(!length(color)) color <- ""
+        tags$li(x,
+                class = "com-proc-item legend-item",
+                style = paste0("list-style-type:none;background-color:  ", 
+                               color, "; color: ", if(color %in% darkColors) "#eee;")
+        )
+      }))
+  })
+  output$comViewLegend <- renderUI({
+    req(input$sel_com)
+    if(identical(input$sel_com, "All")){
+      return()
+    }
+    tags$ul(
+      lapply(unique(c(comViewTypeIn(), comViewTypeOut())), function(x){
+        color <- unname(colorMap[tolower(x)])
+        if(!length(color)) color <- ""
+        tags$li(x,
+                class = "com-proc-item legend-item",
+                style = paste0("list-style-type:none;background-color:  ", 
+                               color, "; color: ", if(color %in% darkColors) "#eee;")
+        )
+      }))
   })
   
   output$sel_button_prc <- renderUI(tags$div(class = "node-el", input$sel_prc))
@@ -383,7 +486,12 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(!identical(input$sel_prc, "All")){
       tableData <- tableData %>% dplyr::filter(prc == input$sel_prc)
     }
-    tableObj <- DT::datatable(tableData, filter = "bottom")
+    hiddenEmptyColsTmp <- which(vapply(tableData,
+                                       function(x) identical(as.character(unique(x)), "-"),
+                                       logical(1L), USE.NAMES = FALSE))
+    columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))    
+    tableObj <- DT::datatable(tableData, filter = "bottom",  rownames= FALSE,
+                              options = list(columnDefs = columnDefsTmp))
     return(tableObj)
   })
   
@@ -395,7 +503,12 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(!identical(input$sel_com, "All")){
       tableData <- tableData %>% dplyr::filter(com_grp == input$sel_com)
     }
-    tableObj <- DT::datatable(tableData, filter = "bottom")
+    hiddenEmptyColsTmp <- which(vapply(tableData,
+                                       function(x) identical(as.character(unique(x)), "-"),
+                                       logical(1L), USE.NAMES = FALSE))
+    columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))                                   
+    tableObj <- DT::datatable(tableData, filter = "bottom", rownames= FALSE, 
+                              options = list(columnDefs = columnDefsTmp))
     return(tableObj)
   })
   
@@ -587,7 +700,3 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     }
   })
 }
-
-#TODO
-#add legend for flow chart (types)
-#show pivottable instead of datatable?
