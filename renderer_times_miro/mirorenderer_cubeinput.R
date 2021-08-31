@@ -60,9 +60,16 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                  background-color: #fff;
                  overflow-wrap: break-word;
               }
+              .node-column {    
+                 padding-left: 8px;
+                 padding-right: 8px;
+              
+              }
               .flow-arrow {
                   text-align: center;
                   font-size:40px;
+                  padding-left: 0;
+                  padding-right: 0;
               }
               @media (prefers-color-scheme:dark){
                   .custom-css .com-proc-item,
@@ -163,6 +170,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                                         icon("long-arrow-alt-right"))
                                                         ),
                                                         column(width = 2, 
+                                                               class = "node-column",
                                                                uiOutput(ns("sel_button_prc"))
                                                         ),
                                                         column(width = 1, class = "flow-arrow",
@@ -219,6 +227,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                                         icon("long-arrow-alt-right"))
                                                         ),
                                                         column(width = 2,
+                                                               class = "node-column",
                                                                uiOutput(ns("sel_button_com"))
                                                         ),
                                                         column(width = 1, class = "flow-arrow", 
