@@ -256,7 +256,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   data <- mutate_if(data, is.factor, as.character)
   
   uelMap <- suppressWarnings(jsonlite::fromJSON(
-    file.path(path, "map.txt"),simplifyDataFrame = FALSE, 
+    file.path(path, "map.json"),simplifyDataFrame = FALSE, 
     simplifyMatrix = FALSE, flatten = TRUE))
 
   
@@ -497,6 +497,9 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(!identical(input$sel_prc, "All")){
       tableData <- tableData %>% dplyr::filter(prc == input$sel_prc)
     }
+    names(tableData) <- c("Symbol", "Type", "DD File", "User Constraint", "Region", 
+                          "Year", "Process", "Commodity", "Time Slice", "Limit Types", 
+                          "Currencies", "Gen1", "Gen2", "Gen3", "value")
     hiddenEmptyColsTmp <- which(vapply(tableData,
                                        function(x) identical(as.character(unique(x)), "-"),
                                        logical(1L), USE.NAMES = FALSE))
@@ -514,11 +517,14 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(!identical(input$sel_com, "All")){
       tableData <- tableData %>% dplyr::filter(com_grp == input$sel_com)
     }
+    names(tableData) <- c("Symbol", "Type", "DD File", "User Constraint", "Region", 
+                          "Year", "Process", "Commodity", "Time Slice", "Limit Types", 
+                          "Currencies", "Gen1", "Gen2", "Gen3", "value")
     hiddenEmptyColsTmp <- which(vapply(tableData,
                                        function(x) identical(as.character(unique(x)), "-"),
                                        logical(1L), USE.NAMES = FALSE))
     columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))                                   
-    tableObj <- DT::datatable(tableData, filter = "bottom", rownames= FALSE, 
+    tableObj <- DT::datatable(tableData, filter = "bottom", rownames= FALSE,
                               options = list(columnDefs = columnDefsTmp))
     return(tableObj)
   })
@@ -556,9 +562,10 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   output$ddInfoPrc <- renderDataTable({
     req(input$sel_prc, !identical(input$sel_prc, "All"))
 
-    data_prc_temp <- noTopData %>% dplyr::filter(prc == input$sel_prc)
+    data_prc_temp <- noTopData %>% dplyr::filter(tolower(prc) == tolower(input$sel_prc))
+    top_prc_temp <- topData %>% dplyr::filter(tolower(prc) == tolower(input$sel_prc))
 
-    scen <- data_prc_temp %>% dplyr::pull("dd") %>% unique()
+    scen <- top_prc_temp %>% dplyr::pull("dd") %>% unique()
     #TODO
     sector <- ""
     type <- data_prc_temp %>% 
@@ -597,9 +604,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     #   
     # }
     pcg <- ""
-    region <- data_prc_temp %>%
-      dplyr::filter(tolower(siname) == "prc_actunt") %>%
-      dplyr::pull("all_reg") %>% unique()
+    region <- top_prc_temp %>% dplyr::pull("all_reg") %>% unique()
     
     tableData <- data.frame(key = character(0), value = character(0)) %>%
       add_row(key = "Scenario", value = paste(scen, collapse = ", ")) %>%
@@ -631,16 +636,19 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   output$ddInfoCom <- renderDataTable({
     req(input$sel_com, !identical(input$sel_com, "All"))
     
-    data_com_temp <- noTopData %>% dplyr::filter(com_grp == input$sel_com) 
+    data_com_temp <- noTopData %>% dplyr::filter(tolower(com_grp) == tolower(input$sel_com)) 
+    top_com_temp <- topData %>% dplyr::filter(tolower(com_grp) == tolower(input$sel_com))
     
-    scen <- data_com_temp %>% dplyr::pull("dd") %>% unique()
+    scen <- top_com_temp %>% dplyr::pull("dd") %>% unique()
     scen <- scen[!tolower(scen) %in% "syssettings"]
-    # type <- unname(uelMap$com_tmap$reg1[input$sel_com][[1]])
     type <- noTopData %>%
-      dplyr::filter(uni == input$sel_com) %>% 
       filter(tolower(siname) == "com_tmap") %>% 
+      dplyr::filter(uni == input$sel_com) %>% 
       dplyr::pull("com_grp") %>% unique()
-    subType <- unname(uelMap$nrg_tmap$reg1[input$sel_com][[1]])
+    subType <- noTopData %>%
+      filter(tolower(siname) == "nrg_tmap") %>% 
+      dplyr::filter(com_grp == input$sel_com) %>% 
+      dplyr::pull("uni") %>% unique()
     actUnit <- data_com_temp %>% 
       dplyr::filter(tolower(siname) == "com_unit") %>% 
       dplyr::pull("uni") %>% unique()
@@ -655,9 +663,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     #TODO
     limType <- ""
     peakTs <- ""
-    region <- data_com_temp %>% 
-      dplyr::filter(tolower(siname) == "com_unit") %>% 
-      dplyr::pull("all_reg") %>% unique()
+    region <- top_com_temp %>% dplyr::pull("all_reg") %>% unique()
     
     tableData <- data.frame(key = character(0), value = character(0)) %>%
       add_row(key = "Scenario", value = paste(scen, collapse = ", ")) %>%
