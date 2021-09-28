@@ -105,6 +105,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
               }
               .legend-row ul {
                 display: inline;
+                padding-left: 0;
               }
               .legend-row .legend-item {
                 line-height: 10px;
@@ -305,7 +306,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   processInData <- topData %>% dplyr::filter(uni == "IN")
   processOutData <- topData %>% dplyr::filter(uni == "OUT") 
   
-  colorMap <- c("pre" = "#ffe699", "ire" = "#c6e0b4", "ele" = "#305496", "dmd" = "#acb9ca", "nrg" = "#f4b084", "env" = "#c6e0b4", "dem" = "#acb9ca", "unknown" = "noData")
+  colorMap <- c("pre" = "#ffe699", "ire" = "#c6e0b4", "ele" = "#305496", "dmd" = "#acb9ca", "nrg" = "#f4b084", "env" = "#c6e0b4", "dem" = "#acb9ca", "unknown" = "transparent")
   #"elc" subtype of NRG?
   darkColors <- ("#305496")
   
@@ -331,6 +332,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   dplyr::pull("com_grp") %>% unique()
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
+                if(!length(type)) type <- "unknown"
                 allTypes <<- unique(c(allTypes, type))
                 if(identical(x, prc_com_in[length(prc_com_in)])){
                   isolate(prcViewTypeIn(allTypes))
@@ -369,6 +371,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   dplyr::pull("com_grp") %>% unique()
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
+                if(!length(type)) type <- "unknown"
                 allTypes <<- unique(c(allTypes, type))
                 if(identical(x, prc_com_out[length(prc_com_out)])){
                   isolate(prcViewTypeOut(allTypes))
@@ -407,6 +410,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   dplyr::pull("uni") %>% unique()
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
+                if(!length(type)) type <- "unknown"
                 allTypes <<- unique(c(allTypes, type))
                 if(identical(x, com_prc_in[length(com_prc_in)])){
                   isolate(comViewTypeIn(allTypes))
@@ -444,6 +448,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                   dplyr::pull("uni") %>% unique()
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
+                if(!length(type)) type <- "unknown"
                 allTypes <<- unique(c(allTypes, type))
                 if(identical(x, com_prc_out[length(com_prc_out)])){
                   isolate(comViewTypeOut(allTypes))
