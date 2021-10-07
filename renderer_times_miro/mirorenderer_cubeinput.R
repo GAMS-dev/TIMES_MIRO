@@ -71,6 +71,9 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                   padding-left: 0;
                   padding-right: 0;
               }
+              .flow-arrow-small {
+                  font-size:30px;
+              }
               @media (prefers-color-scheme:dark){
                   .custom-css .com-proc-item,
                   .node-el {
@@ -134,7 +137,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
              type = "tabs",
              
              # Process Tab
-             tabPanel("Process centric view", value = "tp_prc", style = "position:relative;",
+             tabPanel("Process", value = "tp_prc", style = "position:relative;",
                       icon = icon("cogs"),
                       tags$div(class = "small-space"),
                       
@@ -193,7 +196,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       )),
              
              # Commodity Tab
-             tabPanel("Commodity centric view", value = "tp_com", style = "position:relative;",
+             tabPanel("Commodity", value = "tp_com", style = "position:relative;",
                       icon = icon("coins"),
                       tags$div(class = "small-space"),
                       fluidRow(class = "row-custom", style = "margin-top: 5pt;",
@@ -213,7 +216,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       fluidRow(class = "flow-row",
                                column(12, class = "col-lg-3 col-sm-12", 
                                       id = ns("ddInfoCom2"), class = "float-lg",
-                                      dataTableOutput(ns("ddInfoCom"))
+                                      dataTableOutput(ns("ddInfoComTable"))
                                ),
                                column(12, class = "col-lg-9 col-sm-12", 
                                       # Commodity View. Flowchart
@@ -248,6 +251,60 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       fluidRow(class = "row-custom side-padding",
                         dataTableOutput(ns("data_com"))
                       )
+             ),
+             
+             # Commodity Tab
+             tabPanel("UC", value = "tp_uc", style = "position:relative;",
+                      icon = icon("user"),
+                      tags$div(class = "small-space"),
+                      fluidRow(class = "row-custom", style = "margin-top: 5pt;",
+                               column(12, class = "col-lg-9 col-sm-12", 
+                                      fluidRow(class="row-custom", 
+                                               selectInput(ns("sel_uc"), "Select User Constraint",
+                                                           choices = c(), width = "350px")
+                                      )        
+                               ),
+                               column(12, class = "col-lg-3 col-sm-12", 
+                                      id = ns("ddInfoUC"), class = "float-lg",
+                                      h3(style = "margin-top:0;",
+                                         textOutput(ns("selectedUC")))
+                               )
+                      ),
+                      fluidRow(class = "flow-row",
+                               column(12, class = "col-lg-3 col-sm-12", 
+                                      id = ns("ddInfoUC2"), class = "float-lg",
+                                      dataTableOutput(ns("ddInfoUCTable"))
+                               ),
+                               column(12, class = "col-lg-9 col-sm-12", 
+                                      # User Constraints flowchart
+                                      fluidRow(id = ns("flowChartUC"), class = "flow-chart-outer",
+                                               fluidRow(class = "align-items-center flow-chart side-padding",
+                                                        column(width = 4, class = "flow-item-list",
+                                                               uiOutput(ns("uc_lhs"))
+                                                        ),
+                                                        column(width = 1, 
+                                                               class = "flow-arrow flow-arrow-small", 
+                                                               tags$div(id = ns("uc_lhs_arrow"), 
+                                                                        icon("link"))
+                                                        ),
+                                                        column(width = 2,
+                                                               class = "node-column",
+                                                               uiOutput(ns("sel_button_uc"))
+                                                        ),
+                                                        column(width = 1, class = "flow-arrow flow-arrow-small", 
+                                                               tags$div(id = ns("uc_rhs_arrow"), 
+                                                                        icon("link"))
+                                                        ),
+                                                        column(width = 4, class = "flow-item-list",
+                                                               uiOutput(ns("uc_rhs"))
+                                                        ))
+                                      )
+                               )
+                      ),
+                      # Data commodity view
+                      fluidRow(class = "row-custom side-padding",
+                               dataTableOutput(ns("data_uc"))
+                      )
              )
            )
   )
@@ -272,8 +329,9 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   
   col_names_header <- c("dd", "uni#2", "uni#1", "uni", "all_ts")
 
-  topData <- data %>% dplyr::filter(siname == "TOP")
-  noTopData <- data %>% dplyr::filter(siname != "TOP")
+  topData <- data %>% dplyr::filter(tolower(siname) == "top")
+  noTopData <- data %>% dplyr::filter(tolower(siname) != "top")
+  ucData <- data[!(!is.na(data$uc_n) & data$uc_n=="-"), ]
 
   processes <- topData %>%
     dplyr::pull(prc) %>% 
@@ -285,8 +343,15 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       unique() %>% 
       sort()
   
+  userConstraints <- ucData %>% 
+    dplyr::filter(tolower(siname) == "uc_n") %>%
+    dplyr::pull(uc_n) %>% 
+    unique() %>% 
+    sort()
+  
   updateSelectInput(session, "sel_prc", choices = c("All", processes), selected = processes[1])
   updateSelectInput(session, "sel_com", choices = c("All", commodities), selected = commodities[1])
+  updateSelectInput(session, "sel_uc", choices = userConstraints)
   
   # Observer
   rendererEnv[[ns("comBtn")]] <- observe({
@@ -301,6 +366,18 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     updateSelectInput(session, "sel_prc", selected = input$prc_button)
     
   })
+  # rendererEnv[[ns("comBtnUC")]] <- observe({
+  #   req(input$com_buttonUC)
+  #   updateTabsetPanel(session, "switch", selected = "tp_com")
+  #   updateSelectInput(session, "sel_com", selected = input$com_buttonUC)
+  #   
+  # })
+  # rendererEnv[[ns("prcBtnUC")]] <- observe({
+  #   req(input$prc_buttonUC)
+  #   updateTabsetPanel(session, "switch", selected = "tp_prc")
+  #   updateSelectInput(session, "sel_prc", selected = input$prc_buttonUC)
+  #   
+  # })
   
   #processInData is also used for commodity out data
   processInData <- topData %>% dplyr::filter(uni == "IN")
@@ -428,6 +505,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     }
   })
   
+  #Commodity OUT
   output$com_out <- renderUI({
     req(input$sel_com)
     if(!identical(input$sel_com, "All")){
@@ -466,6 +544,80 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     }
   })
   
+  #user constraint data
+  processInData <- topData %>% dplyr::filter(uni == "IN")
+  processOutData <- topData %>% dplyr::filter(uni == "OUT") 
+  
+  #User Constraint LHS
+  output$uc_lhs <- renderUI({
+    req(input$sel_uc)
+    item <- "prc_button"
+    uc_lhs <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
+    uc_lhs_symbols <- uc_lhs %>% 
+      dplyr::filter(grepl('COM|FLOW', siname))
+    if(nrow(uc_lhs_symbols) > 0){
+      #user constraint has symbol with FLO or COM -> show commodities
+      uc_lhs <- uc_lhs %>% dplyr::filter(uni == "LHS") %>%
+        dplyr::pull(com_grp) %>% unique() %>% sort()
+      item <- "com_button"
+      #TODO: color code/legend?
+    }else{
+      uc_lhs <- uc_lhs %>% dplyr::filter(uni == "LHS") %>%
+        dplyr::pull(prc) %>% unique() %>% sort()
+    }
+    uc_lhs <- uc_lhs[!uc_lhs %in% "-"]
+    if(length(uc_lhs)){
+      showEl(session, paste0("#", ns("uc_lhs_arrow")))
+    }else{
+      hideEl(session, paste0("#", ns("uc_lhs_arrow")))
+    }
+    tags$ul(class = if(length(uc_lhs)) "custom-list", 
+            lapply(uc_lhs, function(x){
+              tags$li(x,
+                      #TODO: check whether commodity or process shown
+                      onclick = paste0("Shiny.setInputValue('", ns(item), "', '",
+                                       x, "', {priority: 'event'})"),
+                      class = "com-proc-item",
+                      style = paste0("list-style-type:none;")
+              )
+            }))
+  })
+  
+  #User Constraint RHS
+  output$uc_rhs <- renderUI({
+    req(input$sel_uc)
+    item <- "prc_button"
+    uc_rhs <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
+    uc_rhs_symbols <- uc_rhs %>% 
+      dplyr::filter(grepl('COM|FLOW', siname))
+    if(nrow(uc_rhs_symbols) > 0){
+      #user constraint has symbol with FLO or COM -> show commodities
+      uc_rhs <- uc_rhs %>% dplyr::filter(uni == "RHS") %>%
+        dplyr::pull(com_grp) %>% unique() %>% sort()
+      item <- "com_button"
+      #TODO: color code/legend?
+    }else{
+      uc_rhs <- uc_rhs %>% dplyr::filter(uni == "RHS") %>%
+        dplyr::pull(prc) %>% unique() %>% sort()
+    }
+    uc_rhs <- uc_rhs[!uc_rhs %in% "-"]
+    if(length(uc_rhs)){
+      showEl(session, paste0("#", ns("uc_rhs_arrow")))
+    }else{
+      hideEl(session, paste0("#", ns("uc_rhs_arrow")))
+    }
+    tags$ul(class = if(length(uc_rhs)) "custom-list", 
+            lapply(uc_rhs, function(x){
+              tags$li(x,
+                      #TODO: check whether commodity or process shown
+                      onclick = paste0("Shiny.setInputValue('", ns(item), "', '",
+                                       x, "', {priority: 'event'})"),
+                      class = "com-proc-item",
+                      style = paste0("list-style-type:none;")
+              )
+            }))
+  })
+  
   output$prcViewLegend <- renderUI({
     req(input$sel_prc)
     if(identical(input$sel_prc, "All")){
@@ -501,6 +653,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   
   output$sel_button_prc <- renderUI(tags$div(class = "node-el", input$sel_prc))
   output$sel_button_com <- renderUI(tags$div(class = "node-el", input$sel_com))
+  output$sel_button_uc  <- renderUI(tags$div(class = "node-el", input$sel_uc))
   
   # Select data
   # Process-centric view data table
@@ -543,6 +696,23 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     return(tableObj)
   })
   
+  # UC view data table
+  output$data_uc <- renderDataTable({
+    req(input$sel_uc)
+    
+    tableData <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
+    names(tableData) <- c("Symbol", "Type", "DD File", "User Constraint", "Region", 
+                          "Year", "Process", "Commodity", "Time Slice", "Limit Types", 
+                          "Currencies", "Gen1", "Gen2", "Gen3", "value")
+    hiddenEmptyColsTmp <- which(vapply(tableData,
+                                       function(x) identical(as.character(unique(x)), "-"),
+                                       logical(1L), USE.NAMES = FALSE))
+    columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))    
+    tableObj <- DT::datatable(tableData, filter = "bottom",  rownames= FALSE,
+                              options = list(columnDefs = columnDefsTmp))
+    return(tableObj)
+  })
+  
   # Header of the process info table
   output$selectedProcess <- renderText(input$sel_prc)
   output$processDesc <- renderText({
@@ -580,8 +750,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     top_prc_temp <- topData %>% dplyr::filter(tolower(prc) == tolower(input$sel_prc))
 
     scen <- top_prc_temp %>% dplyr::pull("dd") %>% unique()
-    #TODO
-    sector <- ""
     type <- data_prc_temp %>% 
       dplyr::filter(tolower(siname) == "prc_map") %>%
       dplyr::pull("uni") %>% unique()
@@ -590,8 +758,10 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     actUnit <- data_prc_temp %>%
       dplyr::filter(tolower(siname) == "prc_actunt") %>%
       dplyr::pull("uni") %>% unique()
-    #TODO
-    capUnit <- ""
+    #TODO: check if capUnit correct ('at the moment, until Antti initialises this set in the code, this field will be empty.')
+    capUnit <- data_prc_temp %>%
+      dplyr::filter(tolower(siname) == "prc_capunt") %>%
+      dplyr::pull("uni") %>% unique()
     sets <- ""
     tslvl <- data_prc_temp %>%
       dplyr::filter(tolower(siname) == "prc_tsl") %>%
@@ -605,8 +775,8 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
         tslvl <- "ANNUAL"
       }
     }
-    #TODO
-    vintage <- ""
+    vintage <- isTRUE(nrow(data_prc_temp %>% 
+                        dplyr::filter(tolower(siname) == "prc_vint")) > 0)
     #TODO
     com_prc_in <- processOutData %>% dplyr::filter(com_grp == input$sel_com) %>% 
       dplyr::pull(prc) %>% unique() %>% sort()
@@ -622,7 +792,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     
     tableData <- data.frame(key = character(0), value = character(0)) %>%
       add_row(key = "Scenario", value = paste(scen, collapse = ", ")) %>%
-      add_row(key = "Sector", value = paste(sector, collapse = ", ")) %>%
       add_row(key = "Type", value = paste(type, collapse = ", ")) %>%
       add_row(key = "SubType", value = paste(subType, collapse = ", ")) %>%
       add_row(key = "Activity Unit", value = paste(actUnit, collapse = ", ")) %>%
@@ -647,7 +816,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   })
   
   #dd files info (commodities)
-  output$ddInfoCom <- renderDataTable({
+  output$ddInfoComTable <- renderDataTable({
     req(input$sel_com, !identical(input$sel_com, "All"))
     
     data_com_temp <- noTopData %>% dplyr::filter(tolower(com_grp) == tolower(input$sel_com)) 
@@ -666,8 +835,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     actUnit <- data_com_temp %>% 
       dplyr::filter(tolower(siname) == "com_unit") %>% 
       dplyr::pull("uni") %>% unique()
-    #TODO
-    sets <- ""
+    #TODO: Exact copy of 'type'? If yes, can be removed? 
+    sets <- noTopData %>%
+      filter(tolower(siname) == "com_tmap") %>% 
+      dplyr::filter(uni == input$sel_com) %>% 
+      dplyr::pull("com_grp") %>% unique()
     tslvl <- data_com_temp %>% 
       dplyr::filter(tolower(siname) == "com_tsl") %>% 
       dplyr::pull("all_ts") %>% unique()
@@ -689,6 +861,55 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       add_row(key = "LimType", value = paste(limType, collapse = ", ")) %>%
       add_row(key = "PeakTS", value = paste(peakTs, collapse = ", ")) %>%
       add_row(key = "Region", value = paste(region, collapse = ", "))
+    
+    tableObj <- DT::datatable(tableData, rownames = FALSE, colnames = c("", ""),
+                              class = "compact", 
+                              options = list(dom = 't', bSort=FALSE,
+                                             autoWidth = FALSE,
+                                             columnDefs = list(list(width = '30%', 
+                                                                    targets = c(0)), 
+                                                               list(width = '70%', 
+                                                                    targets = c(1))))) %>%
+      DT::formatStyle(names(tableData),lineHeight='95%') 
+    return(tableObj)
+  })
+  
+  # Header of the user constraint info table
+  output$selectedUC <- renderText(input$sel_uc)
+  
+  #dd files info (user constraint)
+  output$ddInfoUCTable <- renderDataTable({
+    req(input$sel_uc)
+    
+    ucDataTmp <- ucData %>% dplyr::filter(uc_n == input$sel_uc) 
+    
+    scen <- ucDataTmp %>% dplyr::pull("dd") %>% unique()
+    existIn <- ucDataTmp %>% 
+      dplyr::filter(siname %in% c("UC_ACT", "UC_ACTBET", "UC_CAP", "UC_COM", 
+                                  "UC_COMCON", "UC_COMNET", "UC_COMPRD", 
+                                  "UC_CUMACT", "UC_COMCOM", "UC_CUMFLO", "UC_FLO", 
+                                  "UC_FLOBET", "UC_IRE", "UC_NCAP", "UC_TIME")) %>%
+      dplyr::pull("all_reg") %>% unique()
+    #TODO
+    exist <- ""
+    uc_r_each <- ucDataTmp %>% 
+      dplyr::filter(tolower(siname) == "uc_r_each") %>% 
+      dplyr::pull("all_reg") %>% unique()
+    uc_r_sum <- ucDataTmp %>% 
+      dplyr::filter(tolower(siname) == "uc_r_sum") %>% 
+      dplyr::pull("all_reg") %>% unique()
+    #TODO: clarify
+    uc_attr <- ucDataTmp %>% 
+      dplyr::filter(tolower(siname) == "uc_attr") %>% 
+      dplyr::pull(siname) %>% unique()
+    
+    tableData <- data.frame(key = character(0), value = character(0)) %>%
+      add_row(key = "Scenario", value = paste(scen, collapse = ", ")) %>%
+      add_row(key = "Exist in", value = paste(existIn, collapse = ", ")) %>%
+      add_row(key = "Exist", value = paste(exist, collapse = ", ")) %>%
+      add_row(key = "UC_R_EACH", value = paste(uc_r_each, collapse = ", ")) %>%
+      add_row(key = "UC_R_SUM", value = paste(uc_r_sum, collapse = ", ")) %>%
+      add_row(key = "UC_ATTR", value = paste(uc_attr, collapse = ", "))
     
     tableObj <- DT::datatable(tableData, rownames = FALSE, colnames = c("", ""),
                               class = "compact", 
