@@ -192,7 +192,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       ),
                       # Data View process
                       fluidRow(class = "row-custom side-padding",
-                               dataTableOutput(ns("data_prc"))
+                               rpivotTableOutput(ns("data_prc"))
                       )),
              
              # Commodity Tab
@@ -249,7 +249,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       ),
                       # Data commodity view
                       fluidRow(class = "row-custom side-padding",
-                        dataTableOutput(ns("data_com"))
+                               rpivotTableOutput(ns("data_com"))
                       )
              ),
              
@@ -301,9 +301,9 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                       )
                                )
                       ),
-                      # Data commodity view
+                      # Data user constraint view
                       fluidRow(class = "row-custom side-padding",
-                               dataTableOutput(ns("data_uc"))
+                               rpivotTableOutput(ns("data_uc"))
                       )
              )
            )
@@ -657,7 +657,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   
   # Select data
   # Process-centric view data table
-  output$data_prc <- renderDataTable({
+  output$data_prc <- renderRpivotTable({
     req(input$sel_prc)
     
     tableData <- noTopData 
@@ -670,14 +670,15 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     hiddenEmptyColsTmp <- which(vapply(tableData,
                                        function(x) identical(as.character(unique(x)), "-"),
                                        logical(1L), USE.NAMES = FALSE))
-    columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))    
-    tableObj <- DT::datatable(tableData, filter = "bottom",  rownames= FALSE,
-                              options = list(columnDefs = columnDefsTmp))
+    columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))   
+    #TODO: Clarify what should be displayed in the rows
+    tableObj <- rpivotTable::rpivotTable(tableData, rows = c("Region", "Symbol"), cols = c("Year"),
+                                         aggregatorName = "Sum", vals = "value")
     return(tableObj)
   })
   
   # Commodity-centric view data table
-  output$data_com <- renderDataTable({
+  output$data_com <- renderRpivotTable({
     req(input$sel_com)
     
     tableData <- noTopData 
@@ -690,17 +691,24 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     hiddenEmptyColsTmp <- which(vapply(tableData,
                                        function(x) identical(as.character(unique(x)), "-"),
                                        logical(1L), USE.NAMES = FALSE))
-    columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))                                   
-    tableObj <- DT::datatable(tableData, filter = "bottom", rownames= FALSE,
-                              options = list(columnDefs = columnDefsTmp))
+    columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))           
+    #TODO: Clarify what should be displayed in the rows
+    tableObj <- rpivotTable::rpivotTable(tableData, rows = c("Region"), cols = c("Year"),
+                                         aggregatorName = "Sum", vals = "value")
     return(tableObj)
   })
   
   # UC view data table
-  output$data_uc <- renderDataTable({
+  output$data_uc <- renderRpivotTable({
     req(input$sel_uc)
     
     tableData <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
+    uc_comFlo_symbols <- tableData %>% 
+      dplyr::filter(grepl('COM|FLOW', siname))
+    rows <- c("Region", "Symbol", "Commodity")
+    if(nrow(uc_comFlo_symbols) > 0){
+      rows <- c("Region", "Commodity", "Symbol", "Process")
+    }
     names(tableData) <- c("Symbol", "Type", "DD File", "User Constraint", "Region", 
                           "Year", "Process", "Commodity", "Time Slice", "Limit Types", 
                           "Currencies", "Gen1", "Gen2", "Gen3", "value")
@@ -708,8 +716,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                                        function(x) identical(as.character(unique(x)), "-"),
                                        logical(1L), USE.NAMES = FALSE))
     columnDefsTmp <- list(list(visible = FALSE, targets = hiddenEmptyColsTmp -1L))    
-    tableObj <- DT::datatable(tableData, filter = "bottom",  rownames= FALSE,
-                              options = list(columnDefs = columnDefsTmp))
+    tableObj <- rpivotTable::rpivotTable(tableData, rows = rows, cols = c("Year"),
+                                         aggregatorName = "Sum", vals = "value")
+    #process-centric: region, commodity, symbol, process
+    #commodity-centric: region, symbol, commodity
+    #TODO: others? 
     return(tableObj)
   })
   
