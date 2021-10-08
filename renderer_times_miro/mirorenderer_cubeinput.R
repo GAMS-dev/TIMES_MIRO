@@ -384,7 +384,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   processOutData <- topData %>% dplyr::filter(uni == "OUT") 
   
   colorMap <- c("pre" = "#ffe699", "ire" = "#c6e0b4", "ele" = "#305496", "dmd" = "#acb9ca", "nrg" = "#f4b084", "env" = "#c6e0b4", "dem" = "#acb9ca", "unknown" = "transparent")
-  #"elc" subtype of NRG?
+  #TODO: "elc" subtype of NRG?
   darkColors <- ("#305496")
   
   #process IN
@@ -753,6 +753,19 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   
   names_header <- c("Scenario", "Sector", "Type", "Activity Unit", "Timeslice LVL")
   
+  preSubordinates <- c("XTRACT", "DISTR", "CORR", "NST", "IRE", "STK", "MISC")
+  typeOrder <- c("XTRACT", "RENEW", "PRE", "PRW", "PRV", "REF", "ELE", "HPL", 
+                 "CHP", "DMD", "DISTR", "CORR", "STG", "NST", "IRE", "STK", 
+                 "MISC", "STS", "SGS")
+  stgttsMember <- noTopData %>% dplyr::filter(tolower(siname) == "prc_stgtss") 
+  stgttsMember <- stgttsMember[!(!is.na(stgttsMember$prc) & stgttsMember$prc=="-"), ]
+  stgttsMember <- stgttsMember %>%
+    dplyr::pull("prc") %>% unique()
+  stgipsMember <- noTopData %>% dplyr::filter(tolower(siname) == "prc_stgips") 
+  stgipsMember <- stgipsMember[!(!is.na(stgipsMember$prc) & stgipsMember$prc=="-"), ]
+  stgipsMember <- stgipsMember %>%
+    dplyr::pull("prc") %>% unique()
+  
   #dd files info (processes)
   output$ddInfoPrc <- renderDataTable({
     req(input$sel_prc, !identical(input$sel_prc, "All"))
@@ -761,9 +774,30 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     top_prc_temp <- topData %>% dplyr::filter(tolower(prc) == tolower(input$sel_prc))
 
     scen <- top_prc_temp %>% dplyr::pull("dd") %>% unique()
+    
     type <- data_prc_temp %>% 
       dplyr::filter(tolower(siname) == "prc_map") %>%
       dplyr::pull("uni") %>% unique()
+    typeTmp <- type
+    #For STG, there are two subsets: PRC_STGTSS and PRC_STGIPS. Thus, a check 
+    #should be made whenever the STG has been detected to find whether the process 
+    #is a member of PRC_STGTSS or PRC_STGIPS. In this case, the sets value does 
+    #not take STG as a value but STGTSS or STGIPS depending on the membership.
+    if(any(typeTmp %in% "STG") && input$sel_prc %in% stgttsMember){
+      typeTmp[match("STG", typeTmp)] <- "STGTSS"
+    }else if(any(typeTmp %in% "STG") && input$sel_prc %in% stgipsMember){
+      typeTmp[match("STG", typeTmp)] <- "STGIPS"
+    }
+    if(any(type %in% preSubordinates)){
+      sets <- paste0(typeTmp[!typeTmp %in% "PRE"], ".PRE")
+      type <- "PRE"
+    }else if(length(type) > 1){
+      sets <- paste(typeTmp, collapse = ".")
+      type <- typeOrder[min(match(type,typeOrder))]
+    }else{
+      sets <- typeTmp
+    }
+    
     #TODO
     subType <- ""
     actUnit <- data_prc_temp %>%
@@ -773,7 +807,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     capUnit <- data_prc_temp %>%
       dplyr::filter(tolower(siname) == "prc_capunt") %>%
       dplyr::pull("uni") %>% unique()
-    sets <- ""
     tslvl <- data_prc_temp %>%
       dplyr::filter(tolower(siname) == "prc_tsl") %>%
       dplyr::pull("all_ts") %>% unique()
@@ -857,9 +890,13 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     if(is.null(tslvl)){
         tslvl <- "ANNUAL"
     }
-    #TODO
-    limType <- ""
-    peakTs <- ""
+    limType <- data_com_temp %>%
+      filter(tolower(siname) == "com_lim") %>% 
+      dplyr::pull("lim") %>% unique()
+    #TODO: I suggest you include the TS dimension of the set COM_PKTS, although VEDA is not doing exactly that. 
+    peakTs <- data_com_temp %>% 
+      dplyr::filter(tolower(siname) == "com_pkts") %>% 
+      dplyr::pull("all_ts") %>% unique()
     region <- top_com_temp %>% dplyr::pull("all_reg") %>% unique()
     
     tableData <- data.frame(key = character(0), value = character(0)) %>%
@@ -911,16 +948,18 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       dplyr::pull("all_reg") %>% unique()
     #TODO: clarify
     uc_attr <- ucDataTmp %>% 
-      dplyr::filter(tolower(siname) == "uc_attr") %>% 
-      dplyr::pull(siname) %>% unique()
+      dplyr::filter(tolower(siname) == "uc_attr") %>%
+      tidyr::unite("attrUnite", `uni#1`, `uni#2`, sep = ", ") %>%
+      dplyr::pull("attrUnite") %>% unique()
     
-    tableData <- data.frame(key = character(0), value = character(0)) %>%
-      add_row(key = "Scenario", value = paste(scen, collapse = ", ")) %>%
-      add_row(key = "Exist in", value = paste(existIn, collapse = ", ")) %>%
-      add_row(key = "Exist", value = paste(exist, collapse = ", ")) %>%
-      add_row(key = "UC_R_EACH", value = paste(uc_r_each, collapse = ", ")) %>%
-      add_row(key = "UC_R_SUM", value = paste(uc_r_sum, collapse = ", ")) %>%
-      add_row(key = "UC_ATTR", value = paste(uc_attr, collapse = ", "))
+    tableData <- tibble(key = c("Scenario", "Exist in", "Exist", 
+                                "UC_R_EACH", "UC_R_SUM", "UC_ATTR"), 
+                        value = c(paste(scen, collapse = ", "), 
+                                  paste(existIn, collapse = ", "), 
+                                  paste(exist, collapse = ", "), 
+                                  paste(uc_r_each, collapse = ", "), 
+                                  paste(uc_r_sum, collapse = ", "), 
+                                  paste(uc_attr, collapse = "; ")))
     
     tableObj <- DT::datatable(tableData, rownames = FALSE, colnames = c("", ""),
                               class = "compact", 
@@ -930,7 +969,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                                                                     targets = c(0)), 
                                                                list(width = '70%', 
                                                                     targets = c(1))))) %>%
-      DT::formatStyle(names(tableData),lineHeight='95%') 
+      DT::formatStyle(names(tableData),lineHeight='95%', ) 
     return(tableObj)
   })
   
