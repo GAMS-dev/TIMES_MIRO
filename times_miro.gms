@@ -371,7 +371,6 @@ $LOG ### CUBEINPUTDOM=%sysenv.CUBEINPUTDOM%
 *############################################################################################
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
-set scenario 'TIMES Scenario';
 set ddorder 'Order index for DD Files' / 1*500 /;
 
 $onExternalInput
@@ -379,13 +378,13 @@ set           solveropt(*,*,*)  'Solver options'                                
                                                                                   barcrossalg.1, barorder.2, threads.8)
                                                                                   gurobi.method.2/;
 singleton set gmsSolver(*)      'Solver for TIMES'                               / cplex /;
-singleton set gmsTIMESsrc(*)    'Location of TIME source'                        / '' '' /; // leave at '' for default
 scalar        gmsResLim         'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio         'Basis indicator'                                / 1 /;
-singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 singleton set gmsddlocation(*)  'Location of DD files'                           / '' /;
 singleton set gmsrunlocation(*) 'Location of Run file'                           / '' /;
 $offExternalInput
+singleton set gmsTIMESsrc(*)    'Location of TIME source'                        / '' '' /; // leave at '' for default
+singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 
 $onEmpty
 $if not set DATASET $set DATASET demo
@@ -411,16 +410,15 @@ $else.data
 $onExternalInput
 set           dd                              'DD Files'                      / base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,
                                                                                 refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets /;
-set           scenddmap(scenario<,ddorder,dd) 'Scenario DD File map'          / demo12.(#ddorder:#dd) /;
+set           scenddmap(ddorder,dd)           'DD File order'                 / #ddorder:#dd /;
 set           offeps(dd)                      'dd read under offeps'          / /;                                         
 set           TimeSlice                       'ALL_TS'                        / ANNUAL,S,W,SD,SN,WD,WN/ ;
 set           MILESTONYR                      'Years for this model run'      / 2005, 2010, 2015, 2020, 2030, 2050 /;
 scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / 1960 /;
 scalar        gmsEOTime                       'Adjustment for total available time span of years available in the model' / 2200 /;
-set           gmsRunScenario(scenario)        'Selected scenario'             / demo12 /;
-set           extensions(*,*,*)               'TIMES Extensions'              / ''.(REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
+set           extensions(*,*)                 'TIMES Extensions'              / REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
                                                                                 SOLVE_NOW.YES, XTQA.YES, VAR_UC.YES, SOLVEDA.YES, DATAGDX.YES,
-                                                                                VEDAVDD.YES) /;
+                                                                                VEDAVDD.YES /;
 singleton set gmsObj(*)      'Choice of objective function formulations'      / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
 $onMulti
 singleton set gmsddlocation(*)                'Location of DD files'          / '' 'TIMES_Demo/model/'/;
@@ -438,7 +436,7 @@ $offEmpty
 
 $onExternalOutput
 alias (*,soName,sow,Vintage)
-parameter cubeOutput(scenario,soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
+parameter cubeOutput(soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
 $offExternalOutput
 
 $eval.set DDPREFIX gmsddlocation.te
@@ -486,7 +484,7 @@ with open('myrun.gms','w') as frun:
       if '_ts.dd' in l.lower():
         frun.write(l)
       elif '.dd' in l.lower():
-        scenddmap.append((run_name,str(ddcnt),l.split(' ')[1].split('.dd')[0]))
+        scenddmap.append((str(ddcnt),l.split(' ')[1].split('.dd')[0]))
         ddcnt += 1
       elif 'maindrv.mod' in l.lower():
         recordcode = 2
@@ -494,9 +492,9 @@ with open('myrun.gms','w') as frun:
     else:
       if (recordcode > 0) and (not 'run_name' in l.lower()) and (not 'vedavdd' in l.lower()):
         if recordcode == 1:
-          extensions.append(('','premain',str(codecnt),l.rstrip()))
+          extensions.append(('premain',str(codecnt),l.rstrip()))
         else:
-          extensions.append(('','postmain',str(codecnt),l.rstrip()))
+          extensions.append(('postmain',str(codecnt),l.rstrip()))
         codecnt += 1
       else:
         if 'milestonyr' in l.lower():
@@ -526,7 +524,6 @@ for df in glob.glob(r'%DDPREFIX% '.rstrip()+'*.dd'):
 gams.set('dd',dd)
 gams.set('offeps',offeps)
 db['MILESTONYR'].copy_symbol(gams.db['MILESTONYR'])
-gams.set('gmsRunScenario',[run_name])
 gams.set('scenddmap',scenddmap)
 # process myrun.lst for compile time variables
 print("### Process myrun.lst for compile time variables")
@@ -548,10 +545,10 @@ while start<end:
     pass
   else:
     val = ' '.join(vl[3:])
-    extensions.append(('',vl[1],val,''))
+    extensions.append((vl[0],val,''))
   start += 1
 gams.set('extensions',extensions)
-$offembeddedcode TimeSlice dd MILESTONYR scenddmap gmsRunScenario offeps gmsBOTime gmsEOTime extensions gmsObj
+$offembeddedcode TimeSlice dd MILESTONYR scenddmap offeps gmsBOTime gmsEOTime extensions gmsObj
 $endif.card_dd
 
 $onEmbeddedCode Python:
@@ -642,28 +639,21 @@ $else
 * 2a) load data from MIRO
 $onEPS
 $ifE card(cubeInput)=0 $abort 'No data in input cube'
-$ifE card(gmsRunScenario)=0 $abort 'No scenario selected'
 
 set actdd(dd), orderactdd(ddorder,dd);
-$hiddencall rm -f solve*.lst solver-output*.zip
-$set SCENCNT 1
-$label SCENLOOPSTART
+$hiddencall rm -f solve.lst solver-output.zip
 
 $onMultiR
 $onEmbeddedCode Python:
-actScen = list(gams.get('gmsRunScenario'))[%SCENCNT%-1]
 actdd = []
 orderactdd = []
 for r in gams.get('scenddmap'):
-   if r[0]==actScen:
-     actdd.append(r[2])
-     orderactdd.append((r[1],r[2]))
+   actdd.append(r[1])
+   orderactdd.append((r[0],r[1]))
 gams.set('actdd',actdd)
 gams.set('orderactdd',orderactdd)
-os.environ['GMSRUNNAME'] = actScen
 $offEmbeddedCode actdd orderactdd
 $offMulti
-$set GMSRUNNAME  %sysEnv.GMSRUNNAME%
 
 
 
@@ -756,17 +746,16 @@ with open('timesdriver.gms', 'a+') as td:
     td.write('$offPut\nputClose;\n')
     ext = {'obj':'%GMSOBJ%', 'botime':'%GMSBOTIME%', 'eotime':'%GMSEOTIME%', 'milestonyr':','.join(gams.get('MILESTONYR'))}
     for er in gams.get('extensions',keyFormat=KeyFormat.FLAT, valueFormat=ValueFormat.FLAT):
-      if er[0] == '':
-        if er[1].lower() in ['premain','postmain']:
-          ext[er[1].lower()+er[2]] = er[3]
-        else:
-          ext[er[1].lower()] = er[2]
+      if er[0].lower() in ['premain','postmain']:
+        ext[er[0].lower()+er[1]] = er[2]
+      else:
+        ext[er[0].lower()] = er[1]
+    #TODO:duplicate?
     for er in gams.get('extensions'):
-      if er[0].lower() == '%GMSRUNNAME%'.lower():
-        if er[1].lower() in ['premain','postmain']:
-          ext[er[1].lower()+er[2]] = er[3]
-        else:
-          ext[er[1].lower()] = er[2]
+      if er[0].lower() in ['premain','postmain']:
+        ext[er[0].lower()+er[1]] = er[2]
+      else:
+        ext[er[0].lower()] = er[1]
     for er in ext.items():
       if not (er[0] == 'milestonyr' or 'premain' in er[0] or 'postmain' in er[0]):
         td.write('$set '+er[0].upper() +' '+er[1]+'\n')
@@ -785,7 +774,6 @@ with open('timesdriver.gms', 'a+') as td:
       td.write(s+'\n')
 $offEmbeddedCode
 $onecho >> timesdriver.gms 
-$set RUN_NAME %GMSRUNNAME%
 $batInclude maindrv.mod mod
 $offecho
 $onEmbeddedCode Python:
@@ -898,14 +886,14 @@ else:
         status = neos.getJobStatus(jobNumber, password)
     
     msg = neos.getOutputFile(jobNumber, password, 'solver-output.zip')
-    with open('solver-output%SCENCNT%.zip', 'wb') as rf:
+    with open('solver-output.zip', 'wb') as rf:
         rf.write(msg.data)
 $  offEmbeddedCode
 $  ifthen.dryRun not "x%dryRun%"=="x"
 $    call cat "%dryRun%"
 $  else.dryRun
 $    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx
-$    hiddencall gmsunzip -qq -o solver-output%SCENCNT%.zip
+$    hiddencall gmsunzip -qq -o solver-output.zip
 $  endif.dryRun
 $endIf.localSolve
 
@@ -913,7 +901,7 @@ $endIf.localSolve
 *#  6) Collect results and prepare output cube # 
 *###############################################
 
-$log --- Collecting result for scenario %GMSRUNNAME%
+$log --- Collecting results
 $ifThen.stages %sysEnv.GMSSTAGES% == NO
 $  call.checkErrorLevel gdx2veda out.gdx %GMSTIMESSRC%times2veda.vdd
 $else.stages
@@ -931,15 +919,11 @@ with open('out.vd', newline='') as csvfile:
     for row in vddreader:
         if len(row)>0 and not row[0][0] == '*':
             if have_stages:
-                key = ['%GMSRUNNAME%'] + row[:-1]
+                key = row[:-1]
             else:
-                key = ['%GMSRUNNAME%',row[0],'-'] + row[1:-1]
+                key = [row[0],'-'] + row[1:-1]
             gams.db['cubeOutput'].add_record(key).value = float(row[-1])
 $offEmbeddedCode cubeOutput
 $offMulti
-$if exist ./solve.lst $hiddencall mv -f solve.lst solve%SCENCNT%.lst
-$eval SCENCNT %SCENCNT%+1
-$ifE %SCENCNT%<=card(gmsRunScenario) $goto SCENLOOPSTART
-scalar cnt /0/;
-loop(gmsRunScenario, cnt=cnt+1; put_utility 'incMsg' / 'solve' cnt:0:0 '.lst');
+put_utility 'incMsg' / 'solve.lst';
 $endif

@@ -11,12 +11,13 @@
     "logFile": true,
     "lstFile": true,
     "attachments": true,
-    "downloadTempFiles": false
+    "downloadTempFiles": false,
+    "hcube": true
   },
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "dd_prc_desc", "dd_com_desc"]
   },
   "overwriteAliases": {
     "dd": {
@@ -29,7 +30,7 @@
       "newAlias": "Years for this model run"
     },
     "cubeinput": {
-      "newAlias": "Input"
+      "newAlias": "Input data"
     },
     "_scalars": {
       "newAlias": "Scalars"
@@ -49,23 +50,14 @@
     "solveropt": {
       "newAlias": "Solver options"
     },
-    "gmsrunscenario": {
-      "newAlias": "Selected scenario"
-    },
     "gmssolver": {
       "newAlias": "Solver for TIMES"
-    },
-    "gmstimessrc": {
-      "newAlias": "Location of TIME source"
     },
     "gmsreslim": {
       "newAlias": "Time limit for solve"
     },
     "gmsbratio": {
       "newAlias": "Basis indicator"
-    },
-    "gmsrunopt": {
-      "newAlias": "Selection for local, short and long NEOS queue"
     },
     "gmsddlocation": {
       "newAlias": "Location of DD files"
@@ -74,16 +66,22 @@
       "newAlias": "Location of Run file"
     },
     "gmsbotime": {
-      "newAlias": "Adjustment for total available time span of years available in the model"
+      "newAlias": "Adjustment for total available time span of years available in the model (start time)"
+    },
+    "gmseotime": {
+      "newAlias": "Adjustment for total available time span of years available in the model (end time)"
     },
     "gmsobj": {
       "newAlias": "Choice of objective function formulations"
+    },
+    "dd_prc_desc": {
+      "newAlias": "Process description"
+    },
+    "dd_com_desc": {
+      "newAlias": "Commodity description"
     }
   },
   "dataRendering": {
-    "cubeinput": {
-      "outType": "mirorenderer_cubeinput"
-    },
     "cubeoutput": {
       "outType": "miroPivot",
       "height": 700,
@@ -93,7 +91,7 @@
         "enableHideEmptyCols": true,
         "hideEmptyCols": true,
         "emptyUEL": "-",
-        "rows": ["scenario", "soname", "sow", "com_grp", "prc", "allyear", "all_reg", "vintage", "all_ts", "uc_n"]
+        "rows": ["soname", "sow", "com_grp", "prc", "allyear", "all_reg", "vintage", "all_ts", "uc_n"]
       }
     },
     "solveropt": {
@@ -108,6 +106,10 @@
         "emptyUEL": "-",
         "rows": ["uni", "uni#1", "uni#2"]
       }
+    },
+    "cubeinput": {
+      "outType": "mirorenderer_cubeinput",
+      "additionalData": ["dd_prc_desc", "dd_com_desc"]
     }
   },
   "saveTraceFile": false,
@@ -116,6 +118,13 @@
     "bgColor": "transparent"
   },
   "inputWidgets": {
+    "scenddmap": {
+      "widgetType": "custom",
+      "rendererName": "mirowidget_scenddmap",
+      "alias": "Settings",
+      "apiVersion": 2,
+      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "offeps", "gmsobj", "gmsrunlocation", "gmsddlocation", "gmsbotime", "gmseotime", "gmsbratio", "gmsreslim", "gmssolver"]
+    },
     "gmssolver": {
       "widgetType": "dropdown",
       "alias": "Solver for TIMES",
@@ -152,13 +161,13 @@
       "widgetType": "textinput",
       "alias": "Time span adjustment",
       "value": "1960",
-      "label": "Adjustment for total available time span of years available in the model"
+      "label": "Adjustment for total available time span of years available in the model (start time)"
     },
-    "gmstimessrc": {
+    "gmseotime": {
       "widgetType": "textinput",
-      "alias": "Location of TIMES source",
-      "value": " ",
-      "label": "Location of TIMES source - leave blank for default location"
+      "alias": "Time span adjustment",
+      "value": "2200",
+      "label": "Adjustment for total available time span of years available in the model (end time)"
     },
     "gmsddlocation": {
       "widgetType": "textinput",
@@ -198,33 +207,15 @@
         }
       }
     },
-    "gmsrunscenario": {
-      "widgetType": "dropdown",
-      "alias": "Selected scenario",
-      "choices": "$scenddmap$scenario",
-      "selected": "",
-      "noHcube": true,
-      "clearValue": false,
-      "multiple": true,
-      "label": "Select active scenario(s)"
-    },
     "offeps": {
       "widgetType": "dropdown",
       "alias": "dd read under offeps",
-      "choices": "$dd$uni",
+      "choices": ["asdasd","Asd"],
       "selected": null,
       "noHcube": true,
       "clearValue": false,
       "multiple": true,
       "label": "DD Files to read under $offEps"
-    },
-    "gmsrunopt": {
-      "widgetType": "dropdown",
-      "alias": "Selection for local, short and long NEOS queue",
-      "label": "Selection for local solve, short and long NEOS queue",
-      "choices": ["local", "short", "long"],
-      "aliases": ["Local", "NEOS short queue", "NEOS long queue"],
-      "noHcube": true
     }
   },
   "overwriteHeaderAliases": {
@@ -232,7 +223,7 @@
       "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Limit Types", "Currencies", "Gen1", "Gen2", "Gen3", "value"]
     },
     "scenddmap": {
-      "newHeaders": ["Scenario", "Order", "DD File", "Comment"]
+      "newHeaders": ["Order", "DD File", "Comment"]
     },
     "timeslice": {
       "newHeaders": ["Time Slice", "Comment"]
@@ -244,16 +235,22 @@
       "newHeaders": ["Year", "Comment"]
     },
     "extensions": {
-      "newHeaders": ["Scenario", "Extension", "Value", "Comment"]
+      "newHeaders": ["Extension", "Value", "Comment"]
     },
     "solveropt": {
       "newHeaders": ["Solver", "Option ", "Value", "Comment"]
     },
     "cubeoutput": {
-      "newHeaders": ["Scenario", "Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
+      "newHeaders": ["Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
+    },
+    "dd_prc_desc": {
+      "newHeaders": ["DD file", "Region", "Process", "Description"]
+    },
+    "dd_com_desc": {
+      "newHeaders": ["DD file", "Region", "Commodity", "Description "]
     }
   },
-  "extraClArgs": ["debug=1492"],
+  "extraClArgs": ["debug=1492", "--gmsrunopt=local"],
   "readme": {
     "tabTitle": "Readme",
     "filename": "README.md",
@@ -264,6 +261,13 @@
     "enableHideEmptyCols": true,
     "emptyUEL": "-"
   },
+  "inputGroups": [
+    {
+      "name": "Process / Commodity description",
+      "members": ["dd_prc_desc", "dd_com_desc"],
+      "sameTab": false
+    }
+  ],
   "handsontable": {
     "stretchH": "none",
     "readonly": false,

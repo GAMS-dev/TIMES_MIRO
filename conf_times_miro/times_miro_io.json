@@ -25,9 +25,9 @@
 		},
 		"_scalars":	{
 			"alias":	"Input Scalars",
-			"symnames":	["gmssolver", "gmstimessrc", "gmsreslim", "gmsbratio", "gmsrunopt", "gmsddlocation", "gmsrunlocation", "gmsbotime", "gmseotime", "gmsobj"],
-			"symtext":	["Solver for TIMES", "Location of TIME source", "Time limit for solve", "Basis indicator", "Selection for local, short and long NEOS queue", "Location of DD files", "Location of Run file", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations"],
-			"symtypes":	["set", "set", "parameter", "parameter", "set", "set", "set", "parameter", "parameter", "set"],
+			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsddlocation", "gmsrunlocation", "gmsbotime", "gmseotime", "gmsobj"],
+			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Location of DD files", "Location of Run file", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations"],
+			"symtypes":	["set", "parameter", "parameter", "set", "set", "parameter", "parameter", "set"],
 			"headers":	{
 				"scalar":	{
 					"type":	"string",
@@ -58,13 +58,9 @@
 			}
 		},
 		"scenddmap":	{
-			"alias":	"Scenario DD File map",
+			"alias":	"DD File order",
 			"symtype":	"set",
 			"headers":	{
-				"scenario":	{
-					"type":	"string",
-					"alias":	"TIMES Scenario"
-				},
 				"ddorder":	{
 					"type":	"string",
 					"alias":	"Order index for DD Files"
@@ -75,7 +71,7 @@
 				},
 				"text":	{
 					"type":	"string",
-					"alias":	"Set text Scenario DD File map"
+					"alias":	"Set text DD File order"
 				}
 			}
 		},
@@ -121,20 +117,6 @@
 				}
 			}
 		},
-		"gmsrunscenario":	{
-			"alias":	"Selected scenario",
-			"symtype":	"set",
-			"headers":	{
-				"scenario":	{
-					"type":	"string",
-					"alias":	"TIMES Scenario"
-				},
-				"text":	{
-					"type":	"string",
-					"alias":	"Set text Selected scenario"
-				}
-			}
-		},
 		"extensions":	{
 			"alias":	"TIMES Extensions",
 			"symtype":	"set",
@@ -144,10 +126,6 @@
 					"alias":	"Universal set"
 				},
 				"uni#1":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#2":	{
 					"type":	"string",
 					"alias":	"Universal set"
 				},
@@ -273,10 +251,6 @@
 			"alias":	"cubeoutput",
 			"symtype":	"parameter",
 			"headers":	{
-				"scenario":	{
-					"type":	"string",
-					"alias":	"TIMES Scenario"
-				},
 				"soname":	{
 					"type":	"string",
 					"alias":	"Aliased with *"
