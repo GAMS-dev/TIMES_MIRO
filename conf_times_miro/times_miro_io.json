@@ -43,20 +43,6 @@
 				}
 			}
 		},
-		"dd":	{
-			"alias":	"DD Files",
-			"symtype":	"set",
-			"headers":	{
-				"uni":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"text":	{
-					"type":	"string",
-					"alias":	"Set text DD Files"
-				}
-			}
-		},
 		"scenddmap":	{
 			"alias":	"DD File order",
 			"symtype":	"set",

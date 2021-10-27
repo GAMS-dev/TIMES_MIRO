@@ -407,10 +407,10 @@ $elseif.data  %DATASET%==mydata
 $onExternalInput
 $offExternalInput
 $else.data
+set           dd                              'DD Files';
 $onExternalInput
-set           dd                              'DD Files'                      / base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,
-                                                                                refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets /;
-set           scenddmap(ddorder,dd)           'DD File order'                 / #ddorder:#dd /;
+set           scenddmap(ddorder,dd<)          'DD File order'                 / #ddorder:(base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,
+                                                                                refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets) /;
 set           offeps(dd)                      'dd read under offeps'          / /;                                         
 set           TimeSlice                       'ALL_TS'                        / ANNUAL,S,W,SD,SN,WD,WN/ ;
 set           MILESTONYR                      'Years for this model run'      / 2005, 2010, 2015, 2020, 2030, 2050 /;

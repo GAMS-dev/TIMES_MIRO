@@ -17,12 +17,9 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "dd", "extensions", "solveropt", "dd_prc_desc", "dd_com_desc"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "extensions", "solveropt", "dd_prc_desc", "dd_com_desc"]
   },
   "overwriteAliases": {
-    "dd": {
-      "newAlias": "DD Files"
-    },
     "timeslice": {
       "newAlias": "Time Slices"
     },
@@ -227,9 +224,6 @@
     },
     "timeslice": {
       "newHeaders": ["Time Slice", "Comment"]
-    },
-    "dd": {
-      "newHeaders": ["DD File", "Comment"]
     },
     "milestonyr": {
       "newHeaders": ["Year", "Comment"]
