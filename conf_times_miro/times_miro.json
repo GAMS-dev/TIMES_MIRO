@@ -38,9 +38,6 @@
     "scenddmap": {
       "newAlias": "Scenario DD File map"
     },
-    "offeps": {
-      "newAlias": "dd read under offeps"
-    },
     "extensions": {
       "newAlias": "TIMES Extensions"
     },
@@ -56,17 +53,14 @@
     "gmsbratio": {
       "newAlias": "Basis indicator"
     },
-    "gmsddlocation": {
-      "newAlias": "Location of DD files"
-    },
     "gmsrunlocation": {
       "newAlias": "Location of Run file"
     },
     "gmsbotime": {
-      "newAlias": "Adjustment for total available time span of years available in the model (start time)"
+      "newAlias": "First year available (BOTIME)"
     },
     "gmseotime": {
-      "newAlias": "Adjustment for total available time span of years available in the model (end time)"
+      "newAlias": "Last year available (EOTIME)"
     },
     "gmsobj": {
       "newAlias": "Choice of objective function formulations"
@@ -120,7 +114,17 @@
       "rendererName": "mirowidget_scenddmap",
       "alias": "Settings",
       "apiVersion": 2,
-      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "offeps", "gmsobj", "gmsrunlocation", "gmsddlocation", "gmsbotime", "gmseotime", "gmsbratio", "gmsreslim", "gmssolver"]
+      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "gmsobj", "gmsrunlocation", "gmsbotime", "gmseotime", "gmsbratio", "gmsreslim", "gmssolver", "gmsrunmode"]
+    },
+    "gmsrunmode": {
+      "widgetType": "dropdown",
+      "alias": "Mode to run",
+      "choices": ["solve", "create"],
+      "selected": "solve",
+      "noHcube": true,
+      "clearValue": false,
+      "multiple": false,
+      "label": "Mode to run"
     },
     "gmssolver": {
       "widgetType": "dropdown",
@@ -158,19 +162,13 @@
       "widgetType": "textinput",
       "alias": "Time span adjustment",
       "value": "1960",
-      "label": "Adjustment for total available time span of years available in the model (start time)"
+      "label": "First year available (BOTIME)"
     },
     "gmseotime": {
       "widgetType": "textinput",
       "alias": "Time span adjustment",
       "value": "2200",
-      "label": "Adjustment for total available time span of years available in the model (end time)"
-    },
-    "gmsddlocation": {
-      "widgetType": "textinput",
-      "alias": "Location of DD files (for initialization)",
-      "value": " ",
-      "label": "Location of DD files"
+      "label": "Last year available (EOTIME)"
     },
     "gmsrunlocation": {
       "widgetType": "textinput",
@@ -203,24 +201,21 @@
           "filterVal": "-"
         }
       }
-    },
-    "offeps": {
-      "widgetType": "dropdown",
-      "alias": "dd read under offeps",
-      "choices": ["asdasd","Asd"],
-      "selected": null,
-      "noHcube": true,
-      "clearValue": false,
-      "multiple": true,
-      "label": "DD Files to read under $offEps"
     }
   },
+  "outputAttachments": [
+    {
+      "filename": "miroScenario.gdx",
+      "execPerm": false,
+      "throwError": false
+    }
+  ],
   "overwriteHeaderAliases": {
     "cubeinput": {
       "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Limit Types", "Currencies", "Gen1", "Gen2", "Gen3", "value"]
     },
     "scenddmap": {
-      "newHeaders": ["Order", "DD File", "Comment"]
+      "newHeaders": ["Order", "DD File", "$offEps", "Comment"]
     },
     "timeslice": {
       "newHeaders": ["Time Slice", "Comment"]
@@ -244,7 +239,7 @@
       "newHeaders": ["DD file", "Region", "Commodity", "Description "]
     }
   },
-  "extraClArgs": ["debug=1492", "--gmsrunopt=local"],
+  "extraClArgs": ["debug=1492", "--gmsrunopt=local", "--DDPREFIX=dd_files/"],
   "readme": {
     "tabTitle": "Readme",
     "filename": "README.md",
