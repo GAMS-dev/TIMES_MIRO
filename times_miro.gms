@@ -461,6 +461,10 @@ singleton set gmsTIMESsrc(*)    'Location of TIME source'                       
 scalar        gmsResLim         'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio         'Basis indicator'                                / 1 /;
 singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
+
+*Clear data from MIRO that may cause duplicate errors when creating a scenario
+$clear cubeinput dd_COM_DESC dd_PRC_DESC scenddmap TimeSlice MILESTONYR gmsBOTime gmsEOTime extensions gmsObj 
+
 $onembeddedCode Python:
 import glob
 import os
