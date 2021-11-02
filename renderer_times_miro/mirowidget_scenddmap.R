@@ -39,7 +39,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                              tags$div(class="table-header",
                                                       tags$h4(tags$span("DD Files order / Read under "),
                                                               tags$span(class = "info-label-nowrap", "$offEps", tags$a("",
-                                                                                                                       title = "Do not interpret zero values as EPS. - Open documentation", 
+                                                                                                                       title = "order: 0 = ignore DD file. Do not delete a table row when the DD info is used elsewhere (input data); $offEps: Do not interpret zero values as EPS. - Open documentation", 
                                                                                                                        class = "info-wrapper",
                                                                                                                        href = "https://www.gams.com/latest/docs/UG_DollarControlOptions.html#DOLLARonoffeps",
                                                                                                                        tags$span(
@@ -469,7 +469,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     scenddmapData <- scenddmapData %>% replace_na(list(order = "", dd = "", offeps = FALSE, text = ""))
     scenddmapData$offeps <- as.logical(scenddmapData$offeps)
     scenddmapTableTmp <<- rhandsontable(scenddmapData, 
-                                        colHeaders = c("Order", "DD File", "$offEps", "Text"),
+                                        colHeaders = c("Order (0=ignore)", "DD File", "$offEps", "Text"),
                                         readOnly = FALSE, 
                                         rowHeaders = NULL,
                                         search = TRUE,
@@ -477,7 +477,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       hot_table(stretchH = "all", highlightRow = TRUE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = TRUE)  %>% 
       #colWidths = c(60, 275,0.01)
-      hot_col(col = 'Order', halign = "htCenter") %>% 
+      hot_col(col = 'Order (0=ignore)', colWidths=60, halign = "htCenter") %>% 
       hot_col(col = '$offEps', halign = "htCenter") %>% 
       hot_col(col = 'Text', colWidths=0.01)
     return(scenddmapTableTmp)
@@ -599,7 +599,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         if(length(extensionsTmp) && nrow(extensionsTmp) > 0){
           extensionsTmp <- extensionsTmp %>% filter(uni != "" & `uni#1` != "")
         }
-        print(extensionsTmp)
         extensionsTmp
       }),
       milestonyr = reactive({
@@ -610,7 +609,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         if(length(milestonyrTmp) && nrow(milestonyrTmp) > 0){
           milestonyrTmp <- milestonyrTmp %>% filter(uni != "")
         }
-        print(milestonyrTmp)
         milestonyrTmp
       }),
       solveropt = reactive({
@@ -618,7 +616,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         if(length(solveroptTmp) && nrow(solveroptTmp) > 0){
           solveroptTmp <- solveroptTmp %>% filter(uni != "" & `uni#1` != "" & `uni#2` != "")
         }
-        print(solveroptTmp)
         solveroptTmp
       }),
       timeslice = reactive({
@@ -626,7 +623,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         if(length(timesliceTmp) && nrow(timesliceTmp) > 0){
           timesliceTmp <- timesliceTmp %>% filter(uni != "")
         }
-        print(timesliceTmp)
         timesliceTmp
       }),
       gmsobj = reactive({

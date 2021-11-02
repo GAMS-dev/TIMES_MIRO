@@ -375,7 +375,7 @@ $LOG ### CUBEINPUTDOM=%sysenv.CUBEINPUTDOM%
 *############################################################################################
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
-set ddorder 'Order index for DD Files' / 1*500 /;
+set ddorder 'Order index for DD Files' / 0*500 /;
 
 $onExternalInput
 set           solveropt(*,*,*)  'Solver options'                                 / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
@@ -670,8 +670,10 @@ $onEmbeddedCode Python:
 actdd = []
 orderactdd = []
 for r in gams.get('scenddmap'):
-   actdd.append(r[1])
-   orderactdd.append((r[0],r[1]))
+   # order = 0 -> Ignore DD file 
+   if int(r[0]) != 0:
+     actdd.append(r[1])
+     orderactdd.append((r[0],r[1]))
 gams.set('actdd',actdd)
 gams.set('orderactdd',orderactdd)
 $offEmbeddedCode actdd orderactdd
