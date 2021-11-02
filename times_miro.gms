@@ -366,8 +366,12 @@ $LOG ### CUBEINPUTDOM=%sysenv.CUBEINPUTDOM%
 *############################################################################################
 *#  2) LOAD DATA                                                                            #
 *#     a) if run through MIRO, the data will be loaded from the MIRO App                    #
-*#     b) if run through Studio, data specified via --DATASET will be read, a GDX file that #
-*#        can be loaded into the MIRO app will be created and then the run terminates.      #
+*#     b) if run through Studio, you can create a GDX file that can be loaded               #
+*#        into the MIRO app. For this, run with '--runmode=create'.                         #
+*#        Data specified via:                                                               #
+*#          --DDPREFIX (dd files location, including '/' at the end)                        #
+*#          --RUNFILE (runfile location)                                                    #
+*#        will be used for the GDX file creation                                            #
 *############################################################################################
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
@@ -375,57 +379,52 @@ set ddorder 'Order index for DD Files' / 1*500 /;
 
 $onExternalInput
 set           solveropt(*,*,*)  'Solver options'                                 / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
-                                                                                  barcrossalg.1, barorder.2, threads.8)
-                                                                                  gurobi.method.2/;
+                                                                                  barcrossalg.1, barorder.2, threads.8)/;                                                                                  
 singleton set gmsSolver(*)      'Solver for TIMES'                               / cplex /;
 scalar        gmsResLim         'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio         'Basis indicator'                                / 1 /;
-singleton set gmsddlocation(*)  'Location of DD files'                           / '' /;
-singleton set gmsrunlocation(*) 'Location of Run file'                           / '' /;
 $offExternalInput
 singleton set gmsTIMESsrc(*)    'Location of TIME source'                        / '' '' /; // leave at '' for default
 singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 
 $onEmpty
-$if not set DATASET $set DATASET demo
-$ifthen.data %DATASET%==dk
-$include dkdata
-$elseif.data %DATASET%==starter
-$set DDPREFIX D:\Users\mbussieck\Downloads\times_starter\
-$include starterdata
-$elseif.data %DATASET%==starter_extended
-$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO\
-$include starterdata_extended
-$elseif.data %DATASET%==starter20200621
-$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO20200621\
-$include starterdata20200621
-$elseif.data %DATASET%==swiss
-$set DDPREFIX E:\WC\TIMES_MIRO\swiss\
-$include swissdata.gms
-$elseif.data  %DATASET%==mydata
+*$if not set DATASET $set DATASET demo
+*$ifthen.data %DATASET%==dk
+*$include dkdata
+*$elseif.data %DATASET%==starter
+*$set DDPREFIX D:\Users\mbussieck\Downloads\times_starter\
+*$include starterdata
+*$elseif.data %DATASET%==starter_extended
+*$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO\
+*$include starterdata_extended
+*$elseif.data %DATASET%==starter20200621
+*$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO20200621\
+*$include starterdata20200621
+*$elseif.data %DATASET%==swiss
+*$set DDPREFIX E:\WC\TIMES_MIRO\swiss\
+*$include swissdata.gms
+*$elseif.data  %DATASET%==mydata
 * Fill in your data
-$onExternalInput
-$offExternalInput
-$else.data
+*$onExternalInput
+*$offExternalInput
+*$else.data
 set           dd                              'DD Files';
+set           offeps                          'dd read under offeps ("true", "false")';
+singleton set gmsddlocation(*)                'Location of DD files'          / '' 'TIMES_Demo/model/'/;   
 $onExternalInput
-set           scenddmap(ddorder,dd<)          'DD File order'                 / #ddorder:(base,newtechs,trade_param,dem_ref,syssettings,peak_rsv,
-                                                                                refinery,demproj_dtcar,uc_nuc_maxcap,bounds-uc_wsets) /;
-set           offeps(dd)                      'dd read under offeps'          / /;                                         
-set           TimeSlice                       'ALL_TS'                        / ANNUAL,S,W,SD,SN,WD,WN/ ;
-set           MILESTONYR                      'Years for this model run'      / 2005, 2010, 2015, 2020, 2030, 2050 /;
-scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / 1960 /;
-scalar        gmsEOTime                       'Adjustment for total available time span of years available in the model' / 2200 /;
-set           extensions(*,*)                 'TIMES Extensions'              / REDUCE.YES, DSCAUTO.YES, VDA.YES, DEBUG.NO, DUMPSOL.NO,
-                                                                                SOLVE_NOW.YES, XTQA.YES, VAR_UC.YES, SOLVEDA.YES, DATAGDX.YES,
-                                                                                VEDAVDD.YES /;
-singleton set gmsObj(*)      'Choice of objective function formulations'      / 'MOD' /; // ALT, AUTO, LIN, MOD, STD
+set           scenddmap(ddorder,dd<,offeps<)  'DD File information'           / /;                                     
+set           TimeSlice(*)                    'ALL_TS'                        / / ;
+set           MILESTONYR(*)                   'Years for this model run'      / /;
+scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / /;
+scalar        gmsEOTime                       'Adjustment for total available time span of years available in the model' / /;
+set           extensions(*,*)                 'TIMES Extensions'              / /;
+singleton set gmsObj(*)      'Choice of objective function formulations'      / /; // MOD, ALT, AUTO, LIN, MOD, STD
 $onMulti
-singleton set gmsddlocation(*)                'Location of DD files'          / '' 'TIMES_Demo/model/'/;
 singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
+singleton set gmsrunmode                      'whether to create a MIRO scenario or solve TIMES' /'' 'create'/;
 $offMulti
 $offExternalInput
-$endif.data
+*$endif.data
 $onExternalInput
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
 set           dd_PRC_DESC(*,*,*) /  /
@@ -439,13 +438,13 @@ alias (*,soName,sow,Vintage)
 parameter cubeOutput(soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
 $offExternalOutput
 
-$eval.set DDPREFIX gmsddlocation.te
-$eval.set RUNFILE gmsrunlocation.te
+$if not set RUNFILE $eval.set RUNFILE gmsrunlocation.te
+$if not set RUNMODE $eval.set RUNMODE gmsrunmode.te
+$if not set DDPREFIX $eval.set DDPREFIX gmsddlocation.te
 $setNames "%RUNFILE%" fp fn fe
-
 *if this file is run through Studio and command line parameter is not set, the data from the *.dd files specified above will
 *be translated into a GDX file that can be imported into MIRO
-$ifThenE sameas("x%gams.IDCGDXInput%","x")or(card(dd)=0)
+$ifThenE.runmodel sameas("x%gams.IDCGDXInput%","x")or(sameas("%RUNMODE%","create"))
 * 2b) read data from *.dd files specified above
 * FF: Shouldnt this be onEchoV?
 $onecho > "%gams.scrDir%mkdd.%gams.scrExt%"
@@ -454,10 +453,9 @@ $oneps
 $include "%mydd%"
 $offecho
 $onMulti
-$ifThenE.card_dd card(dd)=0
+$ifThenE.runmode sameas("%RUNMODE%","create")
 set           solveropt(*,*,*)  'Solver options'                                 / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
-                                                                                  barcrossalg.1, barorder.2, threads.8)
-                                                                                  gurobi.method.2/;
+                                                                                  barcrossalg.1, barorder.2, threads.8) /;
 singleton set gmsSolver(*)      'Solver for TIMES'                               / cplex /;
 singleton set gmsTIMESsrc(*)    'Location of TIME source'                        / '' '' /; // leave at '' for default
 scalar        gmsResLim         'Time limit for solve'                           / 1000 /;
@@ -465,6 +463,9 @@ scalar        gmsBRatio         'Basis indicator'                               
 singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 $onembeddedCode Python:
 import glob
+import os
+import shutil
+import zipfile
 gams.wsWorkingDir = '.'
 run_name = os.path.splitext(os.path.basename(r'%runfile%'))[0]
 print(r"### Analyzing Run File %runfile%")
@@ -484,7 +485,7 @@ with open('myrun.gms','w') as frun:
       if '_ts.dd' in l.lower():
         frun.write(l)
       elif '.dd' in l.lower():
-        scenddmap.append((str(ddcnt),l.split(' ')[1].split('.dd')[0]))
+        scenddmap.append([str(ddcnt),l.split(' ')[1].split('.dd')[0],'false'])
         ddcnt += 1
       elif 'maindrv.mod' in l.lower():
         recordcode = 2
@@ -502,7 +503,15 @@ with open('myrun.gms','w') as frun:
         if not '$if' in l.lower():
           frun.write(l)
   frun.write('$show\n')
-print("### execute gams myrun.gms ... and create myrun.gdx")  
+print("### execute gams myrun.gms ... and create myrun.gdx")
+
+#When running via MIRO, unzip dd file archive first
+if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
+  dirpath = os.path.join( r'%gams.scrDir%..','dd_files')
+  if os.path.exists(dirpath) and os.path.isdir(dirpath):
+      shutil.rmtree(dirpath)
+  with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
+      zip_ref.extractall("dd_files")
 cmd = 'gams myrun.gms a=c ps=0 pw=512 gdx=myrun.gdx idir "' + r'%DDPREFIX% '.rstrip() + '"'
 rc = os.system(cmd)
 if not rc == 0:
@@ -520,10 +529,15 @@ for df in glob.glob(r'%DDPREFIX% '.rstrip()+'*.dd'):
      rc = os.system(s)
      if 0 == rc:
        offeps.append(ddbase)
+       #add offeps information to scenddmap
+       for idx, (order,ddName,offeps) in enumerate(scenddmap):
+         if ddName.lower() == ddbase.lower():
+           scenddmap[idx][2] = 'true'
      dd.append(ddbase)
 gams.set('dd',dd)
-gams.set('offeps',offeps)
 db['MILESTONYR'].copy_symbol(gams.db['MILESTONYR'])
+scenddmap = [tuple(l) for l in scenddmap]
+#TODO: mergeType=MergeType.REPLACE?
 gams.set('scenddmap',scenddmap)
 # process myrun.lst for compile time variables
 print("### Process myrun.lst for compile time variables")
@@ -532,7 +546,10 @@ with open('myrun.lst') as flst:
 start = [i for i, s in enumerate(rl) if 'Level SetVal' in s][0]+2
 print("### Compile time variable report starts in line ", start)
 end = [i for i, s in enumerate(rl) if 'End of Compile-time Variable List' in s][0]
-print("### Compile time variable report ends in line   ", end)
+print("### Compile time variable report ends in line   ", end-1)
+
+gams.set('gmsBOTime',[float(1960)])
+gams.set('gmsEOTime',[float(2200)])
 while start<end:
   vl = rl[start].split()
   if vl[1].lower() == 'obj':
@@ -545,11 +562,11 @@ while start<end:
     pass
   else:
     val = ' '.join(vl[3:])
-    extensions.append((vl[0],val,''))
+    extensions.append((vl[1],val,''))
   start += 1
 gams.set('extensions',extensions)
-$offembeddedcode TimeSlice dd MILESTONYR scenddmap offeps gmsBOTime gmsEOTime extensions gmsObj
-$endif.card_dd
+$offembeddedcode TimeSlice dd MILESTONYR scenddmap gmsBOTime gmsEOTime extensions gmsObj
+$endif.runmode
 
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
@@ -629,13 +646,14 @@ if len(miss_sym):
   printme('*** Unmapped symbols in dd files: ' + str(miss_sym))
   raise NameError('Unmapped symbols in dd files')
 $offEmbeddedCode cubeInput dd_PRC_DESC dd_COM_DESC
-$gdxOut "%fp%%fn%.gdx"
+$gdxOut "%fp%miroScenario.gdx"
 $unLoad
 $gdxOut
 $log ---
-$log --- Scenario exported to "%fp%%fn%.gdx". Please import into MIRO.
+$log --- Scenario exported to "%fp%miroScenario.gdx". Please import into MIRO.
 $log ---
-$else
+
+$else.runmodel
 * 2a) load data from MIRO
 $onEPS
 $ifE card(cubeInput)=0 $abort 'No data in input cube'
@@ -664,7 +682,14 @@ $offMulti
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 gams.ws.my_eps = 0
-offeps = set(gams.get('offeps'))
+
+#extract offeps information from scenddmap 
+scenddmap = list(gams.get('scenddmap'))
+offeps = []
+for idx, (order,ddName,offepsHdr) in enumerate(scenddmap):
+         if offepsHdr.lower() == 'true':
+           offeps.append(scenddmap[idx][1])          
+
 dd_txt = { dd:open(dd+'.dd','w') for dd in gams.get('actdd') }
 cube_input = gams.db['cubeInput']
 act_dd = set()
@@ -746,12 +771,6 @@ with open('timesdriver.gms', 'a+') as td:
     td.write('$offPut\nputClose;\n')
     ext = {'obj':'%GMSOBJ%', 'botime':'%GMSBOTIME%', 'eotime':'%GMSEOTIME%', 'milestonyr':','.join(gams.get('MILESTONYR'))}
     for er in gams.get('extensions',keyFormat=KeyFormat.FLAT, valueFormat=ValueFormat.FLAT):
-      if er[0].lower() in ['premain','postmain']:
-        ext[er[0].lower()+er[1]] = er[2]
-      else:
-        ext[er[0].lower()] = er[1]
-    #TODO:duplicate?
-    for er in gams.get('extensions'):
       if er[0].lower() in ['premain','postmain']:
         ext[er[0].lower()+er[1]] = er[2]
       else:
@@ -926,4 +945,4 @@ with open('out.vd', newline='') as csvfile:
 $offEmbeddedCode cubeOutput
 $offMulti
 put_utility 'incMsg' / 'solve.lst';
-$endif
+$endif.runmodel

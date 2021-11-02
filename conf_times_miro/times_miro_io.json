@@ -25,8 +25,8 @@
 		},
 		"_scalars":	{
 			"alias":	"Input Scalars",
-			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsddlocation", "gmsrunlocation", "gmsbotime", "gmseotime", "gmsobj"],
-			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Location of DD files", "Location of Run file", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations"],
+			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsrunlocation", "gmsrunmode", "gmsbotime", "gmseotime", "gmsobj"],
+			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Location of Run file", "whether to create a MIRO scenario or solve TIMES", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations"],
 			"symtypes":	["set", "parameter", "parameter", "set", "set", "parameter", "parameter", "set"],
 			"headers":	{
 				"scalar":	{
@@ -44,7 +44,7 @@
 			}
 		},
 		"scenddmap":	{
-			"alias":	"DD File order",
+			"alias":	"DD File information",
 			"symtype":	"set",
 			"headers":	{
 				"ddorder":	{
@@ -55,23 +55,13 @@
 					"type":	"string",
 					"alias":	"DD Files"
 				},
-				"text":	{
+				"offeps":	{
 					"type":	"string",
-					"alias":	"Set text DD File order"
-				}
-			}
-		},
-		"offeps":	{
-			"alias":	"dd read under offeps",
-			"symtype":	"set",
-			"headers":	{
-				"dd":	{
-					"type":	"string",
-					"alias":	"DD Files"
+					"alias":	"dd read under offeps (\"true\", \"false\")"
 				},
 				"text":	{
 					"type":	"string",
-					"alias":	"Set text dd read under offeps"
+					"alias":	"Set text DD File information"
 				}
 			}
 		},
