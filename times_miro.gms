@@ -486,7 +486,7 @@ with open('myrun.gms','w') as frun:
     if len(l.rstrip()) == 0 or l[0]=="*":
       continue
     if 'batinclude' in l.lower():
-      if '_ts.dd' in l.lower():
+      if '_ts.dd' in l.lower() or l.lower().split('batinclude ')[1].strip() == 'ts.dd':
         frun.write(l)
       elif '.dd' in l.lower():
         scenddmap.append([str(ddcnt),l.split(' ')[1].split('.dd')[0],'false'])
@@ -527,7 +527,7 @@ db['ALL_TS'].copy_symbol(gams.db['TimeSlice'])
 dd = []
 offeps = []
 for df in glob.glob(r'%DDPREFIX% '.rstrip()+'*.dd'):
-   if not '_ts.dd' in df:
+   if (not '_ts.dd' in df) and df[len(r'%DDPREFIX% '.rstrip()):].strip() != 'ts.dd':
      ddbase = os.path.splitext(os.path.basename(df))[0]
      s = 'grep -i offeps "' + df + '" > ' + os.devnull
      rc = os.system(s)
