@@ -793,7 +793,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     type <- data_prc_temp %>% 
       dplyr::filter(tolower(siname) == "prc_map") %>%
       dplyr::pull("uni") %>% unique()
-    typeTmp <- type
+    typeTmp <- type[order(match(type,typeOrder))]
     #For STG, there are two subsets: PRC_STGTSS and PRC_STGIPS. Thus, a check 
     #should be made whenever the STG has been detected to find whether the process 
     #is a member of PRC_STGTSS or PRC_STGIPS. In this case, the sets value does 
@@ -946,8 +946,11 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
                                   "UC_CUMACT", "UC_COMCOM", "UC_CUMFLO", "UC_FLO", 
                                   "UC_FLOBET", "UC_IRE", "UC_NCAP", "UC_TIME")) %>%
       dplyr::pull("all_reg") %>% unique()
-    #TODO
-    exist <- ""
+    #TODO:multiple entries? allyear != "0"?
+    exist <- ucDataTmp %>%
+      dplyr::filter(grepl("^UC_RHS", siname, ignore.case = TRUE), 
+                    allyear != "0") %>%
+      pull("lim") %>% unique()
     uc_r_each <- ucDataTmp %>% 
       dplyr::filter(tolower(siname) == "uc_r_each") %>% 
       dplyr::pull("all_reg") %>% unique()
