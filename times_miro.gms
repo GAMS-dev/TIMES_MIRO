@@ -482,6 +482,18 @@ ddcnt = 1
 codecnt = 1
 recordcode = 0
 extensions = []
+ddList = []
+ddFiles = []
+ddDiff = []
+#When running via MIRO, unzip dd file archive first
+if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
+  dirpath = os.path.join( r'%gams.scrDir%..','dd_files')
+  if os.path.exists(dirpath) and os.path.isdir(dirpath):
+      shutil.rmtree(dirpath)
+  with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
+      zip_ref.extractall("dd_files")
+ddFiles = os.listdir(r'%DDPREFIX% '.rstrip())
+      
 print("### Start writing myrun.gms")
 with open('myrun.gms','w') as frun:
   for l in rl:
@@ -490,7 +502,9 @@ with open('myrun.gms','w') as frun:
     if 'batinclude' in l.lower():
       if '_ts.dd' in l.lower() or l.lower().split('batinclude ')[1].strip() == 'ts.dd':
         frun.write(l)
+        ddList.append(l.split(' ')[1].split('\n')[0])
       elif '.dd' in l.lower():
+        ddList.append(l.split(' ')[1].split('\n')[0])
         scenddmap.append([str(ddcnt),l.split(' ')[1].split('.dd')[0],'false'])
         ddcnt += 1
       elif 'maindrv.mod' in l.lower():
@@ -508,16 +522,13 @@ with open('myrun.gms','w') as frun:
           recordcode = 1
         if not '$if' in l.lower():
           frun.write(l)
+  #add dd files that are not part of runfile to scenddmap
+  ddDiff = list(set(ddFiles) - set(ddList))
+  for diff in list(set(os.listdir(r'%DDPREFIX% '.rstrip())) - set(ddList)):
+    scenddmap.append(['0',diff.split('.dd')[0],'false'])
   frun.write('$show\n')
 print("### execute gams myrun.gms ... and create myrun.gdx")
 
-#When running via MIRO, unzip dd file archive first
-if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
-  dirpath = os.path.join( r'%gams.scrDir%..','dd_files')
-  if os.path.exists(dirpath) and os.path.isdir(dirpath):
-      shutil.rmtree(dirpath)
-  with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
-      zip_ref.extractall("dd_files")
 cmd = 'gams myrun.gms a=c ps=0 pw=512 gdx=myrun.gdx idir "' + r'%DDPREFIX% '.rstrip() + '"'
 rc = os.system(cmd)
 if not rc == 0:
