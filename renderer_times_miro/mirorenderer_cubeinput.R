@@ -553,16 +553,24 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     req(input$sel_uc)
     item <- "prc_button"
     uc_lhs <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
-    uc_lhs_symbols <- uc_lhs %>% 
-      dplyr::filter(grepl('COM|FLOW', siname))
-    if(nrow(uc_lhs_symbols) > 0){
-      #user constraint has symbol with FLO or COM -> show commodities
-      uc_lhs <- uc_lhs %>% dplyr::filter(uni == "LHS") %>%
-        dplyr::pull(com_grp) %>% unique() %>% sort()
-      item <- "com_button"
-      #TODO: color code/legend?
+    flo_symbols <- uc_lhs %>% 
+      dplyr::filter(grepl('COM|FLO', siname))
+
+    if(nrow(flo_symbols) > 0){
+      prcTmp <- uc_lhs %>% dplyr::pull(prc) %>% unique() %>% sort()
+      prcTmp <- prcTmp[!prcTmp %in% "-"]
+      comToShow <- flo_symbols %>% pull(com_grp) %>% unique() %>% sort()
+      comToShow <- comToShow[!comToShow %in% "-"]
+      comSide <- topData %>% dplyr::filter(tolower(prc) %in% tolower(prcTmp), com_grp %in% comToShow) %>%
+        pull(uni) %>% unique()
+      if(!"out" %in% tolower(comSide)){
+        item <- "com_button"
+        uc_lhs <- comToShow
+      }else{
+        uc_lhs <- prcTmp
+      }
     }else{
-      uc_lhs <- uc_lhs %>% dplyr::filter(uni == "LHS") %>%
+      uc_lhs <- uc_lhs %>% dplyr::filter(tolower(uni) == "lhs") %>%
         dplyr::pull(prc) %>% unique() %>% sort()
     }
     uc_lhs <- uc_lhs[!uc_lhs %in% "-"]
@@ -588,16 +596,23 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     req(input$sel_uc)
     item <- "prc_button"
     uc_rhs <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
-    uc_rhs_symbols <- uc_rhs %>% 
-      dplyr::filter(grepl('COM|FLOW', siname))
-    if(nrow(uc_rhs_symbols) > 0){
-      #user constraint has symbol with FLO or COM -> show commodities
-      uc_rhs <- uc_rhs %>% dplyr::filter(uni == "RHS") %>%
-        dplyr::pull(com_grp) %>% unique() %>% sort()
-      item <- "com_button"
-      #TODO: color code/legend?
+    flo_symbols <- uc_rhs %>% 
+      dplyr::filter(grepl('COM|FLO', siname))
+    if(nrow(flo_symbols) > 0){
+      prcTmp <- uc_rhs %>% dplyr::pull(prc) %>% unique() %>% sort()
+      prcTmp <- prcTmp[!prcTmp %in% "-"]
+      comToShow <- flo_symbols %>% pull(com_grp) %>% unique() %>% sort()
+      comToShow <- comToShow[!comToShow %in% "-"]
+      comSide <- topData %>% dplyr::filter(tolower(prc) %in% tolower(prcTmp), com_grp %in% comToShow) %>%
+        pull(uni) %>% unique()
+      if("out" %in% tolower(comSide)){
+        item <- "com_button"
+        uc_rhs <- comToShow
+      }else{
+        uc_rhs <- prcTmp
+      }
     }else{
-      uc_rhs <- uc_rhs %>% dplyr::filter(uni == "RHS") %>%
+      uc_rhs <- uc_rhs %>% dplyr::filter(tolower(uni) == "rhs") %>%
         dplyr::pull(prc) %>% unique() %>% sort()
     }
     uc_rhs <- uc_rhs[!uc_rhs %in% "-"]
@@ -704,7 +719,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     
     tableData <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
     uc_comFlo_symbols <- tableData %>% 
-      dplyr::filter(grepl('COM|FLOW', siname))
+      dplyr::filter(grepl('COM|FLO', siname))
     rows <- c("Region", "Symbol", "Commodity")
     if(nrow(uc_comFlo_symbols) > 0){
       rows <- c("Region", "Commodity", "Symbol", "Process")
@@ -879,11 +894,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     actUnit <- data_com_temp %>% 
       dplyr::filter(tolower(siname) == "com_unit") %>% 
       dplyr::pull("uni") %>% unique()
-    #TODO: Exact copy of 'type'? If yes, can be removed? 
-    sets <- noTopData %>%
-      filter(tolower(siname) == "com_tmap") %>% 
-      dplyr::filter(uni == input$sel_com) %>% 
-      dplyr::pull("com_grp") %>% unique()
     tslvl <- data_com_temp %>% 
       dplyr::filter(tolower(siname) == "com_tsl") %>% 
       dplyr::pull("all_ts") %>% unique()
@@ -904,7 +914,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       add_row(key = "Type", value = paste(type, collapse = ", ")) %>%
       add_row(key = "SubType", value = paste(subType, collapse = ", ")) %>%
       add_row(key = "Activity Unit", value = paste(actUnit, collapse = ", ")) %>%
-      add_row(key = "Sets", value = paste(sets, collapse = ", ")) %>%
       add_row(key = "TSLVL", value = paste(tslvl, collapse = ", ")) %>%
       add_row(key = "LimType", value = paste(limType, collapse = ", ")) %>%
       add_row(key = "PeakTS", value = paste(peakTs, collapse = ", ")) %>%
@@ -930,7 +939,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     req(input$sel_uc)
     
     ucDataTmp <- ucData %>% dplyr::filter(uc_n == input$sel_uc) 
-    
     scen <- ucDataTmp %>% dplyr::pull("dd") %>% unique()
     existIn <- ucDataTmp %>% 
       dplyr::filter(siname %in% c("UC_ACT", "UC_ACTBET", "UC_CAP", "UC_COM", 
