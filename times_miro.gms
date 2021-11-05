@@ -463,7 +463,9 @@ scalar        gmsBRatio         'Basis indicator'                               
 singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 
 *Clear data from MIRO that may cause duplicate errors when creating a scenario
-$clear cubeinput dd_COM_DESC dd_PRC_DESC scenddmap TimeSlice MILESTONYR gmsBOTime gmsEOTime extensions gmsObj 
+$onMultiR
+$clear cubeinput dd_COM_DESC dd_PRC_DESC scenddmap TimeSlice MILESTONYR gmsBOTime gmsEOTime extensions gmsObj dd
+$onMulti
 
 $onembeddedCode Python:
 import glob
