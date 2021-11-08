@@ -200,11 +200,11 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   rv <- reactiveValues(
     inputNeedsUpdate = FALSE,
-    updateScenddMap = 1,
-    updateExtensions = 1,
-    updateTimeslice = 1,
-    updateMilestonyr = 1,
-    updateSolveropt = 1, 
+    scenddMapData = NULL,
+    extensionsData = NULL,
+    timesliceData = NULL,
+    milestonyrData = NULL,
+    solveroptData = NULL, 
     updateGmsbotime = character(0),
     updateGmseotime = character(0),
     updateGmsobj = character(0),
@@ -217,14 +217,8 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   )
   
   zipFilePath <- tempfile(fileext = ".zip")
-  scenddmapData <- NULL
-  extensionsData <- NULL
-  milestonyrData <- NULL
-  solveroptData <- NULL
-  timesliceData <- NULL
   offepsData <- NULL
   gmsobjData <- NULL
-  # gmsrunlocationData <- NULL
   gmsbotimeData <- NULL
   gmseotimeData <- NULL
   gmsbratioData <- NULL
@@ -232,21 +226,23 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   gmssolverData <- NULL
   
   observe({
-    scenddmapData <<- data$scenddmap()
+    rv$scenddmapData <<- data$scenddmap()
     #0 values to bottom, rest sorted in ascending order 
-    scenddmapZero <- scenddmapData %>%
-      filter(ddorder == "0")
-    if(nrow(scenddmapZero) > 0){
-      scenddmapData <<- scenddmapData %>%
-        filter(ddorder != "0") %>% add_row(scenddmapZero)
-    }
-    scenddmapData$offeps <<- as.logical(scenddmapData$offeps)
-    extensionsData <<- data$extensions()
-    milestonyrData <<- data$milestonyr()
-    solveroptData <<- data$solveropt()
-    timesliceData <<- data$timeslice()
+    isolate({
+      scenddmapZero <- rv$scenddmapData %>%
+        filter(ddorder == "0")
+      if(nrow(scenddmapZero) > 0){
+        rv$scenddmapData <<- rv$scenddmapData %>%
+          filter(ddorder != "0") %>% add_row(scenddmapZero)
+      }
+      rv$scenddmapData$offeps <<- as.logical(rv$scenddmapData$offeps)
+    })
+    
+    rv$extensionsData <<- data$extensions()
+    rv$milestonyrData <<- data$milestonyr()
+    rv$solveroptData <<- data$solveropt()
+    rv$timesliceData <<- data$timeslice()
     gmsobjData <<- data$gmsobj()
-    # gmsrunlocationData <<- data$gmsrunlocation()
     gmsbotimeData <<- data$gmsbotime()
     gmseotimeData <<- data$gmseotime()
     gmsbratioData <<- data$gmsbratio()
@@ -290,11 +286,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     }
     isolate({
       rv$inputNeedsUpdate <- TRUE 
-      rv$updateScenddMap <- rv$updateScenddMap + 1
-      rv$updateExtensions <- rv$updateExtensions + 1
-      rv$updateTimeslice <- rv$updateTimeslice + 1
-      rv$updateMilestonyr <- rv$updateMilestonyr + 1
-      rv$updateSolveropt <- rv$updateSolveropt + 1
       rv$updateGmsbotime <- input$gmsbotime
       rv$updateGmseotime <- input$gmseotime
       rv$updateGmsobj <- input$gmsobj
@@ -305,71 +296,65 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     })
   })
   
+  #add table row
+  observeEvent(input$addScenddmap, {
+    rv$scenddmapData <<- rv$scenddmapData %>% add_row(ddorder = "", dd = "", offeps = FALSE, text = "")
+  })
+  observeEvent(input$addExtensions, {
+    rv$extensionsData <<- rv$extensionsData %>% add_row(uni = "", `uni#1` = "", text = "")
+  })
+  observeEvent(input$addTimeslice, {
+    rv$timesliceData <<- rv$timesliceData %>% add_row(uni = "", text = "")
+  })
+  observeEvent(input$addMilestonyr, {
+    rv$milestonyrData <<- rv$milestonyrData %>% add_row(uni = "", text = "")
+  })
+  observeEvent(input$addSolveropt, {
+    rv$solveroptData <<- rv$solveroptData %>% add_row(uni = "", `uni#1` = "", `uni#2` = "", text = "")
+  })
   
   #observe user action in scenddmapTmp table
   observeEvent(input$scenddmap, {
     if(length(input$scenddmap$data)){
-      scenddmapData <<- as_tibble(hot_to_r(input$scenddmap))
+      rv$scenddmapData <<- as_tibble(hot_to_r(input$scenddmap))
     }else{
-      scenddmapData <<- scenddmapData[0,]
+      rv$scenddmapData <<- rv$scenddmapData[0,]
     }
-  })
-  
-  #add table row
-  observeEvent(input$addScenddmap, {
-    scenddmapData <<- scenddmapData %>% add_row(ddorder = "", dd = "", offeps = FALSE, text = "")
-    rv$updateScenddMap <- rv$updateScenddMap + 1
-  })
-  observeEvent(input$addExtensions, {
-    extensionsData <<- extensionsData %>% add_row(uni = "", `uni#1` = "", text = "")
-    rv$updateExtensions <- rv$updateExtensions + 1
-  })
-  observeEvent(input$addTimeslice, {
-    timesliceData <<- timesliceData %>% add_row(uni = "", text = "")
-    rv$updateTimeslice <- rv$updateTimeslice + 1
-  })
-  observeEvent(input$addMilestonyr, {
-    milestonyrData <<- milestonyrData %>% add_row(uni = "", text = "")
-    rv$updateMilestonyr <- rv$updateMilestonyr + 1
-  })
-  observeEvent(input$addSolveropt, {
-    solveroptData <<- solveroptData %>% add_row(uni = "", `uni#1` = "", `uni#2` = "", text = "")
-    rv$updateSolveropt <- rv$updateSolveropt + 1
   })
   
   #observe user action in extensions table
   observeEvent(input$extensions, {
     if(length(input$extensions$data)){
-      extensionsData <<- as_tibble(hot_to_r(input$extensions))
+      rv$extensionsData <<- as_tibble(hot_to_r(input$extensions))
     }else{
-      extensionsData <<- extensionsData[0,]
+      rv$extensionsData <<- rv$extensionsData[0,]
     }
   })
   
   #observe user action in milestonyr table
   observeEvent(input$milestonyr, {
     if(length(input$milestonyr$data)){
-      milestonyrData <<- as_tibble(hot_to_r(input$milestonyr))
+      rv$milestonyrData <<- as_tibble(hot_to_r(input$milestonyr))
     }else{
-      milestonyrData <<- milestonyrData[0,]
+      rv$milestonyrData <<- rv$milestonyrData[0,]
     }
   })
   
   #observe user action in solveropt table
   observeEvent(input$solveropt, {
     if(length(input$solveropt$data)){
-      solveroptData <<- as_tibble(hot_to_r(input$solveropt))
+      rv$solveroptData <<- as_tibble(hot_to_r(input$solveropt))
     }else{
-      solveroptData <<- solveroptData[0,]
+      rv$solveroptData <<- rv$solveroptData[0,]
     }
   })
   
   #observe user action in timeslice table
   observeEvent(input$timeslice, {
     if(length(input$timeslice$data)){
-      timesliceData <<- as_tibble(hot_to_r(input$timeslice))
+      rv$timesliceData <<- as_tibble(hot_to_r(input$timeslice))
     }else{
-      timesliceData <<- timesliceData[0,]
+      rv$timesliceData <<- rv$timesliceData[0,]
     }
   })
   
@@ -472,8 +457,8 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   #render scenddmap table
   output$scenddmap <- renderRHandsontable({
-    rv$updateScenddMap
-    scenddmapData <- scenddmapData %>% replace_na(list(order = "", dd = "", offeps = FALSE, text = ""))
+    rv$scenddmapData
+    scenddmapData <- rv$scenddmapData %>% replace_na(list(order = "", dd = "", offeps = FALSE, text = ""))
     scenddmapData$offeps <- as.logical(scenddmapData$offeps)
     scenddmapTableTmp <<- rhandsontable(scenddmapData, 
                                         colHeaders = c("Order (0=ignore)", "DD File", "$offEps", "Text"),
@@ -492,8 +477,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   #render extensions table
   output$extensions <- renderRHandsontable({
-    rv$updateExtensions
-    extensionsTableTmp <<- rhandsontable(extensionsData, 
+    extensionsTableTmp <<- rhandsontable(rv$extensionsData, 
                                          colHeaders = c("Extension", "Value", "Text"),
                                          readOnly = FALSE, 
                                          rowHeaders = NULL,
@@ -516,8 +500,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   #render milestonyr table
   output$milestonyr <- renderRHandsontable({
-    rv$updateMilestonyr
-    milestonyrTableTmp <<- rhandsontable(milestonyrData, 
+    milestonyrTableTmp <<- rhandsontable(rv$milestonyrData, 
                                          colHeaders = c("Year", "Text"),
                                          readOnly = FALSE, 
                                          rowHeaders = NULL,
@@ -532,8 +515,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   #render solveropt table
   output$solveropt <- renderRHandsontable({
-    rv$updateSolveropt
-    solveroptTableTmp <<- rhandsontable(solveroptData, 
+    solveroptTableTmp <<- rhandsontable(rv$solveroptData, 
                                         colHeaders = c("Solver", "Option", "Value", "Text"),
                                         readOnly = FALSE, 
                                         rowHeaders = NULL,
@@ -547,8 +529,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   #render timeslice table
   output$timeslice <- renderRHandsontable({
-    rv$updateTimeslice
-    timesliceTableTmp <<- rhandsontable(timesliceData, 
+    timesliceTableTmp <<- rhandsontable(rv$timesliceData, 
                                         colHeaders = c("Time Slice", "Text"),
                                         readOnly = FALSE, 
                                         rowHeaders = NULL,
@@ -583,17 +564,10 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     }
   })
   
-  outputOptions(output, "scenddmap", suspendWhenHidden = FALSE) 
-  outputOptions(output, "extensions", suspendWhenHidden = FALSE) 
-  outputOptions(output, "milestonyr", suspendWhenHidden = FALSE) 
-  outputOptions(output, "timeslice", suspendWhenHidden = FALSE) 
-  outputOptions(output, "ddFilesAdded", suspendWhenHidden = FALSE)
-  outputOptions(output, "runFileAdded", suspendWhenHidden = FALSE)
-  
   return(
     list(
       scenddmap = reactive({
-        scenddmapTmp <- hot_to_r(input$scenddmap)
+        scenddmapTmp <- rv$scenddmapData
         if(length(scenddmapTmp) && nrow(scenddmapTmp) > 0){
           scenddmapTmp <- scenddmapTmp %>% replace_na(list(order = "", dd = "", offeps = FALSE, text = "")) %>% 
             filter(ddorder != "" & dd != "")
@@ -602,14 +576,14 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         scenddmapTmp
       }),
       extensions = reactive({
-        extensionsTmp <- hot_to_r(input$extensions)
+        extensionsTmp <- rv$extensionsData
         if(length(extensionsTmp) && nrow(extensionsTmp) > 0){
           extensionsTmp <- extensionsTmp %>% filter(uni != "" & `uni#1` != "")
         }
         extensionsTmp
       }),
       milestonyr = reactive({
-        milestonyrTmp <- hot_to_r(input$milestonyr)
+        milestonyrTmp <- rv$milestonyrData
         if(length(milestonyrTmp)){
           milestonyrTmp <- milestonyrTmp[order(milestonyrTmp$uni),]
         }
@@ -619,14 +593,14 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         milestonyrTmp
       }),
       solveropt = reactive({
-        solveroptTmp <- hot_to_r(input$solveropt)
+        solveroptTmp <- rv$solveroptData
         if(length(solveroptTmp) && nrow(solveroptTmp) > 0){
           solveroptTmp <- solveroptTmp %>% filter(uni != "" & `uni#1` != "" & `uni#2` != "")
         }
         solveroptTmp
       }),
       timeslice = reactive({
-        timesliceTmp <- hot_to_r(input$timeslice)
+        timesliceTmp <- rv$timesliceData
         if(length(timesliceTmp) && nrow(timesliceTmp) > 0){
           timesliceTmp <- timesliceTmp %>% filter(uni != "")
         }
