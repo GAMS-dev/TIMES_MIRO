@@ -333,15 +333,17 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   noTopData <- data %>% dplyr::filter(tolower(siname) != "top")
   ucData <- data[!(!is.na(data$uc_n) & data$uc_n=="-"), ]
 
-  processes <- topData %>%
+  processes <- data %>%
     dplyr::pull(prc) %>% 
     unique() %>%
     sort()
+  processes <- processes[!processes %in% "-"]
   
-  commodities <- topData %>% 
+  commodities <- data %>% 
       dplyr::pull(com_grp) %>% 
       unique() %>% 
       sort()
+  commodities <- commodities[!commodities %in% "-"]
   
   userConstraints <- ucData %>% 
     dplyr::filter(tolower(siname) == "uc_n") %>%
@@ -366,26 +368,19 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     updateSelectInput(session, "sel_prc", selected = input$prc_button)
     
   })
-  # rendererEnv[[ns("comBtnUC")]] <- observe({
-  #   req(input$com_buttonUC)
-  #   updateTabsetPanel(session, "switch", selected = "tp_com")
-  #   updateSelectInput(session, "sel_com", selected = input$com_buttonUC)
-  #   
-  # })
-  # rendererEnv[[ns("prcBtnUC")]] <- observe({
-  #   req(input$prc_buttonUC)
-  #   updateTabsetPanel(session, "switch", selected = "tp_prc")
-  #   updateSelectInput(session, "sel_prc", selected = input$prc_buttonUC)
-  #   
-  # })
   
   #processInData is also used for commodity out data
   processInData <- topData %>% dplyr::filter(uni == "IN")
   processOutData <- topData %>% dplyr::filter(uni == "OUT") 
   
-  colorMap <- c("pre" = "#ffe699", "ire" = "#c6e0b4", "ele" = "#305496", "dmd" = "#acb9ca", "nrg" = "#f4b084", "env" = "#c6e0b4", "dem" = "#acb9ca", "unknown" = "transparent")
+  colorMap <- c("pre" = "#ffe699", "ire" = "#c6e0b4", "ele" = "#305496", 
+                "dmd" = "#acb9ca", "nrg" = "#f4b084", "env" = "#c6e0b4", 
+                "dem" = "#acb9ca", "chp" = "#f8cbad", "stg" = "#CACDE0",
+                "stk" = "#A1C8C9", "distr" = "#DEB4E0", "sts" = "#276134",
+                "hpl" = "#AC8BAD", "ref" = "#E0E0CA", "renew" = "#9DE0AD",
+                "unknown" = "transparent")
   #TODO: "elc" subtype of NRG?
-  darkColors <- ("#305496")
+  darkColors <- c("#305496", "#AC8BAD", "#276134")
   
   #process IN
   output$prc_in <- renderUI({
@@ -482,9 +477,20 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       tags$ul(class = if(length(com_prc_in)) "custom-list", 
               lapply(com_prc_in, function(x){
                 type <- noTopData %>%
-                  dplyr::filter(prc == x) %>%
+                  dplyr::filter(prc == x) %>% 
                   dplyr::filter(tolower(siname) == "prc_map") %>%
                   dplyr::pull("uni") %>% unique()
+                typeTmp <- type[order(match(type,typeOrder))]
+                if(any(typeTmp %in% "STG") && input$sel_prc %in% stgttsMember){
+                  typeTmp[match("STG", typeTmp)] <- "STGTSS"
+                }else if(any(typeTmp %in% "STG") && input$sel_prc %in% stgipsMember){
+                  typeTmp[match("STG", typeTmp)] <- "STGIPS"
+                }
+                if(any(type %in% preSubordinates)){
+                  type <- "PRE"
+                }else if(length(type) > 1){
+                  type <- typeOrder[min(match(type,typeOrder))]
+                }
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
                 if(!length(type)) type <- "unknown"
@@ -521,9 +527,20 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       tags$ul(class = if(length(com_prc_out)) "custom-list", 
               lapply(com_prc_out, function(x){
                 type <- noTopData %>%
-                  dplyr::filter(prc == x) %>%
+                  dplyr::filter(prc == x) %>% 
                   dplyr::filter(tolower(siname) == "prc_map") %>%
                   dplyr::pull("uni") %>% unique()
+                typeTmp <- type[order(match(type,typeOrder))]
+                if(any(typeTmp %in% "STG") && input$sel_prc %in% stgttsMember){
+                  typeTmp[match("STG", typeTmp)] <- "STGTSS"
+                }else if(any(typeTmp %in% "STG") && input$sel_prc %in% stgipsMember){
+                  typeTmp[match("STG", typeTmp)] <- "STGIPS"
+                }
+                if(any(type %in% preSubordinates)){
+                  type <- "PRE"
+                }else if(length(type) > 1){
+                  type <- typeOrder[min(match(type,typeOrder))]
+                }
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
                 if(!length(type)) type <- "unknown"
