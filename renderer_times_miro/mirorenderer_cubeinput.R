@@ -846,7 +846,8 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
     # if(length(com_prc_in) > 1 || length(com_prc_out) > 1){
     #   
     # }
-    pcg <- ""
+    pcg <- data_prc_temp %>% dplyr::filter(tolower(siname) == "prc_actunt") %>% 
+      dplyr::pull(com_grp) %>% unique() %>% sort()
     region <- top_prc_temp %>% dplyr::pull("all_reg") %>% unique()
     
     tableData <- data.frame(key = character(0), value = character(0)) %>%
