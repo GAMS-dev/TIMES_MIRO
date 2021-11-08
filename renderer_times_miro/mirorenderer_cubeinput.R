@@ -948,8 +948,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       dplyr::pull("all_reg") %>% unique()
     #TODO:multiple entries? allyear != "0"?
     exist <- ucDataTmp %>%
-      dplyr::filter(grepl("^UC_RHS", siname, ignore.case = TRUE), 
-                    allyear != "0") %>%
+      dplyr::filter(grepl("^UC_RHS", siname, ignore.case = TRUE)) %>%
       pull("lim") %>% unique()
     uc_r_each <- ucDataTmp %>% 
       dplyr::filter(tolower(siname) == "uc_r_each") %>% 
