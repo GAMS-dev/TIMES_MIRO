@@ -233,6 +233,13 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   observe({
     scenddmapData <<- data$scenddmap()
+    #0 values to bottom, rest sorted in ascending order 
+    scenddmapZero <- scenddmapData %>%
+      filter(ddorder == "0")
+    if(nrow(scenddmapZero) > 0){
+      scenddmapData <<- scenddmapData %>%
+        filter(ddorder != "0") %>% add_row(scenddmapZero)
+    }
     scenddmapData$offeps <<- as.logical(scenddmapData$offeps)
     extensionsData <<- data$extensions()
     milestonyrData <<- data$milestonyr()
