@@ -602,7 +602,7 @@ print("### com_idx = " , com_idx)
 
 print("### Turning dd files into gdx files")
 for dd in gams.get('dd'):
-  s = 'grep -iv offeps ' + r'%DDPREFIX% '.rstrip()+dd+'.dd > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
+  s = 'grep -iv offeps "' + r'%DDPREFIX% '.rstrip()+dd+'.dd" > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
   rc = os.system(s)
   if not rc==0:
     raise NameError('probem executing: ' + s)
