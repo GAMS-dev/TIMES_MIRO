@@ -111,7 +111,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                       column(6, class = "box-custom",
                                              selectInput(ns("gmssolver"), tags$h4("Solver to use"), c("cplex", "cbc", "conopt", "conopt4"), selected = "cplex"),
                                              numericInput(ns("gmsreslim"), tags$h4("Time limit for solve [seconds]"), 
-                                                          min = 10, max = 36000, value = 1000, step = 1)
+                                                          min = 10, max = 36000, value = 1000L, step = 1)
                                       ),
                                       column(6, class = "box-custom",
                                              selectInput(ns("gmsobj"), tags$h4("Objective function formulation"), c("ALT", "AUTO", "LIN", "MOD", "STD"), selected = "MOD"),
@@ -199,31 +199,23 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                        attachments = NULL, outputScalarsFull = NULL, ...){
   
   rv <- reactiveValues(
-    inputNeedsUpdate = FALSE,
     scenddMapData = NULL,
     extensionsData = NULL,
     timesliceData = NULL,
     milestonyrData = NULL,
     solveroptData = NULL, 
-    updateGmsbotime = character(0),
-    updateGmseotime = character(0),
-    updateGmsobj = character(0),
-    updateGmsbratio = character(0),
-    updateGmsreslim = character(0),
-    updateGmssolver = character(0),
+    gmsbotime = 1960,
+    gmseotime = 2200,
+    gmsobj = character(0),
+    gmsbratio = character(0),
+    gmsreslim = character(0),
+    gmssolver = character(0),
     updateGmsrunmode = character(0),
     ddFiles = character(0), 
     runFile = character(0)
   )
   
   zipFilePath <- tempfile(fileext = ".zip")
-  offepsData <- NULL
-  gmsobjData <- NULL
-  gmsbotimeData <- NULL
-  gmseotimeData <- NULL
-  gmsbratioData <- NULL
-  gmsreslimData <- NULL
-  gmssolverData <- NULL
   
   observe({
     rv$scenddmapData <<- data$scenddmap()
@@ -242,30 +234,22 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     rv$milestonyrData <<- data$milestonyr()
     rv$solveroptData <<- data$solveropt()
     rv$timesliceData <<- data$timeslice()
-    gmsobjData <<- data$gmsobj()
-    gmsbotimeData <<- data$gmsbotime()
-    gmseotimeData <<- data$gmseotime()
-    gmsbratioData <<- data$gmsbratio()
-    gmsreslimData <<- data$gmsreslim()
-    gmssolverData <<- data$gmssolver()
-    if(length(gmsobjData)){
-      updateSelectInput(session, "gmsobj", selected = gmsobjData)
-    }
-    if(length(gmsbotimeData)){
-      updateSelectInput(session, "gmsbotime", selected = gmsbotimeData)
-    }
-    if(length(gmseotimeData)){
-      updateSelectInput(session, "gmseotime", selected = gmseotimeData)
-    }
-    if(length(gmsbratioData)){
-      updateSelectInput(session, "gmsbratio", selected = gmsbratioData)
-    }
-    if(length(gmsreslimData)){
-      updateSelectInput(session, "gmsreslim", selected = gmsreslimData)
-    }
-    if(length(gmssolverData)){
-      updateSelectInput(session, "gmssolver", selected = gmssolverData)
-    }
+    rv$gmsobj <<- data$gmsobj()
+    rv$gmsbotime <<- data$gmsbotime()
+    rv$gmseotime <<- data$gmseotime()
+    rv$gmsbratio <<- data$gmsbratio()
+    rv$gmsreslim <<- data$gmsreslim()
+    rv$gmssolver <<- data$gmssolver()
+    
+    isolate({
+      updateSelectInput(session, "gmsobj", selected = if(length(rv$gmsobj)) rv$gmsobj else "MOD")
+      updateSelectInput(session, "gmsbotime", selected = if(length(rv$gmsbotime)) rv$gmsbotime else "1960")
+      updateSelectInput(session, "gmseotime", selected = if(length(rv$gmseotime)) rv$gmseotime else "2200")
+      updateSelectInput(session, "gmsbratio", selected = if(length(rv$gmsbratio)) rv$gmsbratio else 1)
+      updateSelectInput(session, "gmsreslim", selected = if(length(rv$gmsreslim))rv$gmsreslim else 1000L)
+      updateSelectInput(session, "gmssolver", selected = if(length(rv$gmssolver)) rv$gmssolver else "cplex")
+    })
+    
     if("dd_files.zip" %in% attachments$getIds()){
       tryCatch({
         attachments$save(zipFilePath, "dd_files.zip", overwrite = TRUE)
@@ -285,13 +269,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       rv$runFile <- character(0)
     }
     isolate({
-      rv$inputNeedsUpdate <- TRUE 
-      rv$updateGmsbotime <- input$gmsbotime
-      rv$updateGmseotime <- input$gmseotime
-      rv$updateGmsobj <- input$gmsobj
-      rv$updateGmsbratio <- input$gmsbratio
-      rv$updateGmsreslim <- input$gmsreslim
-      rv$updateGmssolver <- input$gmssolver
       rv$updateGmsrunmode <- input$gmsrunmode
     })
   })
@@ -356,6 +333,25 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     }else{
       rv$timesliceData <<- rv$timesliceData[0,]
     }
+  })
+  
+  observeEvent(input$gmsobj, {
+    rv$gmsobj <- input$gmsobj
+  })
+  observeEvent(input$gmsbotime, {
+    rv$gmsbotime <- input$gmsbotime
+  })
+  observeEvent(input$gmseotime, {
+    rv$gmseotime <- input$gmseotime
+  })
+  observeEvent(input$gmsbratio, {
+    rv$gmsbratio <- input$gmsbratio
+  })
+  observeEvent(input$gmsreslim, {
+    rv$gmsreslim <- input$gmsreslim
+  })
+  observeEvent(input$gmssolver, {
+    rv$gmssolver <- input$gmssolver
   })
   
   zipDDFiles <- function(zipPath, filepaths, filenames, append = FALSE) {
@@ -490,14 +486,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     return(extensionsTableTmp)
   })
   
-  toListenYears <- reactive({
-    list(input$gmsbotime, input$gmseotime)
-  })
-  yearsAvailable <- c(1960:2200)
-  observeEvent(toListenYears(), {
-    yearsAvailable <<- c(input$gmsbotime:input$gmseotime)
-  })
-  
   #render milestonyr table
   output$milestonyr <- renderRHandsontable({
     milestonyrTableTmp <<- rhandsontable(rv$milestonyrData, 
@@ -507,7 +495,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                          search = TRUE,
                                          height = 400) %>% 
       hot_table(stretchH = "all", highlightRow = TRUE) %>%
-      hot_col(1,  type = "autocomplete", source = yearsAvailable, strict = TRUE, allowInvalid = FALSE) %>%
+      hot_col(1,  type = "autocomplete", source = c(rv$gmsbotime:rv$gmseotime), strict = TRUE, allowInvalid = FALSE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = TRUE) %>% 
       hot_col(col = 'Text', colWidths=0.001)
     return(milestonyrTableTmp)
@@ -607,25 +595,25 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         timesliceTmp
       }),
       gmsobj = reactive({
-        rv$updateGmsobj
+        rv$gmsobj
       }),
       gmsrunlocation = reactive({
         paste0("||./", rv$runFile)
       }),
       gmsbotime = reactive({
-        rv$updateGmsbotime
+        rv$gmsbotime
       }),
       gmseotime = reactive({
-        rv$updateGmseotime
+        rv$gmseotime
       }),
       gmsbratio = reactive({
-        rv$updateGmsbratio
+        rv$gmsbratio
       }),
       gmsreslim = reactive({
-        rv$updateGmsreslim
+        rv$gmsreslim
       }),
       gmssolver = reactive({
-        rv$updateGmssolver
+        rv$gmssolver
       }),
       gmsrunmode = reactive({
         paste0("||", input$runmode)
