@@ -1,4 +1,5 @@
 $eolCom //
+set caseSensitiveUELs / YES, NO /;
 *#################################
 *#  1) INPUT CUBE CONFIGURATION  #
 *#################################
@@ -425,8 +426,11 @@ singleton set gmsrunmode                      'whether to create a MIRO scenario
 $offMulti
 $offExternalInput
 *$endif.data
+
 $onExternalInput
+$onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
+$offEps
 set           dd_PRC_DESC(*,*,*) /  /
               dd_COM_DESC(*,*,*) /  /;
 * Skipped VDA DATAGDX VEDAVDD 
