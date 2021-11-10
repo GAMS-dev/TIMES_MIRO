@@ -497,7 +497,7 @@ if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
       shutil.rmtree(dirpath)
   with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
       zip_ref.extractall("dd_files")
-ddFiles = os.listdir(r'%DDPREFIX% '.rstrip())
+ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith('.dd')]
       
 print("### Start writing myrun.gms")
 with open('myrun.gms','w') as frun:
@@ -529,7 +529,7 @@ with open('myrun.gms','w') as frun:
           frun.write(l)
   #add dd files that are not part of runfile to scenddmap
   ddDiff = list(set(ddFiles) - set(ddList))
-  for diff in list(set(os.listdir(r'%DDPREFIX% '.rstrip())) - set(ddList)):
+  for diff in ddDiff:
     scenddmap.append(['0',diff.split('.dd')[0],'false'])
   frun.write('$show\n')
 print("### execute gams myrun.gms ... and create myrun.gdx")
