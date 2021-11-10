@@ -17,7 +17,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "extensions", "solveropt", "dd_prc_desc", "dd_com_desc"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "extensions", "solveropt"]
   },
   "overwriteAliases": {
     "timeslice": {
@@ -64,12 +64,6 @@
     },
     "gmsobj": {
       "newAlias": "Choice of objective function formulations"
-    },
-    "dd_prc_desc": {
-      "newAlias": "Process description"
-    },
-    "dd_com_desc": {
-      "newAlias": "Commodity description"
     }
   },
   "dataRendering": {
@@ -99,8 +93,7 @@
       }
     },
     "cubeinput": {
-      "outType": "mirorenderer_cubeinput",
-      "additionalData": ["dd_prc_desc", "dd_com_desc"]
+      "outType": "mirorenderer_cubeinput"
     }
   },
   "saveTraceFile": false,
@@ -239,12 +232,6 @@
     },
     "cubeoutput": {
       "newHeaders": ["Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
-    },
-    "dd_prc_desc": {
-      "newHeaders": ["DD file", "Region", "Process", "Description"]
-    },
-    "dd_com_desc": {
-      "newHeaders": ["DD file", "Region", "Commodity", "Description "]
     }
   },
   "extraClArgs": ["debug=1492", "--gmsrunopt=local", "--DDPREFIX=dd_files/"],
@@ -258,13 +245,6 @@
     "enableHideEmptyCols": true,
     "emptyUEL": "-"
   },
-  "inputGroups": [
-    {
-      "name": "Process / Commodity description",
-      "members": ["dd_prc_desc", "dd_com_desc"],
-      "sameTab": false
-    }
-  ],
   "handsontable": {
     "stretchH": "none",
     "readonly": false,

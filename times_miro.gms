@@ -431,10 +431,10 @@ $onExternalInput
 $onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
 $offEps
-set           dd_PRC_DESC(*,*,*) /  /
-              dd_COM_DESC(*,*,*) /  /;
 * Skipped VDA DATAGDX VEDAVDD 
 $offExternalInput
+set           dd_PRC_DESC(*,*,*) /  /
+              dd_COM_DESC(*,*,*) /  /;
 $offEmpty
 
 $onExternalOutput
@@ -468,7 +468,8 @@ singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue'
 
 *Clear data from MIRO that may cause duplicate errors when creating a scenario
 $onMultiR
-$clear cubeinput dd_COM_DESC dd_PRC_DESC scenddmap TimeSlice MILESTONYR gmsBOTime gmsEOTime extensions gmsObj dd
+$clear cubeinput scenddmap TimeSlice MILESTONYR gmsBOTime gmsEOTime extensions gmsObj dd
+*dd_COM_DESC dd_PRC_DESC 
 $onMulti
 
 $onembeddedCode Python:

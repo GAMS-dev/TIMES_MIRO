@@ -25,9 +25,9 @@
 		},
 		"_scalars":	{
 			"alias":	"Input Scalars",
-			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsrunlocation", "gmsrunmode", "gmsbotime", "gmseotime", "gmsobj"],
-			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Location of Run file", "whether to create a MIRO scenario or solve TIMES", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations"],
-			"symtypes":	["set", "parameter", "parameter", "set", "set", "parameter", "parameter", "set"],
+			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime", "gmsobj", "gmsrunlocation", "gmsrunmode"],
+			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations", "Location of Run file", "whether to create a MIRO scenario or solve TIMES"],
+			"symtypes":	["set", "parameter", "parameter", "parameter", "parameter", "set", "set", "set"],
 			"headers":	{
 				"scalar":	{
 					"type":	"string",
@@ -174,50 +174,6 @@
 				"value":	{
 					"type":	"numeric",
 					"alias":	"cubeinput"
-				}
-			}
-		},
-		"dd_prc_desc":	{
-			"alias":	"dd_prc_desc",
-			"symtype":	"set",
-			"headers":	{
-				"uni":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#1":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#2":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"text":	{
-					"type":	"string",
-					"alias":	"Set text "
-				}
-			}
-		},
-		"dd_com_desc":	{
-			"alias":	"dd_com_desc",
-			"symtype":	"set",
-			"headers":	{
-				"uni":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#1":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"uni#2":	{
-					"type":	"string",
-					"alias":	"Universal set"
-				},
-				"text":	{
-					"type":	"string",
-					"alias":	"Set text "
 				}
 			}
 		}
