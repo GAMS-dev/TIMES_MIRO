@@ -88,7 +88,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                       tags$div(class = "table-styles",
                                                                rHandsontableOutput(ns('boEoTime'))
                                                       ),
-                                                      tags$div(id = ns("boEoTimeWarn"), class="config-message", 
+                                                      tags$div(id = ns("boEoTimeWarn"), class="config-message", style = "font-size: 11pt;", 
                                                                "BOTIME (default: 1960) and EOTIME (default: 2200) usually do not need to be changed. 
                                                                Be sure what you are doing!")
                                                )
