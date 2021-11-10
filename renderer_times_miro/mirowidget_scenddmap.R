@@ -31,7 +31,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
     ),
     tags$div(
       tabsetPanel(id = ns("runmode"),
-                  tabPanel("Solve model", value = "solve", 
+                  tabPanel("Prepare model run", value = "solve", 
                            fluidRow(
                              column(8,
                                     fluidRow(

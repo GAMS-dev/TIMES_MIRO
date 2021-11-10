@@ -194,6 +194,7 @@
         "enableHideEmptyCols": true,
         "hideEmptyCols": true,
         "emptyUEL": "-",
+        "fixedColumns": false,
         "filter": {
           "typ": "Set"
         },
@@ -237,7 +238,7 @@
   "extraClArgs": ["debug=1492", "--gmsrunopt=local", "--DDPREFIX=dd_files/"],
   "readme": {
     "tabTitle": "Readme",
-    "filename": "README.md",
+    "filename": "app_README.md",
     "enableMath": false
   },
   "defaultRendererOutput": "miroPivot",
