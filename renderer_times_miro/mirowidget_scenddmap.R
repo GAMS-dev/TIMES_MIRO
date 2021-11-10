@@ -72,34 +72,29 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                     ),
                                     fluidRow(
                                       column(6, class = "box-custom",
+                                             tags$h4("Years for model run", class="table-header"),
+                                             tags$div(class = "add-row-btn-wrapper", title = "Add row", 
+                                                      actionButton(ns("addMilestonyr"), label = NULL, 
+                                                                   icon = icon("plus-circle"), 
+                                                                   class = "add-row-btn")
+                                             ),
                                              fluidRow(
                                                column(6,
-                                                      tags$h4("Years for model run", class="table-header"),
-                                                      tags$div(class = "add-row-btn-wrapper", title = "Add row", 
-                                                               actionButton(ns("addMilestonyr"), label = NULL, 
-                                                                            icon = icon("plus-circle"), 
-                                                                            class = "add-row-btn")
-                                                      ),
                                                       tags$div(class = "table-styles",
                                                                rHandsontableOutput(ns('milestonyr'))
                                                       )
                                                ),
                                                column(6,
-                                                      tags$div(style = "min-width:80px;max-width:125px;",
-                                                               numericInput(ns("gmsbotime"), tags$h4("First year available"), 
-                                                                            min = 1850, max = 2200, value = 1960, width = "100%")),
-                                                      tags$div(style = "min-width:80px;max-width:125px;",
-                                                               numericInput(ns("gmseotime"), tags$h4("Last year available"), 
-                                                                            min = 1850, max = 2200, value = 2200, width = "100%"))
+                                                      tags$div(class = "table-styles",
+                                                               rHandsontableOutput(ns('boEoTime'))
+                                                      ),
+                                                      tags$div(id = ns("boEoTimeWarn"), class="config-message", 
+                                                               "BOTIME (default: 1960) and EOTIME (default: 2200) usually do not need to be changed. 
+                                                               Be sure what you are doing!")
                                                )
                                              )),
                                       column(6, class = "box-custom",
                                              tags$h4("Time slices available", class="table-header"),
-                                             tags$div(class = "add-row-btn-wrapper", title = "Add row", 
-                                                      actionButton(ns("addTimeslice"), label = NULL, 
-                                                                   icon = icon("plus-circle"), 
-                                                                   class = "add-row-btn")
-                                             ),
                                              tags$div(class = "table-styles",
                                                       rHandsontableOutput(ns('timeslice'))
                                              )
@@ -204,8 +199,9 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     timesliceData = NULL,
     milestonyrData = NULL,
     solveroptData = NULL, 
-    gmsbotime = 1960,
-    gmseotime = 2200,
+    gmsbotime = character(0),
+    gmseotime = character(0),
+    boEoTimeData = NULL,
     gmsobj = character(0),
     gmsbratio = character(0),
     gmsreslim = character(0),
@@ -242,11 +238,12 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     
     isolate({
       updateSelectInput(session, "gmsobj", selected = if(length(rv$gmsobj)) rv$gmsobj else "MOD")
-      updateSelectInput(session, "gmsbotime", selected = if(length(rv$gmsbotime)) rv$gmsbotime else 1960)
-      updateSelectInput(session, "gmseotime", selected = if(length(rv$gmseotime)) rv$gmseotime else 2200)
       updateSelectInput(session, "gmsbratio", selected = if(length(rv$gmsbratio)) rv$gmsbratio else 1)
       updateSelectInput(session, "gmsreslim", selected = if(length(rv$gmsreslim))rv$gmsreslim else 1000)
       updateSelectInput(session, "gmssolver", selected = if(length(rv$gmssolver)) rv$gmssolver else "cplex")
+      rv$boEoTimeData <<- tibble(Time = c("BOTIME", "EOTIME"),
+                                 Value = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1960, 
+                                           if(length(rv$gmseotime)) rv$gmseotime else 2200))
     })
     
     if("dd_files.zip" %in% attachments$getIds()){
@@ -275,9 +272,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   })
   observeEvent(input$addExtensions, {
     rv$extensionsData <<- rv$extensionsData %>% add_row(uni = "", `uni#1` = "", text = "")
-  })
-  observeEvent(input$addTimeslice, {
-    rv$timesliceData <<- rv$timesliceData %>% add_row(uni = "", text = "")
   })
   observeEvent(input$addMilestonyr, {
     rv$milestonyrData <<- rv$milestonyrData %>% add_row(uni = "", text = "")
@@ -334,11 +328,31 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   observeEvent(input$gmsobj, {
     rv$gmsobj <- input$gmsobj
   })
-  observeEvent(input$gmsbotime, {
-    rv$gmsbotime <- input$gmsbotime
-  })
-  observeEvent(input$gmseotime, {
-    rv$gmseotime <- input$gmseotime
+
+  observeEvent(input$boEoTime, {
+    if(length(input$boEoTime$data)){
+      if(length(as_tibble(hot_to_r(input$boEoTime)))){
+        rv$gmsbotime <<- as_tibble(hot_to_r(input$boEoTime)) %>% 
+          filter(Time == "BOTIME") %>% pull(Value) %>% unique() %>% as.numeric()
+      }else{
+        rv$gmsbotime <<- 1960
+      }
+      if(length(as_tibble(hot_to_r(input$boEoTime)))){
+        rv$gmseotime <<- as_tibble(hot_to_r(input$boEoTime)) %>% 
+          filter(Time == "EOTIME") %>% pull(Value) %>% unique() %>% as.numeric()
+      }else{
+        rv$gmseotime <<- 2200
+      }
+      if(rv$gmsbotime != 1960 || rv$gmseotime != 2200){
+        showEl(session, paste0("#", session$ns("boEoTimeWarn")))
+      }else{
+        hideEl(session, paste0("#", session$ns("boEoTimeWarn")))
+      }
+    }else{
+      rv$boEoTimeData <<- rv$boEoTimeData[0,]
+      rv$gmsbotime <<- 1960
+      rv$gmseotime <<- 2200
+    }
   })
   observeEvent(input$gmsbratio, {
     rv$gmsbratio <- input$gmsbratio
@@ -482,6 +496,21 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     return(extensionsTableTmp)
   })
   
+  #render botime and eotime table
+  output$boEoTime <- renderRHandsontable({
+    boEoTimeTableTmp <<- rhandsontable(rv$boEoTimeData, 
+                                         colHeaders = c("Time", "Value"),
+                                         readOnly = FALSE, 
+                                         rowHeaders = NULL,
+                                         search = TRUE,
+                                         height = 85) %>% 
+      hot_table(stretchH = "all", highlightRow = TRUE) %>%
+      hot_col(1, readOnly = TRUE) %>%
+      hot_cols(manualColumnResize = TRUE, columnSorting = TRUE)
+    boEoTimeTableTmp$x$contextMenu <- list()
+    return(boEoTimeTableTmp)
+  })
+  
   #render milestonyr table
   output$milestonyr <- renderRHandsontable({
     milestonyrTableTmp <<- rhandsontable(rv$milestonyrData, 
@@ -491,7 +520,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                          search = TRUE,
                                          height = 400) %>% 
       hot_table(stretchH = "all", highlightRow = TRUE) %>%
-      hot_col(1,  type = "autocomplete", source = c(rv$gmsbotime:rv$gmseotime), strict = TRUE, allowInvalid = FALSE) %>%
+      hot_col(1,  type = "autocomplete", source = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1960:if(length(rv$gmseotime)) rv$gmseotime else 2200), strict = TRUE, allowInvalid = FALSE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = TRUE) %>% 
       hot_col(col = 'Text', colWidths=0.001)
     return(milestonyrTableTmp)
@@ -513,15 +542,17 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   #render timeslice table
   output$timeslice <- renderRHandsontable({
+    #TODO: no context menu
     timesliceTableTmp <<- rhandsontable(rv$timesliceData, 
                                         colHeaders = c("Time Slice", "Text"),
-                                        readOnly = FALSE, 
+                                        readOnly = TRUE, 
                                         rowHeaders = NULL,
                                         search = TRUE,
                                         height = 400) %>% 
       hot_table(stretchH = "none", highlightRow = TRUE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = TRUE,
                colWidths = c(175, 0.01))
+    timesliceTableTmp$x$contextMenu <- list()
     return(timesliceTableTmp)
   })
   
@@ -597,10 +628,10 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         paste0("||./", rv$runFile)
       }),
       gmsbotime = reactive({
-        rv$gmsbotime
+        as.numeric(rv$gmsbotime)
       }),
       gmseotime = reactive({
-        rv$gmseotime
+        as.numeric(rv$gmseotime)
       }),
       gmsbratio = reactive({
         rv$gmsbratio
