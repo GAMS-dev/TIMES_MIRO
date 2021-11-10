@@ -87,10 +87,10 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                column(6,
                                                       tags$div(style = "min-width:80px;max-width:125px;",
                                                                numericInput(ns("gmsbotime"), tags$h4("First year available"), 
-                                                                            min = 1850, max = 2200, value = "1960", width = "100%")),
+                                                                            min = 1850, max = 2200, value = 1960, width = "100%")),
                                                       tags$div(style = "min-width:80px;max-width:125px;",
                                                                numericInput(ns("gmseotime"), tags$h4("Last year available"), 
-                                                                            min = 1850, max = 2200, value = "2200", width = "100%"))
+                                                                            min = 1850, max = 2200, value = 2200, width = "100%"))
                                                )
                                              )),
                                       column(6, class = "box-custom",
@@ -210,7 +210,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     gmsbratio = character(0),
     gmsreslim = character(0),
     gmssolver = character(0),
-    updateGmsrunmode = character(0),
     ddFiles = character(0), 
     runFile = character(0)
   )
@@ -243,10 +242,10 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     
     isolate({
       updateSelectInput(session, "gmsobj", selected = if(length(rv$gmsobj)) rv$gmsobj else "MOD")
-      updateSelectInput(session, "gmsbotime", selected = if(length(rv$gmsbotime)) rv$gmsbotime else "1960")
-      updateSelectInput(session, "gmseotime", selected = if(length(rv$gmseotime)) rv$gmseotime else "2200")
+      updateSelectInput(session, "gmsbotime", selected = if(length(rv$gmsbotime)) rv$gmsbotime else 1960)
+      updateSelectInput(session, "gmseotime", selected = if(length(rv$gmseotime)) rv$gmseotime else 2200)
       updateSelectInput(session, "gmsbratio", selected = if(length(rv$gmsbratio)) rv$gmsbratio else 1)
-      updateSelectInput(session, "gmsreslim", selected = if(length(rv$gmsreslim))rv$gmsreslim else 1000L)
+      updateSelectInput(session, "gmsreslim", selected = if(length(rv$gmsreslim))rv$gmsreslim else 1000)
       updateSelectInput(session, "gmssolver", selected = if(length(rv$gmssolver)) rv$gmssolver else "cplex")
     })
     
@@ -268,9 +267,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     }else{
       rv$runFile <- character(0)
     }
-    isolate({
-      rv$updateGmsrunmode <- input$gmsrunmode
-    })
   })
   
   #add table row
