@@ -490,6 +490,7 @@ extensions = []
 ddList = []
 ddFiles = []
 ddDiff = []
+isTS = ""
 #When running via MIRO, unzip dd file archive first
 if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
   dirpath = os.path.join( r'%gams.scrDir%..','dd_files')
@@ -505,7 +506,8 @@ with open('myrun.gms','w') as frun:
     if len(l.rstrip()) == 0 or l[0]=="*":
       continue
     if 'batinclude' in l.lower():
-      if '_ts.dd' in l.lower() or l.lower().split('batinclude ')[1].strip() == 'ts.dd':
+      if '_ts.dd' in l.lower() or l.lower().split('batinclude ')[1].strip() == 'ts.dd'  and len(isTS) == 0:
+        isTS = l.lower().split('batinclude ')[1].strip()
         frun.write(l)
         ddList.append(l.split(' ')[1].split('\n')[0])
       elif '.dd' in l.lower():
@@ -545,7 +547,7 @@ db['ALL_TS'].copy_symbol(gams.db['TimeSlice'])
 dd = []
 offeps = []
 for df in glob.glob(r'%DDPREFIX% '.rstrip()+'*.dd'):
-   if (not '_ts.dd' in df) and df[len(r'%DDPREFIX% '.rstrip()):].strip() != 'ts.dd':
+    if df[len(r'%DDPREFIX% '.rstrip()):].strip() != isTS:
      ddbase = os.path.splitext(os.path.basename(df))[0]
      s = 'grep -i offeps "' + df + '" > ' + os.devnull
      rc = os.system(s)
