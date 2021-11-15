@@ -26,6 +26,50 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
           .info-label-nowrap {
               white-space: nowrap;
           }
+          @media only screen and (max-width: 1199px) {
+              .custom-2 {
+                  width: 100%;
+              }
+              .custom-2.box-custom {
+                  height: unset;
+                  margin-bottom: 0px;
+              }
+              .outer-height{
+                  height: 475px;
+              }
+          }
+          @media only screen and (min-width: 768px) and (max-width: 1199px) {
+              .reverse-custom {
+                  display: flex;
+                  flex-flow: row-reverse;
+              }
+          }
+          @media only screen and (min-width: 1200px) {
+              .custom-4 {
+                  width: 33.33333333%;
+              }
+              .custom-8 {
+                  width: 66.66666667%;
+              }
+          }
+          @media only screen and (min-width: 1200px) and (max-width: 1399px) {
+              .custom-2 {
+                  width: 100%
+              }
+              .custom-2.box-custom {
+                  height: unset;
+                  margin-bottom: 0px;
+              }
+              .outer-height{
+                  height: 475px;
+              }
+              .custom-4 {
+                  width: 25%;
+              }
+              .custom-8 {
+                  width: 75%;
+              }
+          }
           ")
       )
     ),
@@ -33,11 +77,11 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
       tabsetPanel(id = ns("runmode"),
                   tabPanel("Prepare model run", value = "solve", 
                            fluidRow(
-                             column(8,
+                             tags$div(class = "col-sm-12 col-lg-8 custom-8",
                                     fluidRow(
-                                      column(6, class = "box-custom",
+                                      tags$div(class = "col-sm-12 col-md-6 box-custom",
                                              tags$div(class="table-header",
-                                                      tags$h4(tags$span("DD Files order / Read under "),
+                                                      tags$h4(tags$span("DD Files order / Read "),
                                                               tags$span(class = "info-label-nowrap", "$offEps", tags$a("",
                                                                                                                        title = "order: 0 = ignore DD file. Do not delete a table row when the DD info is used elsewhere (input data); $offEps: Do not interpret zero values as EPS. - Open documentation", 
                                                                                                                        class = "info-wrapper",
@@ -58,7 +102,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                       rHandsontableOutput(ns('scenddmap'))
                                              )
                                       ),
-                                      column(6, class = "box-custom",
+                                      tags$div(class = "col-sm-12 col-md-6 box-custom",
                                              tags$h4("Extensions", class="table-header"),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addExtensions"), label = NULL, 
@@ -71,7 +115,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                       )
                                     ),
                                     fluidRow(
-                                      column(6, class = "box-custom",
+                                      tags$div(class = "col-sm-12 col-md-8 col-lg-6 box-custom",
                                              tags$h4("Years for model run", class="table-header"),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addMilestonyr"), label = NULL, 
@@ -79,12 +123,12 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                                    class = "add-row-btn")
                                              ),
                                              fluidRow(
-                                               column(6,
+                                               tags$div(class = "col-sm-12 col-md-6 box-custom",
                                                       tags$div(class = "table-styles",
                                                                rHandsontableOutput(ns('milestonyr'))
                                                       )
                                                ),
-                                               column(6,
+                                               tags$div(class = "col-sm-12 col-md-6 box-custom",
                                                       tags$div(class = "table-styles",
                                                                rHandsontableOutput(ns('boEoTime'))
                                                       ),
@@ -93,7 +137,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                                Be sure what you are doing!")
                                                )
                                              )),
-                                      column(6, class = "box-custom",
+                                      tags$div(class = "col-sm-12 col-md-4 col-lg-6 box-custom",
                                              tags$h4("Time slices available", class="table-header"),
                                              tags$div(class = "table-styles",
                                                       rHandsontableOutput(ns('timeslice'))
@@ -101,49 +145,51 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                       )
                                     )
                              ),
-                             column(4,
-                                    fluidRow(
-                                      column(6, class = "box-custom",
-                                             selectInput(ns("gmssolver"), tags$h4("Solver to use"), c("cplex", "cbc", "conopt", "conopt4"), selected = "cplex"),
-                                             numericInput(ns("gmsreslim"), tags$h4("Time limit for solve [seconds]"), 
-                                                          min = 10, max = 36000, value = 1000L, step = 1)
-                                      ),
-                                      column(6, class = "box-custom",
-                                             selectInput(ns("gmsobj"), tags$h4("Objective function formulation"), c("ALT", "AUTO", "LIN", "MOD", "STD"), selected = "MOD"),
-                                             sliderInput(ns("gmsbratio"), 
-                                                         tags$div(
-                                                           tags$h4("Basis indicator (bRatio)", tags$a("",
-                                                                                                      title = "The value specified for bRatio will cause a basis to be discarded if the number of basic variables is smaller than bRatio times the number of equations. - Open documentation", 
-                                                                                                      class = "info-wrapper",
-                                                                                                      href = "https://www.gams.com/latest/docs/UG_GamsCall.html#GAMSAObratio",
-                                                                                                      tags$span(
-                                                                                                        class = "fas fa-info-circle", class = "info-icon",
-                                                                                                        role = "presentation",
-                                                                                                        `aria-label` = "More information"
-                                                                                                      ), target = "_blank"
-                                                           )),
-                                                         ), 
-                                                         min = 0, max = 1, value = 1, step = 0.01)
+                             tags$div(class = "col-sm-12 col-lg-4 custom-4",
+                                      fluidRow(class = "reverse-custom",
+                                        tags$div(class = "col-sm-4 col-lg-12",
+                                                 fluidRow(class = "outer-height",
+                                                          tags$div(class = "col-sm-6 custom-2 box-custom",
+                                                                   selectInput(ns("gmssolver"), tags$h4("Solver to use"), c("cplex", "cbc", "conopt", "conopt4"), selected = "cplex"),
+                                                                   numericInput(ns("gmsreslim"), tags$h4("Time limit for solve [seconds]"), 
+                                                                                min = 10, max = 36000, value = 1000L, step = 1)
+                                                          ),
+                                                          tags$div(class = "col-sm-6 custom-2 box-custom",
+                                                                   selectInput(ns("gmsobj"), tags$h4("Objective function formulation"), c("ALT", "AUTO", "LIN", "MOD", "STD"), selected = "MOD"),
+                                                                   sliderInput(ns("gmsbratio"), 
+                                                                               tags$div(
+                                                                                 tags$h4("Basis indicator (bRatio)", tags$a("",
+                                                                                                                            title = "The value specified for bRatio will cause a basis to be discarded if the number of basic variables is smaller than bRatio times the number of equations. - Open documentation", 
+                                                                                                                            class = "info-wrapper",
+                                                                                                                            href = "https://www.gams.com/latest/docs/UG_GamsCall.html#GAMSAObratio",
+                                                                                                                            tags$span(
+                                                                                                                              class = "fas fa-info-circle", class = "info-icon",
+                                                                                                                              role = "presentation",
+                                                                                                                              `aria-label` = "More information"
+                                                                                                                            ), target = "_blank"
+                                                                                 )),
+                                                                               ), 
+                                                                               min = 0, max = 1, value = 1, step = 0.01)
+                                                          ),
+                                                 )),
+                                        tags$div(class = "col-sm-8 col-lg-12",
+                                                 class = "box-custom",
+                                                 fluidRow(
+                                                   column(12, class = "box-custom",
+                                                          tags$h4("Solver options", class="table-header"),
+                                                          tags$div(class = "add-row-btn-wrapper", title = "Add row", 
+                                                                   actionButton(ns("addSolveropt"), label = NULL, 
+                                                                                icon = icon("plus-circle"), 
+                                                                                class = "add-row-btn")
+                                                          ),
+                                                          tags$div(class = "table-styles",
+                                                                   rHandsontableOutput(ns('solveropt'))
+                                                          )
+                                                   )
+                                                 )
+                                                 
+                                        )
                                       )
-                                    ),
-                                    fluidRow(
-                                      column(12, class = "box-custom",
-                                             fluidRow(
-                                               column(12, class = "box-custom",
-                                                      tags$h4("Solver options", class="table-header"),
-                                                      tags$div(class = "add-row-btn-wrapper", title = "Add row", 
-                                                               actionButton(ns("addSolveropt"), label = NULL, 
-                                                                            icon = icon("plus-circle"), 
-                                                                            class = "add-row-btn")
-                                                      ),
-                                                      tags$div(class = "table-styles",
-                                                               rHandsontableOutput(ns('solveropt'))
-                                                      )
-                                               )
-                                             )
-                                             
-                                      )
-                                    )
                              )
                            )
                            
@@ -489,9 +535,8 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                          rowHeaders = NULL,
                                          search = TRUE,
                                          height = 400) %>% 
-      hot_table(stretchH = "none", highlightRow = TRUE) %>%
-      hot_cols(manualColumnResize = TRUE, columnSorting = TRUE, 
-               colWidths = c(250, 85,0.01) ) %>% 
+      hot_table(stretchH = "all", highlightRow = TRUE) %>%
+      hot_cols(manualColumnResize = TRUE, columnSorting = TRUE ) %>% 
       hot_col(col = 'Text', colWidths=0.01)
     return(extensionsTableTmp)
   })
