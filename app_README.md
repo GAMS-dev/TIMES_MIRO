@@ -14,9 +14,9 @@ Table of Contents
    * [License](#license)
 
 ## Usage of the App<a name="usage-of-the-app"></a>
-This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model. It allows the user to load different data sets, to set TIMES options, to manipulate input data and to analyze output data. 
+This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model. It allows the user to load different data sets, to set TIMES options, to manipulate input data, to analyze output data, and to compare scenarios.. 
 
-The app comes with two predefined data sets, the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data set. Other data sets can be created from \*.dd files (see [below](#create-input)).
+The app comes with predefined data sets, e.g. the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) data set (default) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets. Other data sets can be created from \*.dd and \*.run files (see [below](#create-input)).
 
 The app follows the common [MIRO App Structure](https://www.gams.com/miro/start.html#miro-structure) with a navigation bar on the left side to switch between the following views:
 * Input View

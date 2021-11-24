@@ -10,7 +10,7 @@ Table of Contents
 # TIMES MIRO App<a name="times_miro-app"></a>
 This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model.
 
-To obtain the app, including the TIMES source from the [TIMES_model](https://github.com/etsap-TIMES/TIMES_model) repositury plus the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
+To obtain the app, including the TIMES source from the [TIMES_model](https://github.com/etsap-TIMES/TIMES_model) repository plus the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets, run the following command:
 > git clone --recurse-submodules https://github.com/GAMS-dev/TIMES_MIRO.git
 
 The app allows the user to load different data sets, to set TIMES options, to manipulate input data, to analyze output data, and to compare scenarios. Furthermore, the user can decide whether to run the TIMES MIRO app locally (local [GAMS](https://www.gams.com/download/) and [GAMS MIRO](https://www.gams.com/miro/download.html) installation required) or to access the [online App](https://times.gams.com/login) that submits jobs to the [TIMES Cloud Service](https://times.gams.com/engine/) (credentials can be requested by sending an email to timescloud@etsap.org).
