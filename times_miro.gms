@@ -506,7 +506,7 @@ with open('myrun.gms','w') as frun:
     if len(l.rstrip()) == 0 or l[0]=="*":
       continue
     if 'batinclude' in l.lower():
-      if '_ts.dd' in l.lower() or l.lower().split('batinclude ')[1].strip() == 'ts.dd'  and len(isTS) == 0:
+      if ('_ts.dd' in l.lower() or l.lower().split('batinclude ')[1].strip() == 'ts.dd') and len(isTS) == 0:
         isTS = l.lower().split('batinclude ')[1].strip()
         frun.write(l)
         ddList.append(l.split(' ')[1].split('\n')[0])
