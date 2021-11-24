@@ -16,13 +16,15 @@ To obtain the app, including the TIMES source from the [TIMES_model](https://git
 The app allows the user to load different data sets, to set TIMES options, to manipulate input data, to analyze output data, and to compare scenarios. Furthermore, the user can decide whether to run the TIMES MIRO app locally (local [GAMS](https://www.gams.com/download/) and [GAMS MIRO](https://www.gams.com/miro/download.html) installation required) or to access the [online App](https://times.gams.com/login) that submits jobs to the [TIMES Cloud Service](https://times.gams.com/engine/) (credentials can be requested by sending an email to timescloud@etsap.org).
 
 ## Prerequisites<a name="prerequisites"></a>
-In order to use the TIMES MIRO app online you need
+In order to use the online TIMES MIRO app that submits jobs to the TIMES Cloud Service you need
 * request credentials from timescloud@etsap.org and login at https://times.gams.com/login
 
 In order to use the TIMES MIRO app locally you need
 * to clone this repository or download the self contained *.miroapp file (https://github.com/GAMS-dev/TIMES_MIRO/releases)
-* to install GAMS 37.1.0 or newer (https://www.gams.com/download/)
+* to install GAMS 31.2.0 or newer (https://www.gams.com/download/)
 * to install GAMS MIRO 2.2.0 or newer (https://www.gams.com/miro/download.html)
+
+**Note:** Starting the app locally for the first time may take some time because the predefined scenario data sets have to be imported to the MIRO database.
 
 ## Usage of the App<a name="usage-of-the-app"></a>
 Usage of the app is explained in detail in the [app_README](app_README.md).
