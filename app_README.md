@@ -11,7 +11,6 @@ Table of Contents
       * [GAMS Interaction View](#gams-interaction-view)
       * [Load Scenarios View](#load-scenarios-view)
       * [Compare Scenarios View](#compare-scenarios-view)
-   * [Code Structure](#code-structure)
    * [License](#license)
 
 ## Usage of the App<a name="usage-of-the-app"></a>
@@ -105,12 +104,6 @@ For more details on this view, please consult the [GAMS MIRO Documentation](http
 
 This view can be used to compare MIRO scenarios that are stored in the database. There are three different types of comparison available, split view, tab view and pivot view mode. In the split view comparison the data of two scenarios can be compared side by side. Scenarios can also be loaded into tabs (as you know it from e.g. your internet browser) in the tab view comparison. This allows to compare more than two scenarios. In the pivot view comparison the data of all selected scenarios is merged into one powerful pivot table.
 
-## Code Structure<a name="code-structure"></a>
-The basic principle of the TIMES MIRO demo app is that it works as a wrapper around the existing TIMES source code and the well established data handling concept that feeds the model with data via so-called *.dd files.
-
-The code sections referred to in the following overview are highlighted via corresponding comments in the wrapper file `times_miro.gms`. Also note that there is difference between running the file through the app (this is what happens in the background when the user hits "solve") and running it through Studio. Running the file through studio is mainly useful to prepare new TIMES data sets for usage with the app. There is a placeholder in the code (search for `myData`) where new TIMES data sets can be configured. The contained TIMES_DEMO and TIMES-DK_COMETS datasets serve as documentation how to do this exactly.
-
-![inputcube](static_times_miro/code_structure.png)
 
 # License<a name="license"></a>
 The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the times\_model, TIMES\_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See files `times_model\LICENSE.txt`, `TIMES_Demo\LICENSE.txt` as well as `TIMES-DK_COMETS\LICENSE` for more information.
