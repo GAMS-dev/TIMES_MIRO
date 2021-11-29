@@ -82,8 +82,29 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                   .custom-css .flow-chart {
                       background-color: #4e545d;
                   }
+                  .custom-css .flow-chart-outer {
+                      background-color: #4e545d;
+                  }
                   .flow-arrow {
                       color: #1d2121;
+                  }
+                  .pvtAxisContainer, .pvtVals {
+                    background: #4e545d;
+                  }
+                  table.pvtTable tbody tr td {
+                    color: #eee;
+                    background-color: #393e46;
+                  }
+                  table.pvtTable tbody tr th, 
+                  table.pvtTable thead tr th {
+                    background-color: #292d33;
+                  }
+                  .pvtAxisContainer li span.pvtAttr {
+                    background-color: #393e46;
+                    border-color: #292d33;
+                  }
+                  .pvtUi {
+                    color: #eee;
                   }
               }
               .custom-css .com-proc-item:hover {
