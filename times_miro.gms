@@ -335,7 +335,7 @@ def printme(s):
   if len(s)<255:
     gams.printLog(s)
   else:
-    print(s)
+    print("\n" + s)
   
 def check_and_calc_extra(cd, xdom):
   maxExtra = 0
@@ -389,26 +389,6 @@ singleton set gmsTIMESsrc(*)    'Location of TIME source'                       
 singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 
 $onEmpty
-*$if not set DATASET $set DATASET demo
-*$ifthen.data %DATASET%==dk
-*$include dkdata
-*$elseif.data %DATASET%==starter
-*$set DDPREFIX D:\Users\mbussieck\Downloads\times_starter\
-*$include starterdata
-*$elseif.data %DATASET%==starter_extended
-*$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO\
-*$include starterdata_extended
-*$elseif.data %DATASET%==starter20200621
-*$set DDPREFIX C:\Users\Fred\Documents\ffiand_TIMES_MIRO\GAMS_WrkMIRO20200621\
-*$include starterdata20200621
-*$elseif.data %DATASET%==swiss
-*$set DDPREFIX E:\WC\TIMES_MIRO\swiss\
-*$include swissdata.gms
-*$elseif.data  %DATASET%==mydata
-* Fill in your data
-*$onExternalInput
-*$offExternalInput
-*$else.data
 set           dd                              'DD Files';
 set           offeps                          'dd read under offeps ("true", "false")';
 singleton set gmsddlocation(*)                'Location of DD files'          / '' 'TIMES_Demo/model/'/;   
@@ -450,8 +430,7 @@ $setNames "%RUNFILE%" fp fn fe
 *be translated into a GDX file that can be imported into MIRO
 $ifThenE.runmodel sameas("x%gams.IDCGDXInput%","x")or(sameas("%RUNMODE%","create"))
 * 2b) read data from *.dd files specified above
-* FF: Shouldnt this be onEchoV?
-$onecho > "%gams.scrDir%mkdd.%gams.scrExt%"
+$onEchoV > "%gams.scrDir%mkdd.%gams.scrExt%"
 $onmulti
 $oneps
 $include "%mydd%"
@@ -479,7 +458,7 @@ import shutil
 import zipfile
 gams.wsWorkingDir = '.'
 run_name = os.path.splitext(os.path.basename(r'%runfile%'))[0]
-print(r"### Analyzing Run File %runfile%")
+gams.printLog(r"Analyzing Run File %runfile%")
 with open(r'%runfile%') as frun:
   rl = frun.readlines()
 scenddmap = []
@@ -500,7 +479,7 @@ if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
       zip_ref.extractall("dd_files")
 ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith('.dd')]
       
-print("### Start writing myrun.gms")
+gams.printLog("Start writing myrun.gms")
 with open('myrun.gms','w') as frun:
   for l in rl:
     if len(l.rstrip()) == 0 or l[0]=="*":
@@ -534,14 +513,14 @@ with open('myrun.gms','w') as frun:
   for diff in ddDiff:
     scenddmap.append(['0',diff.split('.dd')[0],'false'])
   frun.write('$show\n')
-print("### execute gams myrun.gms ... and create myrun.gdx")
+gams.printLog("Execute gams myrun.gms ... and create myrun.gdx")
 
 cmd = 'gams myrun.gms a=c ps=0 pw=512 gdx=myrun.gdx idir "' + r'%DDPREFIX% '.rstrip() + '"'
 rc = os.system(cmd)
 if not rc == 0:
    raise NameError('Problem running myrun. Inspect myrun.lst')
 # Read timeslice, need to be first UELs
-print("### Read myrun.gdx")
+gams.printLog("Read myrun.gdx")
 db = gams.ws.add_database_from_gdx('myrun.gdx')
 db['ALL_TS'].copy_symbol(gams.db['TimeSlice'])
 dd = []
@@ -564,13 +543,13 @@ scenddmap = [tuple(l) for l in scenddmap]
 #TODO: mergeType=MergeType.REPLACE?
 gams.set('scenddmap',scenddmap)
 # process myrun.lst for compile time variables
-print("### Process myrun.lst for compile time variables")
+gams.printLog("Process myrun.lst for compile time variables")
 with open('myrun.lst') as flst:
   rl = flst.readlines()
 start = [i for i, s in enumerate(rl) if 'Level SetVal' in s][0]+2
-print("### Compile time variable report starts in line ", start)
+gams.printLog("Compile time variable report starts in line " + str(start))
 end = [i for i, s in enumerate(rl) if 'End of Compile-time Variable List' in s][0]
-print("### Compile time variable report ends in line   ", end-1)
+gams.printLog("Compile time variable report ends in line " +  str(end-1))
 
 gams.set('gmsBOTime',[float(1960)])
 gams.set('gmsEOTime',[float(2200)])
@@ -596,29 +575,29 @@ $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
 do_print = False
 dd_db = {}
-print("\n### cube domain = " + str(os.environ['CUBEINPUTDOM']))
+gams.printLog("Cube domain = " + str(os.environ['CUBEINPUTDOM']))
 domlist = str(os.environ['CUBEINPUTDOM']).split(",")
 dd_idx  = domlist.index("dd")
 reg_idx = domlist.index("ALL_REG")
 prc_idx = domlist.index("PRC")
 com_idx = domlist.index("COM_GRP")
-print("### dd_idx  = " , dd_idx)
-print("### reg_idx = " , reg_idx)
-print("### prc_idx = " , prc_idx)
-print("### com_idx = " , com_idx)
+gams.printLog("dd_idx  = " + str(dd_idx))
+gams.printLog("reg_idx = " + str(reg_idx))
+gams.printLog("prc_idx = " + str(prc_idx))
+gams.printLog("com_idx = " + str(com_idx))
 
-print("### Turning dd files into gdx files")
+gams.printLog("Turning dd files into gdx files")
 for dd in gams.get('dd'):
   s = 'grep -iv offeps "' + r'%DDPREFIX% '.rstrip()+dd+'.dd" > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
   rc = os.system(s)
   if not rc==0:
     raise NameError('probem executing: ' + s)
-  s = 'gams "'+r'%gams.scrDir%mkdd.%gams.scrExt%'+'" --mydd "'+r'%gams.scrDir%mydd.%gams.scrExt%'+'" mp=2 lo=2 gdx='+dd+'.gdx'
+  s = 'gams "'+r'%gams.scrDir%mkdd.%gams.scrExt%'+'" --mydd "'+r'%gams.scrDir%mydd.%gams.scrExt%'+'" mp=2 lo=2 gdx='+dd+'.gdx suppress = 1'
   rc = os.system(s)
   if not rc==0:
     raise NameError('probem executing: ' + s)
   dd_db[dd] = gams.ws.add_database_from_gdx(dd+'.gdx')
-  print("### " + dd + ".dd --> " + dd + ".gdx")
+  gams.printLog(str(dd) + ".dd --> " + str(dd) + ".gdx")
 noDD = []
 for cdRec in cd_input:
   sym = cdRec[0]
