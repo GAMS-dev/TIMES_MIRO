@@ -509,13 +509,13 @@ with open('myrun.gms','w') as frun:
         if not '$if' in l.lower():
           frun.write(l)
   #add dd files that are not part of runfile to scenddmap
-  ddDiff = list(set(ddFiles) - set(ddList))
+  ddDiff = [file for file in ddFiles if file.lower() not in (x.lower() for x in ddList)]
   for diff in ddDiff:
     scenddmap.append(['0',diff.split('.dd')[0],'false'])
   frun.write('$show\n')
 gams.printLog("Execute gams myrun.gms ... and create myrun.gdx")
 
-cmd = 'gams myrun.gms a=c ps=0 pw=512 gdx=myrun.gdx idir "' + r'%DDPREFIX% '.rstrip() + '"'
+cmd = 'gams myrun.gms a=c ps=0 filecase=2 pw=512 gdx=myrun.gdx idir "' + r'%DDPREFIX% '.rstrip() + '"'
 rc = os.system(cmd)
 if not rc == 0:
    raise NameError('Problem running myrun. Inspect myrun.lst')

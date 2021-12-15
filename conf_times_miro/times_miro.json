@@ -200,7 +200,8 @@
         },
         "domainFilter": {
           "domains": ["all_reg", "allyear", "prc", "com_grp", "all_ts", "lim", "cur", "uc_n"],
-          "filterVal": "-"
+          "filterVal": "-",
+          "showAll": true
         }
       }
     }
