@@ -176,6 +176,50 @@
 					"alias":	"cubeinput"
 				}
 			}
+		},
+		"dd_prc_desc":	{
+			"alias":	"dd_prc_desc",
+			"symtype":	"set",
+			"headers":	{
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#1":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#2":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"text":	{
+					"type":	"string",
+					"alias":	"Set text "
+				}
+			}
+		},
+		"dd_com_desc":	{
+			"alias":	"dd_com_desc",
+			"symtype":	"set",
+			"headers":	{
+				"uni":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#1":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"uni#2":	{
+					"type":	"string",
+					"alias":	"Universal set"
+				},
+				"text":	{
+					"type":	"string",
+					"alias":	"Set text "
+				}
+			}
 		}
 	},
 	"outputSymbols":	{

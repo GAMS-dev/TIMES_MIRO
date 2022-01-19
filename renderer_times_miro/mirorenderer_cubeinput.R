@@ -5,152 +5,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
   if(is.null(height)){
     height <- 700
   } 
-  tagList(tags$head(
-    tags$style(HTML("
-              .custom-css .row-custom {
-                    margin-left: 0;
-                    margin-right: 0;
-              }
-              .custom-css .align-items-center {
-                    display: flex;
-                    -webkit-box-align: center!important;
-                    -ms-flex-align: center!important;
-                    align-items: center!important;
-              }
-              .custom-css .align-items-center .col-sm-2,
-              .custom-css .align-items-center .col-sm-3 {
-                  flex-basis: 0;
-                  -webkit-box-flex: 1;
-                  -ms-flex-positive: 1;
-                  flex-grow: 1;
-                  max-width: 100%;
-              }
-              .custom-css .flow-chart {
-                  min-height:250px;
-              }
-              .custom-css .flow-chart-outer {
-                  margin: 10px 25pt 30pt 0;
-                  padding-left: 50px;
-                  padding-right: 50px;
-                  background-color: #f1f1f18f;
-                  box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 10%);
-              }
-              .custom-css .side-padding{
-                  padding-left: 15px;
-                  padding-right: 15px;
-              }
-              .custom-css .com-proc-item {
-                line-height: 16px;
-                font-size: 12px;
-                text-align: center;
-                border-radius: 20px;
-                padding: 5px;
-                display: block;
-                box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
-                margin: 4px 3px;
-                border: 1px solid;
-                cursor: pointer;
-                color: #1d2121;
-                overflow-wrap: break-word;
-              }
-              .node-el {
-                 border: 2px solid black;
-                 padding: 5px;
-                 text-align: center;
-                 background-color: #fff;
-                 overflow-wrap: break-word;
-              }
-              .node-column {    
-                 padding-left: 8px;
-                 padding-right: 8px;
-              
-              }
-              .flow-arrow {
-                  text-align: center;
-                  font-size:40px;
-                  padding-left: 0;
-                  padding-right: 0;
-              }
-              .flow-arrow-small {
-                  font-size:30px;
-              }
-              @media (prefers-color-scheme:dark){
-                  .custom-css .com-proc-item,
-                  .node-el {
-                      background-color: #393e46;
-                  }
-                  .custom-css .flow-chart {
-                      background-color: #4e545d;
-                  }
-                  .custom-css .flow-chart-outer {
-                      background-color: #4e545d;
-                  }
-                  .flow-arrow {
-                      color: #1d2121;
-                  }
-                  .pvtAxisContainer, .pvtVals {
-                    background: #4e545d;
-                  }
-                  table.pvtTable tbody tr td {
-                    color: #eee;
-                    background-color: #393e46;
-                  }
-                  table.pvtTable tbody tr th, 
-                  table.pvtTable thead tr th {
-                    background-color: #292d33;
-                  }
-                  .pvtAxisContainer li span.pvtAttr {
-                    background-color: #393e46;
-                    border-color: #292d33;
-                  }
-                  .pvtUi {
-                    color: #eee;
-                  }
-              }
-              .custom-css .com-proc-item:hover {
-                  background-color: #e7e7e7;
-                  border-color: #adadad;
-                  color: #1d2121;
-                  transition: all .5s ease;
-              }
-              .flow-item-list {
-                  padding: 5px;
-              }
-              .custom-list {
-                margin: 0;
-                padding: 0;
-              }
-              .flow-row {
-                margin: 10pt 0 35pt 0;
-              }
-              .legend-row {
-                padding-top: 25pt;
-                text-align: center;
-              }
-              .legend-row ul {
-                display: inline;
-                padding-left: 0;
-              }
-              .legend-row .legend-item {
-                line-height: 10px;
-                cursor: auto;
-                padding: 5px 15px;
-                display: inline-block;
-              }
-              .float-lg {
-                  float:right;
-              }
-              @media only screen and (max-width: 1199px){
-                  .custom-css .flow-chart-outer {
-                      margin-right: 0;
-                  }
-                  .float-lg {
-                      float:unset;
-                  }
-              }
-              ")
-    )
-  ),
+  tagList(
   tags$div(class = "container custom-css", style = "width:100%;padding-left: 0;padding-right: 0;", 
            #define rendererOutput function here 
            tabsetPanel(
@@ -339,9 +194,12 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   comViewTypeIn <- reactiveVal(character(0L))
   comViewTypeOut <- reactiveVal(character(0L))
   rv <- reactiveValues(update = 1)
-  
+
+  dataCubeinput <- data$cubeinput
+  dataPrcDesc <- data$dd_prc_desc
+  dataComDesc <- data$dd_com_desc
   # Create inputs first
-  data <- mutate_if(data, is.factor, as.character)
+  dataCubeinput <- mutate(dataCubeinput, across(where(is.factor), as.character))
   
   uelMap <- suppressWarnings(jsonlite::fromJSON(
     file.path(path, "map.json"),simplifyDataFrame = FALSE, 
@@ -350,17 +208,17 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   
   col_names_header <- c("dd", "uni#2", "uni#1", "uni", "all_ts")
 
-  topData <- data %>% dplyr::filter(tolower(siname) == "top")
-  noTopData <- data %>% dplyr::filter(tolower(siname) != "top")
-  ucData <- data[!(!is.na(data$uc_n) & data$uc_n=="-"), ]
+  topData <- dataCubeinput %>% dplyr::filter(tolower(siname) == "top")
+  noTopData <- dataCubeinput %>% dplyr::filter(tolower(siname) != "top")
+  ucData <- dataCubeinput[!(!is.na(dataCubeinput$uc_n) & dataCubeinput$uc_n=="-"), ]
 
-  processes <- data %>%
+  processes <- dataCubeinput %>%
     dplyr::pull(prc) %>% 
     unique() %>%
     sort()
   processes <- processes[!processes %in% "-"]
   
-  commodities <- data %>% 
+  commodities <- dataCubeinput %>% 
       dplyr::pull(com_grp) %>% 
       unique() %>% 
       sort()
@@ -781,13 +639,8 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   output$selectedProcess <- renderText(input$sel_prc)
   output$processDesc <- renderText({
     req(input$sel_prc, !identical(input$sel_prc, "All"))
-    text <- vapply(uelMap$prc_desc, function(reg){
-      if(length(reg[[input$sel_prc]])){
-        return(unname(reg[[input$sel_prc]]))
-      }
-      return()
-    }, character(1L), USE.NAMES = FALSE)
-    
+    text <- dataPrcDesc %>% dplyr::filter(tolower(`uni#2`) == tolower(input$sel_prc)) %>%
+      dplyr::pull(text)
     return(paste(text[!duplicated(tolower(text))], collapse = ", "))
   })
   
@@ -795,12 +648,8 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   output$selectedCommodity <- renderText(input$sel_com)
   output$commodityDesc <- renderText({
     req(input$sel_com, !identical(input$sel_com, "All"))
-    text <- vapply(uelMap$com_desc, function(reg){
-      if(length(reg[[input$sel_com]])){
-        return(unname(reg[[input$sel_com]]))
-      }
-      return()
-    }, character(1L), USE.NAMES = FALSE)
+    text <- dataComDesc %>% dplyr::filter(tolower(`uni#2`) == tolower(input$sel_com)) %>%
+      dplyr::pull(text)
     return(paste(text[!duplicated(tolower(text))], collapse = ", "))
   })
   
