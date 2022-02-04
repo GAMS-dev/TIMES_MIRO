@@ -194,7 +194,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                            )
                            
                   ),
-                  tabPanel("Create input data", value = "create", 
+                  tabPanel("Create new TIMES MIRO scenario", value = "create", 
                            fluidRow(
                              column(3,
                                     tags$h4("Upload DD files and runfile here", class="highlight-block"),
