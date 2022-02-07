@@ -1,5 +1,6 @@
 {
   "theme": "browser",
+  "customCss": true, 
   "excelIncludeMeta": true,
   "excelIncludeEmptySheets": true,
   "autoGenInputGraphs": true,
@@ -236,7 +237,7 @@
       "newHeaders": ["Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
     }
   },
-  "extraClArgs": ["debug=1492", "--gmsrunopt=local", "--DDPREFIX=dd_files/"],
+  "extraClArgs": ["--gmsrunopt=local", "--DDPREFIX=dd_files/"],
   "readme": {
     "tabTitle": "Readme",
     "filename": "app_README.md",
