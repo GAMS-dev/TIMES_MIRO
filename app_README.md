@@ -6,6 +6,7 @@
        * [Prepare Model Run](#prepare-model-run)
        * [Input Data](#input-data)
        * [RES Viewer](#res-viewer)
+       * [Import data from Excel](#times-excel-import)
        * [Solve Model](#solve-model)
    * [GAMS Interaction View](#gams-interaction-view)
    * [Output View](#output-view)
@@ -28,7 +29,7 @@ Following the common [MIRO App Structure](https://www.gams.com/miro/start.html#m
 <br /><br />
  
 ### TIMES MIRO Scenarios<a name="times-data-sets"></a>
-To perform a model run, MIRO compatible data is required. This data can be loaded in the form of scenarios already stored in the integrated database or uploaded in the form of [GAMS Data Exchange](https://www.gams.com/latest/docs/UG_GDX.html) (GDX) files. TIMES MIRO scenarios stored in the database can be loaded via the `load data` button in the navigation bar of the Input view. In the dialog that opens, all available scenarios are listed (`Database` tab). 
+To perform a model run, MIRO compatible data is required. This data can be loaded in the form of scenarios already stored in the integrated database or uploaded in the form of [GAMS Data Exchange](https://www.gams.com/latest/docs/UG_GDX.html) (GDX) or Excel files. TIMES MIRO scenarios stored in the database can be loaded via the `load data` button in the navigation bar of the Input view. In the dialog that opens, all available scenarios are listed (`Database` tab). 
 
 ![Load a data set from the database](static_times_miro/load_data.png)
 *Load a TIMES MIRO scenario from the database* 
@@ -63,15 +64,11 @@ Under `Prepare model run` in the `Settings` tab the main configuration is done. 
 *The main configuration is done in the `prepare model run` tab* 
 
 <br />
-`DD Files order / Read under $offEps`: In this table, the names of all \*.dd files that belong to the current TIMES MIRO scenario are listed. The user can adjust the read order and specify whether a \*.dd file should be read in GAMS under `$offEps`. If a \*.dd file should not be used for the next model run, this can be specified by an order value of `0`. 
-
-`Extensions`: This table allows to enable/disable TIMES extensions.
-
-`Time slices available`: This table cannot be edited by the user, but only serves as an overview of the available time slices in the data. The set of timeslices and the representation of the intra-annual resolution is pre-configured and of central importance to many model data structures. A re-configuration of this set would require extensive modifications in the input data cube.
-
-`Years for model run`: This table allows to select the set of years for which the model will run. Those years are often referred to as *milestone years*.
-
-`Solver options`: This table allows to change/define solver options to be used.
+- `DD Files order / Read under $offEps`: In this table, the names of all \*.dd files that belong to the current TIMES MIRO scenario are listed. The user can adjust the read order and specify whether a \*.dd file should be read in GAMS under `$offEps`. If a \*.dd file should not be used for the next model run, this can be specified by an order value of `0`. 
+- `Extensions`: This table allows to enable/disable TIMES extensions.
+- `Time slices available`: This table cannot be edited by the user, but only serves as an overview of the available time slices in the data. The set of timeslices and the representation of the intra-annual resolution is pre-configured and of central importance to many model data structures. A re-configuration of this set would require extensive modifications in the input data cube.
+- `Years for model run`: This table allows to select the set of years for which the model will run. Those years are often referred to as *milestone years*.
+- `Solver options`: This table allows to change/define solver options to be used.
 <br /><br />
 
 ### Input data<a name="input-data"></a>
@@ -89,6 +86,36 @@ In the upper right corner of the input data tab there is a *switch view* button 
 *Process-centric view of the RES Viewer* 
 
 <br /><br />
+
+### Import data from Excel<a name="times-excel-import"></a>
+Besides the possibility to import local data via a GDX file, Excel files can also be loaded. Here similar rules apply as with the GDX format regarding data structure. To get a compatible Excel file to start with, the scenario currently loaded in MIRO can be exported in xlsx format. Go to `Scenario` &rarr; `Export` and select Excel as format for export. In the following example, only data for the main [input data](#input-data) (`cubeinput`) is imported.   
+
+The Excel file with the data to be loaded should contain at least two sheets: 
+- `cubeinput (Input)`: this sheet contains the data to be loaded
+- `_index`: this sheet describes the layout of the data to be read by TIMES/MIRO. In the official [MIRO documentation](https://gams.com/miro/start.html#excel-import-rules) you can find more information about the usage of an index sheet.
+
+All TIMES data should be included in the `cubeinput (Input)` sheet. The data has to be entered in a flat format, specifying all dimensions of the cube. If a dimension is not applicable, a `-` must be entered.
+
+![exceldata](static_times_miro/excel_data.png)
+*Example of how a flat Excel table could look like* 
+
+In this example two activity bounds are specified for a process in TIMES. The bounds are inserted via the `ACT_BND(r,t,p,s,bd)` parameter of TIMES which requires a region, time period, process, timeslice and a bound as dimensions. Therefore in the `cubeinput (Input)` sheet we fill in the following columns:
+
+- `siname`: name of the parameter
+- `typ`: Par, as we insert a TIMES parameterd
+- `dd`: dd file in the TIMES/MIRO App to which the parameter will be associated. Make sure that this dd file is also specified in the `settings` tab. 
+- `all_reg`: name of the region for which the parameter is defined
+- `allyear`: years for which the parameter is defined
+- `prc`: process for which the parameter is defiend
+- `all_ts`: timelsice
+- `lim`: bound (here we define two bounds an UPper and a LOwer bound)
+- `value`: value of the parameter
+
+All other dimensions not relevant to the `ACT_BND` definition are initialized to `-`. 
+
+To import an Excel file containing TIMES data into the app, first click on `Load Data` in the input view and then select `Local` to browse for the file. When you click the `Load` button, you will be given the option to merge the new data with the existing data or to replace all existing data in the cube with the uploaded data. 
+
+<br />
 
 ### Solve model<a name="solve-model"></a>
 When all data has been prepared and settings have been made in the input view, the model can be solved by clicking on the `solve model` button in the navigation bar.
