@@ -152,6 +152,7 @@ FLO_BND         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,LIM'           //    
 FLO_COST        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,CUR'           //      'Added variable O&M of using a commodity'              
 FLO_CUM         .'Par'.'ALL_REG,PRC,COM_GRP,ALLYEAR,1,LIM'                //      'Bound on cumulative flow'                             
 FLO_DELIV       .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,CUR'           //      'Delivery cost for using a commodity'                  
+FLO_EFF         .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,2'                  //      'General process flow-relation parameter'
 FLO_EMIS        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,ALL_TS'             //        'General process emission 'Par'.' 
 FLO_FR          .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,ALL_TS,LIM'           //      'Load-curve of availability of commodity to a process' 
 FLO_FUNC        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1,ALL_TS'             //        'Relationship between 2 .'group of' flows'              
@@ -197,6 +198,7 @@ NCAP_AFM        .'Par'.'ALL_REG,ALLYEAR,PRC'                              //    
 NCAP_AFS        .'Par'.'ALL_REG,ALLYEAR,PRC,ALL_TS,LIM'                   //        'Seasonal Availability of capacity'       
 NCAP_AFX        .'Par'.'ALL_REG,ALLYEAR,PRC'                              //        'Change in capacity availability'         
 NCAP_BND        .'Par'.'ALL_REG,ALLYEAR,PRC,LIM'                          //        'Bound on overall capacity in a period'   
+NCAP_CEH        .'Par'.'ALL_REG,ALLYEAR,PRC'                              //        'Coefficient of electricity to heat'
 NCAP_CHPR       .'Par'.'ALL_REG,ALLYEAR,PRC,LIM'                          //        'Combined heat:power ratio'               
 NCAP_CLED       .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP'                      //        'Leadtime of a commodity before new capacity ready' 
 NCAP_COM        .'Par'.'ALL_REG,ALLYEAR,PRC,COM_GRP,1'                    //        'Use .'but +' of commodity based upon capacity' 
@@ -454,6 +456,7 @@ $onMulti
 $onembeddedCode Python:
 import glob
 import os
+import re
 import shutil
 import zipfile
 gams.wsWorkingDir = '.'
@@ -477,16 +480,17 @@ if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
       shutil.rmtree(dirpath)
   with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
       zip_ref.extractall("dd_files")
-ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith('.dd')]
+ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith(('.dd', '.dds'))]
       
 gams.printLog("Start writing myrun.gms")
 with open('myrun.gms','w') as frun:
   for l in rl:
     if len(l.rstrip()) == 0 or l[0]=="*":
       continue
-    if 'batinclude' in l.lower():
-      if ('_ts.dd' in l.lower() or l.lower().split('batinclude ')[1].strip() == 'ts.dd') and len(isTS) == 0:
-        isTS = l.lower().split('batinclude ')[1].strip()
+    if 'include' in l.lower():
+      ltmp = l.lower().split('include ')[1].strip()
+      if ('_ts.dd' in l.lower() or ltmp == 'ts.dd' or ltmp == 'ts.dds') and len(isTS) == 0:
+        isTS = ltmp
         frun.write(l)
         ddList.append(l.split(' ')[1].split('\n')[0])
       elif '.dd' in l.lower():
@@ -525,8 +529,10 @@ db = gams.ws.add_database_from_gdx('myrun.gdx')
 db['ALL_TS'].copy_symbol(gams.db['TimeSlice'])
 dd = []
 offeps = []
-for df in glob.glob(r'%DDPREFIX% '.rstrip()+'*.dd'):
-    if df[len(r'%DDPREFIX% '.rstrip()):].strip() != isTS:
+filePathTmp = r'%DDPREFIX% '.rstrip()
+filesTmp = [f for f in os.listdir(filePathTmp) if re.search(r'.*\.dds?$', f, re.IGNORECASE)]
+for df in [os.path.join(filePathTmp, file) for file in filesTmp]:
+    if df[len(filePathTmp):].strip().lower() != isTS:
      ddbase = os.path.splitext(os.path.basename(df))[0]
      s = 'grep -i offeps "' + df + '" > ' + os.devnull
      rc = os.system(s)
@@ -551,8 +557,9 @@ gams.printLog("Compile time variable report starts in line " + str(start))
 end = [i for i, s in enumerate(rl) if 'End of Compile-time Variable List' in s][0]
 gams.printLog("Compile time variable report ends in line " +  str(end-1))
 
-gams.set('gmsBOTime',[float(1960)])
+gams.set('gmsBOTime',[float(1850)])
 gams.set('gmsEOTime',[float(2200)])
+gams.set('gmsObj',['AUTO'])
 while start<end:
   vl = rl[start].split()
   if vl[1].lower() == 'obj':
@@ -588,7 +595,8 @@ gams.printLog("com_idx = " + str(com_idx))
 
 gams.printLog("Turning dd files into gdx files")
 for dd in gams.get('dd'):
-  s = 'grep -iv offeps "' + r'%DDPREFIX% '.rstrip()+dd+'.dd" > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
+  fileTmp = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if re.search(dd + r'.dds?$', f, re.IGNORECASE)][0]
+  s = 'grep -iv offeps "' + r'%DDPREFIX% '.rstrip()+fileTmp+'" > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
   rc = os.system(s)
   if not rc==0:
     raise NameError('probem executing: ' + s)
@@ -597,7 +605,7 @@ for dd in gams.get('dd'):
   if not rc==0:
     raise NameError('probem executing: ' + s)
   dd_db[dd] = gams.ws.add_database_from_gdx(dd+'.gdx')
-  gams.printLog(str(dd) + ".dd --> " + str(dd) + ".gdx")
+  gams.printLog(str(fileTmp) + " --> " + str(dd) + ".gdx")
 noDD = []
 for cdRec in cd_input:
   sym = cdRec[0]
