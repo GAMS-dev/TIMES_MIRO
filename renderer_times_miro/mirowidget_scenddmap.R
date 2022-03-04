@@ -427,9 +427,8 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   observeEvent(input$ddFilesUpload, {
     file <- input$ddFilesUpload
     filePath <- file$datapath
-    fileName <- file$name
+    fileName <- tolower(file$name)
     ext <- tools::file_ext(file$datapath)
-    ddToAdd <- fileName[grep(".dds?$", fileName, ignore.case = TRUE)]
     req(file)
     if(any(!tolower(ext) %in% c("dd", "dds"))){
       showHideEl(session, "#invalidFileExtensionDD")
