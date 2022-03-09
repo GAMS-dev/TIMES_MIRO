@@ -131,10 +131,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                tags$div(class = "col-sm-12 col-md-6 box-custom",
                                                       tags$div(class = "table-styles",
                                                                rHandsontableOutput(ns('boEoTime'))
-                                                      ),
-                                                      tags$div(id = ns("boEoTimeWarn"), class="config-message", style = "font-size: 11pt;", 
-                                                               "BOTIME (default: 1960) and EOTIME (default: 2200) usually do not need to be changed. 
-                                                               Be sure what you are doing!")
+                                                      )
                                                )
                                              )),
                                       tags$div(class = "col-sm-12 col-md-4 col-lg-6 box-custom",
@@ -155,7 +152,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                                                 min = 10, max = 36000, value = 1000L, step = 1)
                                                           ),
                                                           tags$div(class = "col-sm-6 custom-2 box-custom",
-                                                                   selectInput(ns("gmsobj"), tags$h4("Objective function formulation"), c("ALT", "AUTO", "LIN", "MOD", "STD"), selected = "MOD"),
+                                                                   selectInput(ns("gmsobj"), tags$h4("Objective function formulation"), c("ALT", "AUTO", "LIN", "MOD", "STD"), selected = "AUTO"),
                                                                    sliderInput(ns("gmsbratio"), 
                                                                                tags$div(
                                                                                  tags$h4("Basis indicator (bRatio)", tags$a("",
@@ -194,16 +191,15 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                            )
                            
                   ),
-                  tabPanel("Create input data", value = "create", 
+                  tabPanel("Create new TIMES MIRO scenario", value = "create", 
                            fluidRow(
                              column(3,
                                     tags$h4("Upload DD files and runfile here", class="highlight-block"),
                                     fileInput(ns("ddFilesUpload"), tags$h4("DD file(s):"),
                                               width = "100%", multiple = TRUE,
-                                              accept = c("text/plain",
-                                                         ".gms", ".inc", "txt", ".dd", ".DD")),
+                                              accept = c(".dd", ".dds")),
                                     tags$div(id = "invalidFileExtensionDD", class="config-message custom-message", 
-                                             "Invalid file extension! allowed are 'dd', 'DD', 'gms', 'inc', 'txt'."),
+                                             "Invalid file extension! allowed are 'dd', 'dds'."),
                                     tags$div(id = "attachmentAddedDD", class="config-message", 
                                              "File(s) added as attachment."),
                                     fileInput(ns("gmsrunlocation"), tags$h4("RUN file:"),
@@ -288,7 +284,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       updateSelectInput(session, "gmsreslim", selected = if(length(rv$gmsreslim))rv$gmsreslim else 1000)
       updateSelectInput(session, "gmssolver", selected = if(length(rv$gmssolver)) rv$gmssolver else "cplex")
       rv$boEoTimeData <<- tibble(Time = c("BOTIME", "EOTIME"),
-                                 Value = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1960, 
+                                 Value = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1850, 
                                            if(length(rv$gmseotime)) rv$gmseotime else 2200))
     })
     
@@ -297,7 +293,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         attachments$save(zipFilePath, "dd_files.zip", overwrite = TRUE)
         attachmentsZip <- zip::zip_list(zipFilePath)
         attachmentsZip <- attachmentsZip[attachmentsZip$compressed_size > 0, ]$filename
-        rv$ddFiles <- attachmentsZip[grep(".dd", attachmentsZip, ignore.case = TRUE)]
+        rv$ddFiles <- attachmentsZip[grep(".dds?$", attachmentsZip, ignore.case = TRUE)]
       }, error = function(e){
         print("An unexpected error occured.")
       })
@@ -381,7 +377,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         rv$gmsbotime <<- as_tibble(hot_to_r(input$boEoTime)) %>% 
           filter(Time == "BOTIME") %>% pull(Value) %>% unique() %>% as.numeric()
       }else{
-        rv$gmsbotime <<- 1960
+        rv$gmsbotime <<- 1850
       }
       if(length(as_tibble(hot_to_r(input$boEoTime)))){
         rv$gmseotime <<- as_tibble(hot_to_r(input$boEoTime)) %>% 
@@ -389,14 +385,9 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       }else{
         rv$gmseotime <<- 2200
       }
-      if(rv$gmsbotime != 1960 || rv$gmseotime != 2200){
-        showEl(session, paste0("#", session$ns("boEoTimeWarn")))
-      }else{
-        hideEl(session, paste0("#", session$ns("boEoTimeWarn")))
-      }
     }else{
       rv$boEoTimeData <<- rv$boEoTimeData[0,]
-      rv$gmsbotime <<- 1960
+      rv$gmsbotime <<- 1850
       rv$gmseotime <<- 2200
     }
   })
@@ -436,11 +427,10 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   observeEvent(input$ddFilesUpload, {
     file <- input$ddFilesUpload
     filePath <- file$datapath
-    fileName <- file$name
+    fileName <- tolower(file$name)
     ext <- tools::file_ext(file$datapath)
-    ddToAdd <- fileName[grep(".dd$", fileName, ignore.case = TRUE)]
     req(file)
-    if(any(!ext %in% c("gms", "txt", "inc", "dd", "DD"))){
+    if(any(!tolower(ext) %in% c("dd", "dds"))){
       showHideEl(session, "#invalidFileExtensionDD")
       return()
     }
@@ -461,7 +451,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       {
         attachmentsZip <- zip::zip_list(zipFilePath)
         attachmentsZip <- attachmentsZip[attachmentsZip$compressed_size > 0, ]$filename
-        ddFiles <- attachmentsZip[grep(".dd", attachmentsZip, ignore.case = TRUE)]
+        ddFiles <- attachmentsZip[grep(".dds?$", attachmentsZip, ignore.case = TRUE)]
         
         attachments$add(session, zipFilePath, "dd_files.zip", overwrite = TRUE, execPerm = TRUE)
         showHideEl(session, "#attachmentAddedDD")
@@ -565,7 +555,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                          search = TRUE,
                                          height = 400) %>% 
       hot_table(stretchH = "all", highlightRow = TRUE) %>%
-      hot_col(1,  type = "autocomplete", source = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1960:if(length(rv$gmseotime)) rv$gmseotime else 2200), strict = TRUE, allowInvalid = FALSE) %>%
+      hot_col(1,  type = "autocomplete", source = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1850:if(length(rv$gmseotime)) rv$gmseotime else 2200), strict = TRUE, allowInvalid = FALSE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = TRUE) %>% 
       hot_col(col = 'Text', colWidths=0.001)
     return(milestonyrTableTmp)

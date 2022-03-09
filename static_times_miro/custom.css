@@ -207,3 +207,6 @@
         float:unset;
     }
 }
+img + em {
+    display: block; 
+}
