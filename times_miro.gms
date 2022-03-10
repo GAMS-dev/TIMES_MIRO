@@ -414,9 +414,9 @@ $onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
 $offEps
 * Skipped VDA DATAGDX VEDAVDD 
-$offExternalInput
 set           dd_PRC_DESC(*,*,*) /  /
               dd_COM_DESC(*,*,*) /  /;
+$offExternalInput
 $offEmpty
 
 $onExternalOutput
