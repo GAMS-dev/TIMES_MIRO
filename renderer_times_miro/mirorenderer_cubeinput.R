@@ -39,7 +39,8 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                column(12, class = "col-lg-9 col-sm-12", 
                                       # Process View. Flowchart
                                       fluidRow(id = ns("flowChartProc"), class = "flow-chart-outer",
-                                               fluidRow(class = "align-items-center flow-chart side-padding",
+                                               tags$div(class = "flow-height",
+                                               fluidRow(class = "align-items-center flow-chart side-margin",
                                                         column(width = 4,
                                                                class = "flow-item-list",
                                                                uiOutput(ns("prc_in"))
@@ -59,7 +60,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                         ),
                                                         column(width = 4, class = "flow-item-list",
                                                                uiOutput(ns("prc_out"))
-                                                        )),
+                                                        ))),
                                                fluidRow(class = "legend-row side-padding",
                                                         uiOutput(ns("prcViewLegend"))
                                                )  
@@ -97,7 +98,8 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                column(12, class = "col-lg-9 col-sm-12", 
                                       # Commodity View. Flowchart
                                       fluidRow(id = ns("flowChartCom"), class = "flow-chart-outer",
-                                               fluidRow(class = "align-items-center flow-chart side-padding",
+                                               tags$div(class = "flow-height",
+                                                 fluidRow(class = "align-items-center flow-chart side-margin",
                                                         column(width = 4, class = "flow-item-list",
                                                                uiOutput(ns("com_in"))
                                                         ),
@@ -116,7 +118,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                         ),
                                                         column(width = 4, class = "flow-item-list",
                                                                uiOutput(ns("com_out"))
-                                                        )),
+                                                        ))),
                                                fluidRow(class = "legend-row side-padding",
                                                         uiOutput(ns("comViewLegend"))
                                                )
@@ -154,7 +156,8 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                column(12, class = "col-lg-9 col-sm-12", 
                                       # User Constraints flowchart
                                       fluidRow(id = ns("flowChartUC"), class = "flow-chart-outer",
-                                               fluidRow(class = "align-items-center flow-chart side-padding",
+                                               tags$div(class = "flow-height",
+                                               fluidRow(class = "align-items-center flow-chart side-margin",
                                                         column(width = 4, class = "flow-item-list",
                                                                uiOutput(ns("uc_lhs"))
                                                         ),
@@ -173,7 +176,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                         ),
                                                         column(width = 4, class = "flow-item-list",
                                                                uiOutput(ns("uc_rhs"))
-                                                        ))
+                                                        )))
                                       )
                                )
                       ),

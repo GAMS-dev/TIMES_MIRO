@@ -87,6 +87,10 @@
 .custom-css .flow-chart {
     min-height:250px;
 }
+.custom-css .flow-chart-outer > .flow-height {
+    max-height: 45vh;
+    overflow: auto;
+}
 .custom-css .flow-chart-outer {
     margin: 10px 25pt 30pt 0;
     padding-left: 50px;
@@ -97,6 +101,10 @@
 .custom-css .side-padding{
     padding-left: 15px;
     padding-right: 15px;
+}
+.custom-css .side-margin{
+    margin-left: 15px;
+    margin-right: 15px;
 }
 .custom-css .com-proc-item {
   line-height: 16px;
