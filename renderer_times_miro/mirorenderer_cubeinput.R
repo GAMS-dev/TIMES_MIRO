@@ -214,6 +214,13 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   topData <- dataCubeinput %>% dplyr::filter(tolower(siname) == "top")
   noTopData <- dataCubeinput %>% dplyr::filter(tolower(siname) != "top")
   ucData <- dataCubeinput[!(!is.na(dataCubeinput$uc_n) & dataCubeinput$uc_n=="-"), ]
+  
+  
+  prcMapData <- noTopData %>%
+    dplyr::filter(tolower(siname) == "prc_map")
+  
+  comTmapData <- noTopData %>%
+    filter(tolower(siname) == "com_tmap")
 
   processes <- dataCubeinput %>%
     dplyr::pull(prc) %>% 
@@ -280,10 +287,10 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       allTypes <<- c()
       tags$ul(class = if(length(prc_com_in)) "custom-list", 
               lapply(prc_com_in, function(x){
-                type <- noTopData %>%
+                type <- comTmapData %>%
                   dplyr::filter(uni == x) %>% 
-                  filter(tolower(siname) == "com_tmap") %>% 
-                  dplyr::pull("com_grp") %>% unique()
+                  dplyr::pull("com_grp")
+                type <- type[[1]]
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
                 if(!length(type)) type <- "unknown"
@@ -319,10 +326,10 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       allTypes <<- c()
       tags$ul(class = if(length(prc_com_out)) "custom-list", 
               lapply(prc_com_out, function(x){
-                type <- noTopData %>%
+                type <- comTmapData %>%
                   dplyr::filter(uni == x) %>% 
-                  filter(tolower(siname) == "com_tmap") %>% 
-                  dplyr::pull("com_grp") %>% unique()
+                  dplyr::pull("com_grp")
+                type <- type[[1]]
                 color <- unname(colorMap[tolower(type)])
                 if(!length(color)) color <- ""
                 if(!length(type)) type <- "unknown"
@@ -358,10 +365,10 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       allTypes <<- c()
       tags$ul(class = if(length(com_prc_in)) "custom-list", 
               lapply(com_prc_in, function(x){
-                type <- noTopData %>%
+                type <- prcMapData %>%
                   dplyr::filter(prc == x) %>% 
-                  dplyr::filter(tolower(siname) == "prc_map") %>%
-                  dplyr::pull("uni") %>% unique()
+                  dplyr::pull("uni")
+                type <- type[[1]]
                 typeTmp <- type[order(match(type,typeOrder))]
                 if(any(typeTmp %in% "STG") && input$sel_prc %in% stgttsMember){
                   typeTmp[match("STG", typeTmp)] <- "STGTSS"
@@ -408,10 +415,10 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
       allTypes <<- c()
       tags$ul(class = if(length(com_prc_out)) "custom-list", 
               lapply(com_prc_out, function(x){
-                type <- noTopData %>%
+                type <- prcMapData %>%
                   dplyr::filter(prc == x) %>% 
-                  dplyr::filter(tolower(siname) == "prc_map") %>%
-                  dplyr::pull("uni") %>% unique()
+                  dplyr::pull("uni")
+                type <- type[[1]]
                 typeTmp <- type[order(match(type,typeOrder))]
                 if(any(typeTmp %in% "STG") && input$sel_prc %in% stgttsMember){
                   typeTmp[match("STG", typeTmp)] <- "STGTSS"
