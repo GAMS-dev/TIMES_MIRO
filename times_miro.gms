@@ -414,9 +414,9 @@ $onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
 $offEps
 * Skipped VDA DATAGDX VEDAVDD 
-$offExternalInput
 set           dd_PRC_DESC(*,*,*) /  /
               dd_COM_DESC(*,*,*) /  /;
+$offExternalInput
 $offEmpty
 
 $onExternalOutput
@@ -480,7 +480,8 @@ if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
       shutil.rmtree(dirpath)
   with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
       zip_ref.extractall("dd_files")
-ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith(('.dd', '.dds'))]
+#all .dd(s) files in directory excluding ts files
+ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith(('.dd', '.dds')) if not ('_ts.dd' in f.lower() or f.lower() == 'ts.dd' or f.lower() == 'ts.dds')]
       
 gams.printLog("Start writing myrun.gms")
 with open('myrun.gms','w') as frun:
@@ -489,10 +490,13 @@ with open('myrun.gms','w') as frun:
       continue
     if 'include' in l.lower():
       ltmp = l.lower().split('include ')[1].strip()
-      if ('_ts.dd' in l.lower() or ltmp == 'ts.dd' or ltmp == 'ts.dds') and len(isTS) == 0:
-        isTS = ltmp
-        frun.write(l)
-        ddList.append(l.split(' ')[1].split('\n')[0])
+      if ('_ts.dd' in l.lower() or ltmp == 'ts.dd' or ltmp == 'ts.dds'):
+        if len(isTS) == 0:
+          isTS = ltmp
+          frun.write(l)
+          ddList.append(l.split(' ')[1].split('\n')[0])
+        else:
+          continue
       elif '.dd' in l.lower():
         ddList.append(l.split(' ')[1].split('\n')[0])
         scenddmap.append([str(ddcnt),l.split(' ')[1].split('.dd')[0],'false'])
@@ -530,7 +534,7 @@ db['ALL_TS'].copy_symbol(gams.db['TimeSlice'])
 dd = []
 offeps = []
 filePathTmp = r'%DDPREFIX% '.rstrip()
-filesTmp = [f for f in os.listdir(filePathTmp) if re.search(r'.*\.dds?$', f, re.IGNORECASE)]
+filesTmp = [f for f in os.listdir(filePathTmp) if re.search(r'.*\.dds?$', f, re.IGNORECASE) if not ('_ts.dd' in f.lower() or f.lower() == 'ts.dd' or f.lower() == 'ts.dds')]
 for df in [os.path.join(filePathTmp, file) for file in filesTmp]:
     if df[len(filePathTmp):].strip().lower() != isTS:
      ddbase = os.path.splitext(os.path.basename(df))[0]
@@ -768,7 +772,7 @@ $eval.set GMSOBJ      gmsObj.tl
 $eval.set GMSRUNOPT   gmsRunOpt.tl
 
 $onecho > timesdriver.gms
-$Title TIMES -- VERSION 4.6.0
+$Title TIMES -- VERSION 4.6.1
 option resLim=%GMSRESLIM%, profile=1, solveOpt=REPLACE, bRatio=%GMSBRATIO%;
 option limRow=0, limCol=0, solPrint=OFF, solver=%GMSSOLVER%;
 $offListing

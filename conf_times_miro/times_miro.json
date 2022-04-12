@@ -18,7 +18,7 @@
   "aggregateWidgets": true,
   "defaultScenName": "default",
   "overwriteSheetOrder": {
-    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "extensions", "solveropt"]
+    "input": ["_widgets", "scenddmap", "cubeinput", "timeslice", "milestonyr", "extensions", "solveropt", "dd_prc_desc", "dd_com_desc"]
   },
   "overwriteAliases": {
     "timeslice": {
@@ -65,6 +65,15 @@
     },
     "gmsobj": {
       "newAlias": "Choice of objective function formulations"
+    },
+    "gmsrunmode": {
+      "newAlias": "whether to create a MIRO scenario or solve TIMES"
+    },
+    "dd_prc_desc": {
+      "newAlias": "Process Description"
+    },
+    "dd_com_desc": {
+      "newAlias": "Commodity Description"
     }
   },
   "dataRendering": {
@@ -94,7 +103,8 @@
       }
     },
     "cubeinput": {
-      "outType": "mirorenderer_cubeinput"
+      "outType": "mirorenderer_cubeinput",
+      "additionalData": ["dd_prc_desc", "dd_com_desc"]
     }
   },
   "saveTraceFile": false,
@@ -235,6 +245,12 @@
     },
     "cubeoutput": {
       "newHeaders": ["Attribute", "Sow", "Commodity", "Process", "Period", "Region", "Vintage", "Time Slice", "User Constraint", "value"]
+    },
+    "dd_prc_desc": {
+      "newHeaders": ["DD file", "Region", "Process", "Description"]
+    },
+    "dd_com_desc": {
+      "newHeaders": ["DD file", "Region", "Commodity", "Description"]
     }
   },
   "extraClArgs": ["--gmsrunopt=local", "--DDPREFIX=dd_files/"],
@@ -246,10 +262,19 @@
   "defaultRendererOutput": "miroPivot",
   "pivotCompSettings": {
     "enableHideEmptyCols": true,
-    "emptyUEL": "-"
+    "emptyUEL": "-",
+    "hidePivotControls": false,
+    "fixedColumns": true
   },
+  "inputGroups": [
+    {
+      "name": "Symbol descriptions",
+      "members": ["dd_prc_desc", "dd_com_desc"],
+      "sameTab": false
+    }
+  ],
   "handsontable": {
-    "stretchH": "none",
+    "stretchH": "last",
     "readonly": false,
     "manualColumnResize": true,
     "contextMenu": {
@@ -258,6 +283,6 @@
       "allowColEdit": true
     },
     "height": 700,
-    "colWidths": 100
+    "colWidths": 150
   }
 }
