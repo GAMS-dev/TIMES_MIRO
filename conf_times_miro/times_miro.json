@@ -266,7 +266,6 @@
     "hidePivotControls": false,
     "fixedColumns": true
   },
-  "customCss": true,
   "inputGroups": [
     {
       "name": "Symbol descriptions",
