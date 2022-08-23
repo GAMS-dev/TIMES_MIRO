@@ -95,7 +95,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                              ),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addScenddmap"), label = NULL, 
-                                                                   icon = icon("plus-circle"), 
+                                                                   icon = icon("circle-plus"), 
                                                                    class = "add-row-btn")
                                              ),
                                              tags$div(class = "table-styles",
@@ -106,7 +106,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                              tags$h4("Extensions", class="table-header"),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addExtensions"), label = NULL, 
-                                                                   icon = icon("plus-circle"), 
+                                                                   icon = icon("circle-plus"), 
                                                                    class = "add-row-btn")
                                              ),
                                              tags$div(class = "table-styles",
@@ -119,7 +119,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                              tags$h4("Years for model run", class="table-header"),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addMilestonyr"), label = NULL, 
-                                                                   icon = icon("plus-circle"), 
+                                                                   icon = icon("circle-plus"), 
                                                                    class = "add-row-btn")
                                              ),
                                              fluidRow(
@@ -176,7 +176,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                           tags$h4("Solver options", class="table-header"),
                                                           tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                                    actionButton(ns("addSolveropt"), label = NULL, 
-                                                                                icon = icon("plus-circle"), 
+                                                                                icon = icon("circle-plus"), 
                                                                                 class = "add-row-btn")
                                                           ),
                                                           tags$div(class = "table-styles",
