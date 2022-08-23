@@ -555,7 +555,12 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                          search = TRUE,
                                          height = 400) %>% 
       hot_table(stretchH = "all", highlightRow = TRUE) %>%
-      hot_col(1,  type = "autocomplete", source = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1850:if(length(rv$gmseotime)) rv$gmseotime else 2200), strict = TRUE, allowInvalid = FALSE) %>%
+      hot_col(1,  type = "autocomplete", 
+              source = as.character(
+                (if(length(rv$gmsbotime)) rv$gmsbotime 
+                 else 1850):(if(length(rv$gmseotime)) 
+                   rv$gmseotime else 2200)), 
+              strict = TRUE, allowInvalid = FALSE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = TRUE) %>% 
       hot_col(col = 'Text', colWidths=0.001)
     return(milestonyrTableTmp)
