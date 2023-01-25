@@ -772,7 +772,7 @@ $eval.set GMSOBJ      gmsObj.tl
 $eval.set GMSRUNOPT   gmsRunOpt.tl
 
 $onecho > timesdriver.gms
-$Title TIMES -- VERSION 4.6.1
+$Title TIMES -- VERSION 4.6.9
 option resLim=%GMSRESLIM%, profile=1, solveOpt=REPLACE, bRatio=%GMSBRATIO%;
 option limRow=0, limCol=0, solPrint=OFF, solver=%GMSSOLVER%;
 $offListing
