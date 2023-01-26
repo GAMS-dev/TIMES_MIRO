@@ -95,7 +95,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                              ),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addScenddmap"), label = NULL, 
-                                                                   icon = icon("plus-circle"), 
+                                                                   icon = icon("circle-plus"), 
                                                                    class = "add-row-btn")
                                              ),
                                              tags$div(class = "table-styles",
@@ -106,7 +106,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                              tags$h4("Extensions", class="table-header"),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addExtensions"), label = NULL, 
-                                                                   icon = icon("plus-circle"), 
+                                                                   icon = icon("circle-plus"), 
                                                                    class = "add-row-btn")
                                              ),
                                              tags$div(class = "table-styles",
@@ -119,7 +119,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                              tags$h4("Years for model run", class="table-header"),
                                              tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                       actionButton(ns("addMilestonyr"), label = NULL, 
-                                                                   icon = icon("plus-circle"), 
+                                                                   icon = icon("circle-plus"), 
                                                                    class = "add-row-btn")
                                              ),
                                              fluidRow(
@@ -176,7 +176,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                                           tags$h4("Solver options", class="table-header"),
                                                           tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                                                    actionButton(ns("addSolveropt"), label = NULL, 
-                                                                                icon = icon("plus-circle"), 
+                                                                                icon = icon("circle-plus"), 
                                                                                 class = "add-row-btn")
                                                           ),
                                                           tags$div(class = "table-styles",
@@ -555,7 +555,12 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                          search = TRUE,
                                          height = 400) %>% 
       hot_table(stretchH = "all", highlightRow = TRUE) %>%
-      hot_col(1,  type = "autocomplete", source = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1850:if(length(rv$gmseotime)) rv$gmseotime else 2200), strict = TRUE, allowInvalid = FALSE) %>%
+      hot_col(1,  type = "autocomplete", 
+              source = as.character(
+                (if(length(rv$gmsbotime)) rv$gmsbotime 
+                 else 1850):(if(length(rv$gmseotime)) 
+                   rv$gmseotime else 2200)), 
+              strict = TRUE, allowInvalid = FALSE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = TRUE) %>% 
       hot_col(col = 'Text', colWidths=0.001)
     return(milestonyrTableTmp)
