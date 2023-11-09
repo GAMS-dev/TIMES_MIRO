@@ -1,6 +1,6 @@
 {
   "theme": "browser",
-  "customCss": true, 
+  "customCss": true,
   "excelIncludeMeta": true,
   "excelIncludeEmptySheets": true,
   "autoGenInputGraphs": true,
@@ -54,9 +54,6 @@
     "gmsbratio": {
       "newAlias": "Basis indicator"
     },
-    "gmsrunlocation": {
-      "newAlias": "Location of Run file"
-    },
     "gmsbotime": {
       "newAlias": "First year available (BOTIME)"
     },
@@ -65,9 +62,6 @@
     },
     "gmsobj": {
       "newAlias": "Choice of objective function formulations"
-    },
-    "gmsrunmode": {
-      "newAlias": "whether to create a MIRO scenario or solve TIMES"
     },
     "dd_prc_desc": {
       "newAlias": "Process Description"
@@ -118,17 +112,7 @@
       "rendererName": "mirowidget_scenddmap",
       "alias": "Settings",
       "apiVersion": 2,
-      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "gmsobj", "gmsrunlocation", "gmsbotime", "gmseotime", "gmsbratio", "gmsreslim", "gmssolver", "gmsrunmode"]
-    },
-    "gmsrunmode": {
-      "widgetType": "dropdown",
-      "alias": "Mode to run",
-      "choices": ["solve", "create"],
-      "selected": "solve",
-      "noHcube": true,
-      "clearValue": false,
-      "multiple": false,
-      "label": "Mode to run"
+      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "gmsobj", "gmsbotime", "gmseotime", "gmsbratio", "gmsreslim", "gmssolver"]
     },
     "gmssolver": {
       "widgetType": "dropdown",
@@ -182,12 +166,6 @@
       "max": 2200,
       "value": 2200
     },
-    "gmsrunlocation": {
-      "widgetType": "textinput",
-      "alias": "Location of RUN file (for initialization)",
-      "value": " ",
-      "label": "Location of RUN file"
-    },
     "gmsobj": {
       "widgetType": "dropdown",
       "alias": "Objective function formulation",
@@ -217,13 +195,6 @@
       }
     }
   },
-  "outputAttachments": [
-    {
-      "filename": "miroScenario.gdx",
-      "execPerm": false,
-      "throwError": false
-    }
-  ],
   "overwriteHeaderAliases": {
     "cubeinput": {
       "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Limit Types", "Currencies", "Gen1", "Gen2", "Gen3", "value"]
@@ -253,7 +224,7 @@
       "newHeaders": ["DD file", "Region", "Commodity", "Description"]
     }
   },
-  "extraClArgs": ["--gmsrunopt=local", "--DDPREFIX=dd_files/"],
+  "extraClArgs": ["--gmsrunopt=local", "--DDPREFIX=dd_files/", "--runmode=run"],
   "readme": {
     "tabTitle": "Readme",
     "filename": "app_README.md",
@@ -266,17 +237,38 @@
     "hidePivotControls": false,
     "fixedColumns": true
   },
-  "inputGroups": [
+  "customDataImport": [
     {
-      "name": "Symbol descriptions",
-      "members": ["dd_prc_desc", "dd_com_desc"],
-      "sameTab": false
+      "label": "XLSX import",
+      "symNames": ["solveropt", "scenddmap", "timeslice", "milestonyr", "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", "gmsobj", "cubeinput", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime"],
+      "functionName": "miroimport_xlsx",
+      "localFileInput": {
+        "label": "Please upload XLSX file(s) and RUN file here (can also be zipped)",
+        "multiple": true,
+        "accept": [".xls", ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+      }
+    },
+    {
+      "label": "DD import",
+      "symNames": ["solveropt", "scenddmap", "timeslice", "milestonyr", "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", "gmsobj", "cubeinput", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime"],
+      "functionName": "miroimport_dd",
+      "localFileInput": {
+        "label": "Please upload DD file(s) and RUN file here (can also be zipped)",
+        "multiple": true,
+        "accept": [".dd", "text/plain"]
+      }
     }
   ],
+  "layoutSettings": {
+    "maxTabsExpandedInput": 5,
+    "maxTabsExpandedOutput": 5,
+    "maxTabsExpandedPivotComp": 5,
+    "maxTabsExpandedSplitComp": 5,
+    "maxTabsExpandedTabComp": 5
+  },
   "handsontable": {
     "stretchH": "last",
     "readonly": false,
-    "manualColumnResize": true,
     "contextMenu": {
       "enabled": true,
       "allowRowEdit": true,
@@ -284,5 +276,12 @@
     },
     "height": 700,
     "colWidths": 150
-  }
+  },
+  "inputGroups": [
+    {
+      "name": "Symbol descriptions",
+      "members": ["dd_prc_desc", "dd_com_desc"],
+      "sameTab": false
+    }
+  ]
 }

@@ -201,7 +201,6 @@ times_model/atlearn.etl
 times_model/eqxbnd.mod
 times_model/init_ext.abs
 times_model/ppmain.mod
-times_model/LICENSE.txt
 times_model/eqactflo.mod
 times_model/initmty.stc
 times_model/mod_vars.dsc

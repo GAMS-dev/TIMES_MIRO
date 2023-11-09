@@ -2,7 +2,7 @@
 
    * [Input View / Job Setup](#input-view)
        * [TIMES MIRO Scenarios](#times-data-sets)
-       * [Create a TIMES MIRO Scenario from *.dd and *.run Files](#create-input)
+       * [Create a TIMES MIRO Scenario](#create-input)
        * [Prepare Model Run](#prepare-model-run)
        * [Input Data](#input-data)
        * [RES Viewer](#res-viewer)
@@ -15,7 +15,13 @@
    * [License](#license)
 
 
-This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model. TIMES MIRO is seen as an open source platform primarily intended to promote the dissemination and use of existing TIMES models. It allows users to make changes to model assumptions and perform sensitive runs based on the initial model assumptions. It then facilitates the comparison of results across multiple scenarios to evaluate the impact of the alternate futures. The app comes with predefined TIMES MIRO Scenarios, e.g. the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) (default) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets. Others can be created from \*.dd and \*.run files (see [below](#create-input)).
+This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model. 
+TIMES MIRO is seen as an open source platform primarily intended to promote the dissemination and use of existing TIMES models. 
+It allows users to make changes to model assumptions and perform sensitive runs based on the initial model assumptions. 
+It then facilitates the comparison of results across multiple scenarios to evaluate the impact of the alternate futures. 
+The app comes with predefined TIMES MIRO Scenarios, e.g. the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) (default) 
+and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets. 
+Others can be created from \*.xlsx and \*.run files or \*.dd and \*.run files (see [below](#create-input)).
 
 This write-up assumes that the user is well familiar with TIMES and the organization of the datasets produced when running TIMES via [VEDA](https://iea-etsap.org/index.php/etsap-tools/data-handling-shells/veda).
 
@@ -29,15 +35,21 @@ Following the common [MIRO App Structure](https://www.gams.com/miro/start.html#m
 <br /><br />
  
 ### TIMES MIRO Scenarios<a name="times-data-sets"></a>
-To perform a model run, MIRO compatible data is required. This data can be loaded in the form of scenarios already stored in the integrated database or uploaded in the form of [GAMS Data Exchange](https://www.gams.com/latest/docs/UG_GDX.html) (GDX) or Excel files. TIMES MIRO scenarios stored in the database can be loaded via the `load data` button in the navigation bar of the Input view. In the dialog that opens, all available scenarios are listed (`Database` tab). 
+To perform a model run, MIRO compatible data is required. This data can be loaded in the form of scenarios already stored 
+in the integrated database or uploaded in the form of [GAMS Data Exchange](https://www.gams.com/latest/docs/UG_GDX.html) (GDX) 
+or Excel files. TIMES MIRO scenarios stored in the database can be loaded via the `load data` button in the navigation bar 
+of the Input view. In the dialog that opens, all available scenarios are listed (`Database` tab). 
 
 ![Load a data set from the database](static_times_miro/load_data.png)
 *Load a TIMES MIRO scenario from the database* 
 
 <br />
 
-### Create a TIMES MIRO Scenario from *.dd and *.run Files<a name="create-input"></a>
-If the data comes from a GDX file, this GDX file must correspond to the data structure of a TIMES MIRO scenario with its input cube and the settings. If not available, such a GDX file can be generated from within the interface using \*.dd files and a \*.run file as produced by [VEDA](https://iea-etsap.org/index.php/etsap-tools/data-handling-shells/veda). In the input view click on the `settings` tab and go to `Create new TIMES MIRO scenario`. Now upload all \*.dd files to be used and the \*.run file via the corresponding upload fields. MIRO tells you whether the upload was successful and lists the files in the tables next to the upload fields. 
+### Create a TIMES MIRO Scenario<a name="create-input"></a>
+If the data comes from a GDX file, this GDX file must correspond to the data structure of a TIMES MIRO scenario with its input cube and the settings. 
+If not available, such a GDX file can be generated from within the interface either using \*.xlsx files or \*.dd files and a \*.run file 
+as produced by [VEDA](https://iea-etsap.org/index.php/etsap-tools/data-handling-shells/veda). 
+In the input view click on the `settings` tab and go to `Create new TIMES MIRO scenario`. Now upload all \*.dd files to be used and the \*.run file via the corresponding upload fields. MIRO tells you whether the upload was successful and lists the files in the tables next to the upload fields. 
 
 ![Upload dd and run files](static_times_miro/upload_files.png)
 *Upload \*.dd and \*.run files*

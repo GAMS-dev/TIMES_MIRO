@@ -393,7 +393,6 @@ singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue'
 $onEmpty
 set           dd                              'DD Files';
 set           offeps                          'dd read under offeps ("true", "false")';
-singleton set gmsddlocation(*)                'Location of DD files'          / '' 'TIMES_Demo/model/'/;   
 $onExternalInput
 set           scenddmap(ddorder,dd<,offeps<)  'DD File information'           / /;                                     
 set           TimeSlice(*)                    'ALL_TS'                        / / ;
@@ -402,11 +401,11 @@ scalar        gmsBOTime                       'Adjustment for total available ti
 scalar        gmsEOTime                       'Adjustment for total available time span of years available in the model' / /;
 set           extensions(*,*)                 'TIMES Extensions'              / /;
 singleton set gmsObj(*)      'Choice of objective function formulations'      / /; // MOD, ALT, AUTO, LIN, MOD, STD
+$onMulti
+singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
+singleton set gmsrunmode                      'whether to create a MIRO scenario or solve TIMES' /'' 'create'/;
+$offMulti
 $offExternalInput
-*$onMulti
-*singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
-*singleton set gmsrunmode                      'whether to create a MIRO scenario or solve TIMES' /'' 'create'/;
-*$offMulti
 *$endif.data
 
 $onExternalInput
@@ -424,13 +423,13 @@ alias (*,soName,sow,Vintage)
 parameter cubeOutput(soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
 $offExternalOutput
 
-$if not set RUNFILE $set RUNFILE "TIMES_Demo/model/demo12.run"
+$if not set RUNFILE $abort "No run file provided"
 $if not set RUNMODE $set RUNMODE "create"
-$if not set DDPREFIX $eval.set DDPREFIX gmsddlocation.te
+$if not set DDPREFIX $set RUNMODE "dd_files/"
 $setNames "%RUNFILE%" fp fn fe
 *if this file is run through Studio and command line parameter is not set, the data from the *.dd files specified above will
 *be translated into a GDX file that can be imported into MIRO
-$ifThenE.runmodel sameas("x%gams.IDCGDXInput%","x")or(sameas("%RUNMODE%","create"))
+
 * 2b) read data from *.dd files specified above
 $onEchoV > "%gams.scrDir%mkdd.%gams.scrExt%"
 $onmulti
@@ -474,12 +473,11 @@ ddFiles = []
 ddDiff = []
 isTS = ""
 #When running via MIRO, unzip dd file archive first
-if r'%gams.idcgdxinput% '.strip() == '_miro_gdxin_.gdx':
-  dirpath = os.path.join( r'%gams.scrDir%..','dd_files')
-  if os.path.exists(dirpath) and os.path.isdir(dirpath):
-      shutil.rmtree(dirpath)
-  with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
-      zip_ref.extractall("dd_files")
+dirpath = os.path.join( r'%gams.scrDir%..','dd_files')
+if os.path.exists(dirpath) and os.path.isdir(dirpath):
+    shutil.rmtree(dirpath)
+with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
+    zip_ref.extractall("dd_files")
 #all .dd(s) files in directory excluding ts files
 ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith(('.dd', '.dds')) if not ('_ts.dd' in f.lower() or f.lower() == 'ts.dd' or f.lower() == 'ts.dds')]
       
@@ -667,300 +665,3 @@ $gdxOut
 $log ---
 $log --- Scenario exported to "%fp%miroScenario.gdx". Please import into MIRO.
 $log ---
-
-$else.runmodel
-* 2a) load data from MIRO
-$onEPS
-$ifE card(cubeInput)=0 $abort 'No data in input cube'
-
-set actdd(dd), orderactdd(ddorder,dd);
-$hiddencall rm -f solve.lst solver-output.zip
-
-$onMultiR
-$onEmbeddedCode Python:
-actdd = []
-orderactdd = []
-for r in gams.get('scenddmap'):
-   # order = 0 -> Ignore DD file 
-   if int(r[0]) != 0:
-     actdd.append(r[1])
-     orderactdd.append((r[0],r[1]))
-gams.set('actdd',actdd)
-gams.set('orderactdd',orderactdd)
-$offEmbeddedCode actdd orderactdd
-$offMulti
-
-
-
-*######################################
-*#  3) Write TIMES Data (*.dd files)  #
-*######################################
-
-$onEmbeddedCode Python:
-gams.wsWorkingDir = '.'
-gams.ws.my_eps = 0
-
-#extract offeps information from scenddmap 
-scenddmap = list(gams.get('scenddmap'))
-offeps = []
-for idx, (order,ddName,offepsHdr) in enumerate(scenddmap):
-         if offepsHdr.lower() == 'true':
-           offeps.append(scenddmap[idx][1])          
-
-dd_txt = { dd:open(dd+'.dd','w') for dd in gams.get('actdd') }
-cube_input = gams.db['cubeInput']
-act_dd = set()
-for dd in gams.get('actdd'):
-  dd_txt[dd].write('$onEmpty\n$onEps\n$onWarning\n$set SCENARIO_NAME "' + dd + '"\n')
-  act_dd.add(dd)
-  if dd in offeps:
-    dd_txt[dd].write('$offEps\n')
-  
-last_sym = ''
-for cr in cube_input:
-  if not cr.key(2) in act_dd:
-     continue
-  if not cr.key(0)==last_sym:
-    if not last_sym=='':
-      for dd in gams.get('actdd'):
-        if dd_sym_written[dd]:
-          dd_txt[dd].write('/;\n')
-    dd_sym_written = { dd:False for dd in gams.get('actdd') }
-    last_sym = cr.key(0)
-    cdr = next(r for r in cd_input if r[0]==last_sym)
-    last_dd = ''
-    if cdr[2]=='':
-      dom = []
-    else:
-      dom = cdr[2].split(',')
-  if not cr.key(2)==last_dd:
-    last_dd = cr.key(2)
-    dd_sym_written[last_dd] = True
-    f = dd_txt[last_dd]
-    if cdr[1]=='Par':
-      f.write('Parameter ' + cdr[0] + ' /\n')
-    else: 
-      f.write('Set ' + cdr[0] + ' /\n')
-
-  keys = [cr.key(dinput_map[d]) for d in dom]
-  if len(dom):
-    f.write("'" + "'.'".join(keys) + "'")
-  if cdr[1]=='Par':
-    f.write(' ' + str(cr.value) + '\n')
-  else:
-    f.write('\n')
-
-for dd in gams.get('actdd'):
-  if dd_sym_written[dd]:
-    dd_txt[dd].write('/;\n')
-  dd_txt[dd].close()
-$offEmbeddedCode
-$if not errorFree $abort 'Errors. No point in continuing.'
-
-
-*#############################################
-*#  4) Write TIMES Driver (timesdriver.gms)  #
-*#############################################
-$eval.set GMSSOLVER   gmsSolver.tl
-$eval.set GMSTIMESSRC gmsTIMESsrc.te
-$if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%times_model%system.dirsep%
-$eval     GMSRESLIM   gmsResLim   
-$eval     GMSBRATIO   gmsBRatio   
-$eval     GMSBOTIME   gmsBOTime  
-$eval     GMSEOTIME   gmsEOTime   
-$eval.set GMSOBJ      gmsObj.tl
-$eval.set GMSRUNOPT   gmsRunOpt.tl
-
-$onecho > timesdriver.gms
-$Title TIMES -- VERSION 4.6.9
-option resLim=%GMSRESLIM%, profile=1, solveOpt=REPLACE, bRatio=%GMSBRATIO%;
-option limRow=0, limCol=0, solPrint=OFF, solver=%GMSSOLVER%;
-$offListing
-$offEcho
-
-* Copy solver option file creation at execution time
-$onEmbeddedCode Python:
-with open('timesdriver.gms', 'a+') as td:
-    td.write('file fslvopt / "%GMSSOLVER%.opt" /; put fslvopt "* Generated %GMSSOLVER% option file" /;\n$onPut\n')
-    for sor in gams.get('solveropt'):
-      if sor[0].lower() == '%GMSSOLVER%'.lower():
-        td.write(sor[1]+' '+sor[2]+'\n')
-    td.write('$offPut\nputClose;\n')
-    ext = {'obj':'%GMSOBJ%', 'botime':'%GMSBOTIME%', 'eotime':'%GMSEOTIME%', 'milestonyr':','.join(gams.get('MILESTONYR'))}
-    for er in gams.get('extensions',keyFormat=KeyFormat.FLAT, valueFormat=ValueFormat.FLAT):
-      if er[0].lower() in ['premain','postmain']:
-        ext[er[0].lower()+er[1]] = er[2]
-      else:
-        ext[er[0].lower()] = er[1]
-    for er in ext.items():
-      if not (er[0] == 'milestonyr' or 'premain' in er[0] or 'postmain' in er[0]):
-        td.write('$set '+er[0].upper() +' '+er[1]+'\n')
-    td.write('$onMulti\nset ALL_TS /\n')
-    for tsr in gams.get('TimeSlice'):
-      td.write(tsr + '\n')
-    td.write('/;\n$batInclude initsys.mod\n$batInclude initmty.mod\n')
-    for ddr in gams.get('orderactdd'):
-      td.write('$batInclude ' + ddr[1] + '.dd\n')
-    td.write('\nSet MILESTONYR / ' + ext['milestonyr'] + '/;\n')
-    os.environ['GMSSTAGES'] = ext.get('stages', 'no').upper()
-    for i in range(50):
-      s = ext.get('premain'+str(i+1), '')
-      if '' == s:
-        break
-      td.write(s+'\n')
-$offEmbeddedCode
-$onecho >> timesdriver.gms 
-$batInclude maindrv.mod mod
-$offecho
-$onEmbeddedCode Python:
-with open('timesdriver.gms', 'a+') as td:
-    for i in range(50):
-      s = ext.get('postmain'+str(i+1), '')
-      if '' == s:
-        break
-      td.write(s+'\n')
-$offEmbeddedCode
-
-*#####################################################################
-*#  5) Execute TIMES driver                                          #
-*#     a) execute locally                                            #
-*#     b) compile locally and submit workfile to NEOS for execution  # 
-*#####################################################################
-* 5a) execute locally
-$ifThenI.localSolve %GMSRUNOPT%==local
-$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% filecase=2 er=99 ide=1 o=solve.lst gdx=out.gdx
-$else.localSolve
-* 5b) compile locally and submit workfile to NEOS
-$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% filecase=2 er=99 ide=1 a=c xs=times.g00
-$  set restartFile times.g00
-$  set wantGDX     yes
-
-$  set dryRun      ''
-$  set gmsOptions  'fw=1'
-$  onEmbeddedCode Python:
-# Copyright (c) 2017 NEOS-Server
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-import os
-import sys
-import time
-import base64
-import re
-try:
-    import xmlrpc.client as xmlrpclib
-except ImportError:
-    import xmlrpclib
-
-# NEOS XML Template (to be filled)
-xml = r'''<document>
-<category>lp</category>
-<solver>BDMLP</solver>
-<priority>:queue:</priority>
-<inputType>GAMS</inputType>
-<model><![CDATA[]]></model>
-<options><![CDATA[]]></options>
-<parameters><![CDATA[%gmsOptions%]]></parameters>
-<restart><base64>:restartb64:</base64></restart>
-<wantlog><![CDATA[yes]]></wantlog>
-<wantlst><![CDATA[yes]]></wantlst>
-<wantgdx><![CDATA[%wantGDX%]]></wantgdx>
-</document>'''
-xml = xml.replace(":queue:", '%GMSRUNOPT%'.lower())
-
-neos = xmlrpclib.ServerProxy('https://neos-server.org:3333')
-alive = neos.ping()
-if alive != "NeosServer is alive\n":
-    raise NameError('\n***\n*** Could not make connection to NEOS Server\n***')
-with open(r'%restartFile%', 'rb') as restartfile:
-    restart = restartfile.read()
-    xml = xml.replace(":restartb64:", base64.b64encode(restart).decode('utf-8'))
-
-
-if len(r'%dryRun%'):
-    with open(os.path.splitext(r'%dryRun%')[0]+'.xml', 'w') as rf:
-        rf.write(xml)
-else:       
-    (jobNumber, password) = neos.submitJob(xml)
-    sys.stdout.write("\nJob number = %d\nJob password = %s\n" % (jobNumber, password))
-    sys.stdout.flush()
-
-    if jobNumber == 0:
-        raise NameError('\n***\n*** NEOS Server error:' + password + '\n***')
-    
-    offset = 0
-    echo = 1
-    status = ''
-    while status != 'Done':
-        time.sleep(1)
-        (msg, offset) = neos.getIntermediateResults(jobNumber, password, offset)
-        if echo == 1:
-           s = msg.data.decode()
-           if s.find('Composing results.') != -1:
-              sys.stdout.write(s.split('Composing results.', 1)[0])
-              echo = 0;
-           else:
-              sys.stdout.write(s)
-           sys.stdout.flush()
-    
-        status = neos.getJobStatus(jobNumber, password)
-    
-    msg = neos.getOutputFile(jobNumber, password, 'solver-output.zip')
-    with open('solver-output.zip', 'wb') as rf:
-        rf.write(msg.data)
-$  offEmbeddedCode
-$  ifthen.dryRun not "x%dryRun%"=="x"
-$    call cat "%dryRun%"
-$  else.dryRun
-$    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx
-$    hiddencall gmsunzip -qq -o solver-output.zip
-$  endif.dryRun
-$endIf.localSolve
-
-*###############################################
-*#  6) Collect results and prepare output cube # 
-*###############################################
-
-$log --- Collecting results
-$ifThen.stages %sysEnv.GMSSTAGES% == NO
-$  call.checkErrorLevel gdx2veda out.gdx %GMSTIMESSRC%times2veda.vdd
-$else.stages
-$  call.checkErrorLevel gdx2veda out.gdx %GMSTIMESSRC%times2veda_stc.vdd
-$endif.stages
-
-$onMulti
-$oneps
-$onembeddedCode Python:
-import csv
-gams.wsWorkingDir = '.'
-have_stages = os.environ['GMSSTAGES'] == 'YES'
-with open('out.vd', newline='') as csvfile:
-    vddreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-    for row in vddreader:
-        if len(row)>0 and not row[0][0] == '*':
-            if have_stages:
-                key = row[:-1]
-            else:
-                key = [row[0],'-'] + row[1:-1]
-            gams.db['cubeOutput'].add_record(key).value = float(row[-1])
-$offEmbeddedCode cubeOutput
-
-$offMulti
-put_utility 'incMsg' / 'solve.lst';
-$endif.runmodel

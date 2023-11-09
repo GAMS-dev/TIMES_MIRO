@@ -25,9 +25,9 @@
 		},
 		"_scalars":	{
 			"alias":	"Input Scalars",
-			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime", "gmsobj", "gmsrunlocation", "gmsrunmode"],
-			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations", "Location of Run file", "whether to create a MIRO scenario or solve TIMES"],
-			"symtypes":	["set", "parameter", "parameter", "parameter", "parameter", "set", "set", "set"],
+			"symnames":	["gmssolver", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime", "gmsobj"],
+			"symtext":	["Solver for TIMES", "Time limit for solve", "Basis indicator", "Adjustment for total available time span of years available in the model", "Adjustment for total available time span of years available in the model", "Choice of objective function formulations"],
+			"symtypes":	["set", "parameter", "parameter", "parameter", "parameter", "set"],
 			"headers":	{
 				"scalar":	{
 					"type":	"string",
