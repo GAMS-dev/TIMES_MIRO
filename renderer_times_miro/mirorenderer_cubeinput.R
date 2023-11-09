@@ -14,7 +14,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
              
              # Process Tab
              tabPanel("Process", value = "tp_prc", style = "position:relative;",
-                      icon = icon("cogs"),
+                      icon = icon("gears"),
                       tags$div(class = "small-space"),
                       
                       fluidRow(class = "row-custom", style = "margin-top: 5pt;",
@@ -48,7 +48,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                         column(width = 1, 
                                                                class = "flow-arrow", 
                                                                tags$div(id = ns("prc_in_arrow"), 
-                                                                        icon("long-arrow-alt-right"))
+                                                                        icon("right-long"))
                                                         ),
                                                         column(width = 2, 
                                                                class = "node-column",
@@ -56,7 +56,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                         ),
                                                         column(width = 1, class = "flow-arrow",
                                                                tags$div(id = ns("prc_out_arrow"), 
-                                                                        icon("long-arrow-alt-right"))
+                                                                        icon("right-long"))
                                                         ),
                                                         column(width = 4, class = "flow-item-list",
                                                                uiOutput(ns("prc_out"))
@@ -106,7 +106,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                         column(width = 1, 
                                                                class = "flow-arrow", 
                                                                tags$div(id = ns("com_in_arrow"), 
-                                                                        icon("long-arrow-alt-right"))
+                                                                        icon("right-long"))
                                                         ),
                                                         column(width = 2,
                                                                class = "node-column",
@@ -114,7 +114,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                                                         ),
                                                         column(width = 1, class = "flow-arrow", 
                                                                tags$div(id = ns("com_out_arrow"), 
-                                                                        icon("long-arrow-alt-right"))
+                                                                        icon("right-long"))
                                                         ),
                                                         column(width = 4, class = "flow-item-list",
                                                                uiOutput(ns("com_out"))
@@ -203,11 +203,6 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   dataComDesc <- data$dd_com_desc
   # Create inputs first
   dataCubeinput <- mutate(dataCubeinput, across(where(is.factor), as.character))
-  
-  uelMap <- suppressWarnings(jsonlite::fromJSON(
-    file.path(path, "map.json"),simplifyDataFrame = FALSE, 
-    simplifyMatrix = FALSE, flatten = TRUE))
-
   
   col_names_header <- c("dd", "uni#2", "uni#1", "uni", "all_ts")
 
