@@ -425,7 +425,7 @@ $offExternalOutput
 
 $if not set RUNFILE $abort "No run file provided"
 $if not set RUNMODE $set RUNMODE "create"
-$if not set DDPREFIX $set RUNMODE "dd_files/"
+$if not set DDPREFIX $set DDPREFIX "dd_files/"
 $setNames "%RUNFILE%" fp fn fe
 *if this file is run through Studio and command line parameter is not set, the data from the *.dd files specified above will
 *be translated into a GDX file that can be imported into MIRO
@@ -472,12 +472,7 @@ ddList = []
 ddFiles = []
 ddDiff = []
 isTS = ""
-#When running via MIRO, unzip dd file archive first
-dirpath = os.path.join( r'%gams.scrDir%..','dd_files')
-if os.path.exists(dirpath) and os.path.isdir(dirpath):
-    shutil.rmtree(dirpath)
-with zipfile.ZipFile("dd_files.zip", 'r') as zip_ref:
-    zip_ref.extractall("dd_files")
+
 #all .dd(s) files in directory excluding ts files
 ddFiles = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if f.endswith(('.dd', '.dds')) if not ('_ts.dd' in f.lower() or f.lower() == 'ts.dd' or f.lower() == 'ts.dds')]
       

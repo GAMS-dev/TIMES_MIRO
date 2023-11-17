@@ -1,4 +1,10 @@
-miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachments = NULL, metadata = NULL, customRendererDir = NULL, ...){
+miroimport_xlsx <- function(symbolNames, 
+                            localFile = NULL, 
+                            views = NULL, 
+                            attachments = NULL, 
+                            metadata = NULL, 
+                            customRendererDir = NULL, 
+                            ...){
 
   pathToXlsx <- dirname(localFile$datapath[1])
   zipFiles <- list.files(pathToXlsx, pattern = "\\.zip$", full.names = TRUE)
@@ -9,8 +15,13 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
     }
   }
   
-  xlsxFiles <- basename(list.files(pathToXlsx, pattern = "\\.xlsx$", full.names = TRUE, recursive = TRUE))
-  runfile <- list.files(pathToXlsx, pattern = "\\.run$", full.names = TRUE)
+  xlsxFiles <- basename(list.files(pathToXlsx, 
+                                   pattern = "\\.xlsx$", 
+                                   full.names = TRUE, 
+                                   recursive = TRUE))
+  runfile <- list.files(pathToXlsx, 
+                        pattern = "\\.run$", 
+                        full.names = TRUE)
 
   if (!length(xlsxFiles) ) {
     abortSafe("Please upload valid XLSX files")
@@ -32,36 +43,42 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
   #   })
   # }
   
-  ifelse(!dir.exists(file.path(customRendererDir, "times-excel-reader-output")), 
-         dir.create(file.path(customRendererDir, "times-excel-reader-output")), 
-         FALSE)
-  ddFilesDir <- file.path(customRendererDir, "times-excel-reader-output")
-  modelDir <- file.path(customRendererDir, "model-for-conversion")
-  runfile <- list.files(pathToXlsx, pattern = "\\.run$", full.names = TRUE)
+  ddFilesDir <- file.path(tempdir(), "times-excel-reader-output")
+  if (!dir.exists(ddFilesDir)) {
+    dir.create(ddFilesDir)
+  }
   
   # call times_excel_reader.py to create dd files from uploaded xlsx files
   tryCatch(
     {
-      #TODO: use venv (located in renderer dir with all packages)
-      processx::run(
+      #TODO: venv used correctly?
+      times2xls <- processx::run(
         # command = "python", args = c(
         # command = "times-excel-reader", args = c(
-        command = file.path(customRendererDir, "times-excel-reader", ".venv", "Scripts", "times-excel-reader.exe"), args = c(
+        command = file.path(customRendererDir, 
+                            "times-excel-reader", ".venv", "Scripts", 
+                            "times-excel-reader.exe"), 
+        args = c(
           # file.path(customRendererDir, "times-excel-reader", "times_excel_reader.py"),
           # "times-excel-reader",
           pathToXlsx,
           "--output_dir", ddFilesDir,
           "--dd"
         ),
+        error_on_status = FALSE,
         wd = file.path(customRendererDir, "times-excel-reader"),
         echo_cmd = TRUE, echo = TRUE,
         windows_hide_window = TRUE, timeout = 100L,
         env = c(
-          VIRTUAL_ENV=file.path(customRendererDir, "times-excel-reader", ".venv"),
-          PATH=paste0(file.path(customRendererDir, "times-excel-reader", ".venv", "Scripts"), .Platform$path.sep, Sys.getenv("PATH"))
-
-          # export VIRTUAL_ENV
-          # _OLD_VIRTUAL_PATH="$PATH"
+          VIRTUAL_ENV=file.path(customRendererDir, 
+                                "times-excel-reader", 
+                                ".venv"),
+          PATH=paste0(file.path(customRendererDir, 
+                                "times-excel-reader", 
+                                ".venv", 
+                                "Scripts"), 
+                      .Platform$path.sep, 
+                      Sys.getenv("PATH"))
         )
       )
     },
@@ -72,22 +89,24 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
       )
     }
   )
-  
-  #zip dd files
-  ddFiles <- basename(list.files(ddFilesDir, pattern = "\\.dd$", full.names = TRUE))
-  
-  zipFile <- file.path(ddFilesDir, "dd_files.zip")
-  zip::zip(zipFile, ddFiles, root = ddFilesDir)
-  file.copy(zipFile, modelDir, overwrite = TRUE)
+  #TODO:test
+  if(times2xls$status != 0) {
+    abortSafe(sprintf("Problems importing xlsx data. Error message: '%s'.",
+                      times2xls$stdout))
+  }
 
   # call GAMS to convert dd files into MIRO-compatible GDX
+  modelDir <- file.path(customRendererDir, "model-for-conversion")
   
   tryCatch(
     {
       processx::run(
         command = "gams", args = c(
           file.path(modelDir, "dd_to_gdx.gms"),
-          "--gmsrunopt=local", "--DDPREFIX=dd_files/", paste0("--runfile=", runfile)
+          "--gmsrunopt=local", paste0("--DDPREFIX=", 
+                                      ddFilesDir, 
+                                      .Platform$file.sep), 
+          paste0("--runfile=", runfile)
         ),
         wd = file.path(modelDir),
         echo_cmd = TRUE, echo = TRUE,
@@ -124,14 +143,16 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
     )
     symDim <- sym$dim
     if (length(names)) {
-      stopifnot(is.character(names), identical(length(names), symDim + 1L))
+      stopifnot(is.character(names), 
+                identical(length(names), symDim + 1L))
     }
     dflist <- vector("list", symDim + 1L)
     if (identical(dim(sym$val)[1], 0L)) { # empty symbol - no elements
       return(tibble())
     } else {
       dflist[seq_len(symDim)] <- lapply(seq_len(symDim), function(d) {
-        # first arg to factor must be integer, not numeric: different as.character results
+        # first arg to factor must be integer, not numeric: 
+        # different as.character results
         factor(as.integer(sym$val[, d]),
                seq(to = length(sym$uels[[d]])),
                labels = sym$uels[[d]]
@@ -152,8 +173,12 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
   }
   
   rgdxParamCustom <- function(symName, names = NULL) {
-    sym <- gdxrrwMIRO::rgdx(gdxFile, list(name = symName, compress = FALSE, ts = FALSE),
-                            squeeze = FALSE, useDomInfo = TRUE
+    sym <- gdxrrwMIRO::rgdx(gdxFile, 
+                            list(name = symName, 
+                                 compress = FALSE, 
+                                 ts = FALSE),
+                            squeeze = FALSE, 
+                            useDomInfo = TRUE
     )
     symDim <- sym$dim
     if (identical(symDim, 0L)) {
@@ -171,7 +196,8 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
       return(tibble())
     } else {
       dflist[seq_len(symDim)] <- lapply(seq_len(symDim), function(d) {
-        # first arg to factor must be integer, not numeric: different as.character results
+        # first arg to factor must be integer, not numeric: 
+        # different as.character results
         factor(as.integer(sym$val[, d]), seq(to = length(sym$uels[[d]])),
                labels = sym$uels[[d]]
         )
@@ -191,12 +217,18 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
   gdxFile <- file.path(pathToXlsx, "miroScenario.gdx")
   
   sym_list <- lapply(symbolNames, function(name){
-    if(name %in% c("solveropt", "scenddmap", "timeslice", "milestonyr", "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", "gmsobj")){
+    if(name %in% c("solveropt", "scenddmap", "timeslice", "milestonyr", 
+                   "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", 
+                   "gmsobj")){
       #, "gmsrunlocation", "gmsrunmode"
       return(rgdxSetCustom(symName = name))
     }
     #parameters
-    if(name %in% c("cubeinput", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime")){
+    if(name %in% c("cubeinput", 
+                   "gmsreslim", 
+                   "gmsbratio", 
+                   "gmsbotime", 
+                   "gmseotime")){
       return(rgdxParamCustom(symName = name))
     }
   })
@@ -212,26 +244,33 @@ miroimport_xlsx <- function(symbolNames, localFile = NULL, views = NULL, attachm
 
 
 # Start with dd files and runfile
-miroimport_dd <- function(symbolNames, localFile = NULL, views = NULL, attachments = NULL, metadata = NULL, customRendererDir = NULL, ...){
-  
-  #TODO: make use of abortSafe more often
-  # if (is.null(localFile) || !identical(length(localFile$datapath), 1L)) {
-  #   abortSafe("Please upload a single, valid XLSX file")
-  # }
-  
-  pathToDD <- dirname(localFile$datapath[1])
-  zipFiles <- list.files(pathToDD, pattern = "\\.zip$", full.names = TRUE)
+miroimport_dd <- function(symbolNames, 
+                          localFile = NULL, 
+                          views = NULL, 
+                          attachments = NULL, 
+                          metadata = NULL, 
+                          customRendererDir = NULL, 
+                          ...){
+
+  ddFilesDir <- dirname(localFile$datapath[1])
+  zipFiles <- list.files(ddFilesDir, 
+                         pattern = "\\.zip$", 
+                         full.names = TRUE)
   
   if (length(zipFiles)) {
     for (zip in zipFiles) {
-      zip::unzip(zipFiles, junkpaths = TRUE, exdir = pathToDD)
+      zip::unzip(zipFiles, junkpaths = TRUE, exdir = ddFilesDir)
     }
   }
   
-  ddiles <- basename(list.files(pathToDD, pattern = "\\.dd$", full.names = TRUE))
-  runfile <- list.files(pathToDD, pattern = "\\.run$", full.names = TRUE)
+  ddFiles <- basename(list.files(ddFilesDir, 
+                                 pattern = "\\.dd$", 
+                                 full.names = TRUE))
+  runfile <- list.files(ddFilesDir, 
+                        pattern = "\\.run$", 
+                        full.names = TRUE)
   
-  if (!length(ddiles) ) {
+  if (!length(ddFiles) ) {
     abortSafe("Please upload valid dd files")
   }
   if (!length(runfile)) {
@@ -251,24 +290,18 @@ miroimport_dd <- function(symbolNames, localFile = NULL, views = NULL, attachmen
   #   })
   # }
   
-  ddiles <- basename(list.files(pathToDD, pattern = "\\.dd$", full.names = TRUE))
-  runfile <- list.files(pathToDD, pattern = "\\.run$", full.names = TRUE)
-  modelDir <- file.path(customRendererDir, "model-for-conversion")
-
-  #zip dd files
-  ddFiles <- basename(list.files(pathToDD, pattern = "\\.dd$", full.names = TRUE))
-  zipFile <- file.path(pathToDD, "dd_files.zip")
-  zip::zip(zipFile, ddFiles, root = pathToDD)
-  file.copy(zipFile, modelDir, overwrite = TRUE)
   
   # call GAMS to convert dd files into MIRO-compatible GDX
+  modelDir <- file.path(customRendererDir, "model-for-conversion")
   
   tryCatch(
     {
       processx::run(
         command = "gams", args = c(
           file.path(modelDir, "dd_to_gdx.gms"),
-          "--gmsrunopt=local", "--DDPREFIX=dd_files/", paste0("--runfile=", runfile)
+          "--gmsrunopt=local", 
+          paste0("--DDPREFIX=", ddFilesDir, .Platform$file.sep), 
+          paste0("--runfile=", runfile)
         ),
         wd = file.path(modelDir),
         echo_cmd = TRUE, echo = TRUE,
@@ -312,7 +345,8 @@ miroimport_dd <- function(symbolNames, localFile = NULL, views = NULL, attachmen
       return(tibble())
     } else {
       dflist[seq_len(symDim)] <- lapply(seq_len(symDim), function(d) {
-        # first arg to factor must be integer, not numeric: different as.character results
+        # first arg to factor must be integer, not numeric:
+        # different as.character results
         factor(as.integer(sym$val[, d]),
                seq(to = length(sym$uels[[d]])),
                labels = sym$uels[[d]]
@@ -333,8 +367,12 @@ miroimport_dd <- function(symbolNames, localFile = NULL, views = NULL, attachmen
   }
   
   rgdxParamCustom <- function(symName, names = NULL) {
-    sym <- gdxrrwMIRO::rgdx(gdxFile, list(name = symName, compress = FALSE, ts = FALSE),
-                            squeeze = FALSE, useDomInfo = TRUE
+    sym <- gdxrrwMIRO::rgdx(gdxFile, 
+                            list(name = symName, 
+                                 compress = FALSE, 
+                                 ts = FALSE),
+                            squeeze = FALSE, 
+                            useDomInfo = TRUE
     )
     symDim <- sym$dim
     if (identical(symDim, 0L)) {
@@ -352,7 +390,8 @@ miroimport_dd <- function(symbolNames, localFile = NULL, views = NULL, attachmen
       return(tibble())
     } else {
       dflist[seq_len(symDim)] <- lapply(seq_len(symDim), function(d) {
-        # first arg to factor must be integer, not numeric: different as.character results
+        # first arg to factor must be integer, not numeric: 
+        # different as.character results
         factor(as.integer(sym$val[, d]), seq(to = length(sym$uels[[d]])),
                labels = sym$uels[[d]]
         )
@@ -369,14 +408,20 @@ miroimport_dd <- function(symbolNames, localFile = NULL, views = NULL, attachmen
   }
   
   # read generated GDX file
-  gdxFile <- file.path(pathToDD, "miroScenario.gdx")
+  gdxFile <- file.path(ddFilesDir, "miroScenario.gdx")
   
   sym_list <- lapply(symbolNames, function(name){
-    if(name %in% c("solveropt", "scenddmap", "timeslice", "milestonyr", "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", "gmsobj", "gmsrunlocation", "gmsrunmode")){
+    if(name %in% c("solveropt", "scenddmap", "timeslice", "milestonyr", 
+                   "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", 
+                   "gmsobj", "gmsrunlocation", "gmsrunmode")){
       return(rgdxSetCustom(symName = name))
     }
     #parameters
-    if(name %in% c("cubeinput", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime")){
+    if(name %in% c("cubeinput", 
+                   "gmsreslim", 
+                   "gmsbratio", 
+                   "gmsbotime", 
+                   "gmseotime")){
       return(rgdxParamCustom(symName = name))
     }
   })
