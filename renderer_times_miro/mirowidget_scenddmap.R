@@ -2,81 +2,6 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
   ns <- NS(id)
   
   tagList(
-    tags$head(
-      tags$style(HTML("
-          .table-styles {
-              margin-bottom: 15px;
-          }
-          .table-header {
-              display: inline-block;
-          }
-          .box-custom {
-              height: 450px;
-              margin-bottom: 25px;
-          }
-          .add-row-btn-wrapper {
-              display: inline-block;
-          }
-          .add-row-btn {
-              border: none;
-              box-shadow: none;
-              color: #60ce60;
-              font-size: 18px;
-          }
-          .info-label-nowrap {
-              white-space: nowrap;
-          }
-          .custom-8 {
-              padding-left:0;
-              padding-right:0;
-          }
-          @media only screen and (max-width: 1199px) {
-              .custom-2 {
-                  width: 100%;
-              }
-              .custom-2.box-custom {
-                  height: unset;
-                  margin-bottom: 0px;
-              }
-              .outer-height{
-                  height: 475px;
-              }
-          }
-          @media only screen and (min-width: 768px) and (max-width: 1199px) {
-              .reverse-custom {
-                  display: flex;
-                  flex-flow: row-reverse;
-              }
-          }
-          @media only screen and (min-width: 1200px) {
-              .custom-4 {
-                  width: 33.33333333%;
-              }
-              .custom-8 {
-                  width: 66.66666667%;
-              }
-          }
-          @media only screen and (min-width: 1200px) and (max-width: 1399px) {
-              .custom-2 {
-                  width: 100%
-              }
-              .custom-2.box-custom {
-                  height: unset;
-                  margin-bottom: 0px;
-              }
-              .outer-height{
-                  height: 475px;
-              }
-              .custom-4 {
-                  width: 25%;
-              }
-              .custom-8 {
-                  width: 75%;
-              }
-          }
-          ")
-      )
-    ),
     tags$div(
       tabsetPanel(
         tabPanel("Model setup",
@@ -126,7 +51,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                           )
                  ),
                  tags$div(class = "col-sm-12 col-lg-4 custom-4",
-                          tags$h4("Years for model run", class="table-header"),
+                          tags$h4("Years for model run ('milestonyr')", class="table-header"),
                           tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                    actionButton(ns("addMilestonyr"), label = NULL, 
                                                 icon = icon("circle-plus"), 
@@ -512,9 +437,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       gmsobj = reactive({
         rv$gmsobj
       }),
-      # gmsrunlocation = reactive({
-      #   paste0("||./", rv$runFile)
-      # }),
       gmsbotime = reactive({
         if (!length(rv$gmsbotime)) {
           1850L
@@ -537,10 +459,13 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       }),
       gmssolver = reactive({
         rv$gmssolver
+      }),
+      dd_prc_desc = reactive({
+        data$dd_prc_desc()
+      }),
+      dd_com_desc = reactive({
+        data$dd_com_desc()
       })
-      # gmsrunmode = reactive({
-      #   paste0("||run")
-      # })
     )
   )
   
