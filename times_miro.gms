@@ -398,10 +398,7 @@ $onExternalInput
 set           scenddmap(ddorder,dd<,offeps<)  'DD File information'           / /;                                     
 set           TimeSlice(*)                    'ALL_TS'                        / / ;
 set           MILESTONYR(*)                   'Years for this model run'      / /;
-scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / /;
-scalar        gmsEOTime                       'Adjustment for total available time span of years available in the model' / /;
 set           extensions(*,*)                 'TIMES Extensions'              / /;
-singleton set gmsObj(*)      'Choice of objective function formulations'      / /; // MOD, ALT, AUTO, LIN, MOD, STD
 $offExternalInput
 *$onMulti
 *singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
@@ -413,7 +410,6 @@ $onExternalInput
 $onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
 $offEps
-* Skipped VDA DATAGDX VEDAVDD 
 set           dd_PRC_DESC(*,*,*) /  /
               dd_COM_DESC(*,*,*) /  /;
 $offExternalInput
@@ -449,7 +445,7 @@ singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue'
 
 *Clear data from MIRO that may cause duplicate errors when creating a scenario
 $onMultiR
-$clear cubeinput scenddmap TimeSlice MILESTONYR gmsBOTime gmsEOTime extensions gmsObj dd
+$clear cubeinput scenddmap TimeSlice MILESTONYR extensions dd
 *dd_COM_DESC dd_PRC_DESC 
 $onMulti
 
@@ -561,25 +557,16 @@ gams.printLog("Compile time variable report starts in line " + str(start))
 end = [i for i, s in enumerate(rl) if 'End of Compile-time Variable List' in s][0]
 gams.printLog("Compile time variable report ends in line " +  str(end-1))
 
-gams.set('gmsBOTime',[float(1850)])
-gams.set('gmsEOTime',[float(2200)])
-gams.set('gmsObj',['AUTO'])
 while start<end:
   vl = rl[start].split()
-  if vl[1].lower() == 'obj':
-    gams.set('gmsObj',[vl[3]])
-  elif vl[1].lower() == 'botime':
-    gams.set('gmsBOTime',[float(vl[3])])
-  elif vl[1].lower() == 'eotime':
-    gams.set('gmsEOTime',[float(vl[3])])
-  elif vl[1].lower() == 'run_name':
+  if vl[1].lower() == 'run_name':
     pass
   else:
     val = ' '.join(vl[3:])
     extensions.append((vl[1],val,''))
   start += 1
 gams.set('extensions',extensions)
-$offembeddedcode TimeSlice dd MILESTONYR scenddmap gmsBOTime gmsEOTime extensions gmsObj
+$offembeddedcode TimeSlice dd MILESTONYR scenddmap extensions
 $endif.runmode
 
 $onEmbeddedCode Python:
@@ -765,10 +752,7 @@ $eval.set GMSSOLVER   gmsSolver.tl
 $eval.set GMSTIMESSRC gmsTIMESsrc.te
 $if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%times_model%system.dirsep%
 $eval     GMSRESLIM   gmsResLim   
-$eval     GMSBRATIO   gmsBRatio   
-$eval     GMSBOTIME   gmsBOTime  
-$eval     GMSEOTIME   gmsEOTime   
-$eval.set GMSOBJ      gmsObj.tl
+$eval     GMSBRATIO   gmsBRatio    
 $eval.set GMSRUNOPT   gmsRunOpt.tl
 
 $onecho > timesdriver.gms
@@ -786,7 +770,8 @@ with open('timesdriver.gms', 'a+') as td:
       if sor[0].lower() == '%GMSSOLVER%'.lower():
         td.write(sor[1]+' '+sor[2]+'\n')
     td.write('$offPut\nputClose;\n')
-    ext = {'obj':'%GMSOBJ%', 'botime':'%GMSBOTIME%', 'eotime':'%GMSEOTIME%', 'milestonyr':','.join(gams.get('MILESTONYR'))}
+    #TODO: remove next row since part of extensions?
+    ext = {'milestonyr':','.join(gams.get('MILESTONYR'))}
     for er in gams.get('extensions',keyFormat=KeyFormat.FLAT, valueFormat=ValueFormat.FLAT):
       if er[0].lower() in ['premain','postmain']:
         ext[er[0].lower()+er[1]] = er[2]

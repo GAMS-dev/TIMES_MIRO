@@ -54,15 +54,6 @@
     "gmsbratio": {
       "newAlias": "Basis indicator"
     },
-    "gmsbotime": {
-      "newAlias": "First year available (BOTIME)"
-    },
-    "gmseotime": {
-      "newAlias": "Last year available (EOTIME)"
-    },
-    "gmsobj": {
-      "newAlias": "Choice of objective function formulations"
-    },
     "dd_prc_desc": {
       "newAlias": "Process Description"
     },
@@ -112,7 +103,7 @@
       "rendererName": "mirowidget_scenddmap",
       "alias": "Settings",
       "apiVersion": 2,
-      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "gmsobj", "gmsbotime", "gmseotime", "gmsbratio", "gmsreslim", "gmssolver"]
+      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "gmsbratio", "gmsreslim", "gmssolver", "dd_prc_desc", "dd_com_desc"]
     },
     "gmssolver": {
       "widgetType": "dropdown",
@@ -145,36 +136,6 @@
       "ticks": false,
       "noHcube": false,
       "label": "Basis indicator (bRatio)"
-    },
-    "gmsbotime": {
-      "widgetType": "numericinput",
-      "decimal": 0,
-      "decimalCharacter": ".",
-      "digitGroupSeparator": ",",
-      "label": "First year available (BOTIME)",
-      "min": 1850,
-      "max": 2200,
-      "value": 1960
-    },
-    "gmseotime": {
-      "widgetType": "numericinput",
-      "decimal": 0,
-      "decimalCharacter": ".",
-      "digitGroupSeparator": ",",
-      "label": "Last year available (EOTIME)",
-      "min": 1850,
-      "max": 2200,
-      "value": 2200
-    },
-    "gmsobj": {
-      "widgetType": "dropdown",
-      "alias": "Objective function formulation",
-      "choices": ["ALT", "AUTO", "LIN", "MOD", "STD"],
-      "selected": "MOD",
-      "noHcube": false,
-      "clearValue": false,
-      "multiple": false,
-      "label": "Objective function formulation"
     },
     "cubeinput": {
       "widgetType": "table",
@@ -239,23 +200,27 @@
   },
   "customDataImport": [
     {
-      "label": "XLSX import",
-      "symNames": ["solveropt", "scenddmap", "timeslice", "milestonyr", "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", "gmsobj", "cubeinput", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime"],
-      "functionName": "miroimport_xlsx",
+      "label": "XLSX or DD files",
+      "symNames": [
+        "solveropt",
+        "scenddmap",
+        "timeslice",
+        "milestonyr",
+        "extensions",
+        "dd_prc_desc",
+        "dd_com_desc",
+        "gmssolver",
+        "cubeinput",
+        "gmsreslim",
+        "gmsbratio"
+      ],
+      "functionName": "miroimport_times",
       "localFileInput": {
-        "label": "Please upload XLSX file(s) and RUN file here (can also be zipped)",
+        "label": "Please upload zipped XLSX files or zipped RUN and DD file(s) here",
         "multiple": true,
-        "accept": [".xls", ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
-      }
-    },
-    {
-      "label": "DD import",
-      "symNames": ["solveropt", "scenddmap", "timeslice", "milestonyr", "extensions", "dd_prc_desc", "dd_com_desc", "gmssolver", "gmsobj", "cubeinput", "gmsreslim", "gmsbratio", "gmsbotime", "gmseotime"],
-      "functionName": "miroimport_dd",
-      "localFileInput": {
-        "label": "Please upload DD file(s) and RUN file here (can also be zipped)",
-        "multiple": true,
-        "accept": [".dd", "text/plain"]
+        "accept": [
+          ".zip"
+        ]
       }
     }
   ],
@@ -276,12 +241,5 @@
     },
     "height": 700,
     "colWidths": 150
-  },
-  "inputGroups": [
-    {
-      "name": "Symbol descriptions",
-      "members": ["dd_prc_desc", "dd_com_desc"],
-      "sameTab": false
-    }
-  ]
+  }
 }

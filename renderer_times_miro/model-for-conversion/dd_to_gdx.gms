@@ -370,7 +370,7 @@ $LOG ### CUBEINPUTDOM=%sysenv.CUBEINPUTDOM%
 *#  2) LOAD DATA                                                                            #
 *#     a) if run through MIRO, the data will be loaded from the MIRO App                    #
 *#     b) if run through Studio, you can create a GDX file that can be loaded               #
-*#        into the MIRO app. For this, run with '--runmode=create'.                         #
+*#        into the MIRO app.                         #
 *#        Data specified via:                                                               #
 *#          --DDPREFIX (dd files location, including '/' at the end)                        #
 *#          --RUNFILE (runfile location)                                                    #
@@ -380,52 +380,56 @@ $LOG ### CUBEINPUTDOM=%sysenv.CUBEINPUTDOM%
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
 set ddorder 'Order index for DD Files' / 0*500 /;
 
-$onExternalInput
 set           solveropt(*,*,*)  'Solver options'                                 / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
                                                                                   barcrossalg.1, barorder.2, threads.8)/;                                                                                  
 singleton set gmsSolver(*)      'Solver for TIMES'                               / cplex /;
 scalar        gmsResLim         'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio         'Basis indicator'                                / 1 /;
-$offExternalInput
 singleton set gmsTIMESsrc(*)    'Location of TIME source'                        / '' '' /; // leave at '' for default
 singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 
 $onEmpty
 set           dd                              'DD Files';
 set           offeps                          'dd read under offeps ("true", "false")';
-$onExternalInput
 set           scenddmap(ddorder,dd<,offeps<)  'DD File information'           / /;                                     
 set           TimeSlice(*)                    'ALL_TS'                        / / ;
 set           MILESTONYR(*)                   'Years for this model run'      / /;
-scalar        gmsBOTime                       'Adjustment for total available time span of years available in the model' / /;
-scalar        gmsEOTime                       'Adjustment for total available time span of years available in the model' / /;
 set           extensions(*,*)                 'TIMES Extensions'              / /;
-singleton set gmsObj(*)      'Choice of objective function formulations'      / /; // MOD, ALT, AUTO, LIN, MOD, STD
 $onMulti
 singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
-singleton set gmsrunmode                      'whether to create a MIRO scenario or solve TIMES' /'' 'create'/;
 $offMulti
-$offExternalInput
 *$endif.data
 
-$onExternalInput
 $onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
 $offEps
 * Skipped VDA DATAGDX VEDAVDD 
 set           dd_PRC_DESC(*,*,*) /  /
               dd_COM_DESC(*,*,*) /  /;
-$offExternalInput
 $offEmpty
 
-$onExternalOutput
 alias (*,soName,sow,Vintage)
 parameter cubeOutput(soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N);
-$offExternalOutput
 
 $if not set RUNFILE $abort "No run file provided"
-$if not set RUNMODE $set RUNMODE "create"
+
+* If miro importer is used with xlsx files as data source, no run file is provided by the user.
+* milestonyr is then read in xl2times output dd file. If miro importer is used with dd files as
+* data source, the user provides run file as well containing milestonyr (and not in dd files)
+$if not set DATA_SOURCE $set DATA_SOURCE "xlsx"
+$ifThenE.milestonyr sameas("%DATA_SOURCE%","xlsx")
+$ set MILESTONYR1 ""
+$ set MILESTONYR2 "MILESTONYR"
+$else.milestonyr
+$ set MILESTONYR1 "MILESTONYR"
+$ set MILESTONYR2 ""
+$endIf.milestonyr
+$log #######################
+$log %DATA_SOURCE%
+$log %MILESTONYR1%
+$log %MILESTONYR2%
 $if not set DDPREFIX $set DDPREFIX "dd_files/"
+
 $setNames "%RUNFILE%" fp fn fe
 *if this file is run through Studio and command line parameter is not set, the data from the *.dd files specified above will
 *be translated into a GDX file that can be imported into MIRO
@@ -437,7 +441,6 @@ $oneps
 $include "%mydd%"
 $offecho
 $onMulti
-$ifThenE.runmode sameas("%RUNMODE%","create")
 set           solveropt(*,*,*)  'Solver options'                                 / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
                                                                                   barcrossalg.1, barorder.2, threads.8) /;
 singleton set gmsSolver(*)      'Solver for TIMES'                               / cplex /;
@@ -448,7 +451,7 @@ singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue'
 
 *Clear data from MIRO that may cause duplicate errors when creating a scenario
 $onMultiR
-$clear cubeinput scenddmap TimeSlice MILESTONYR gmsBOTime gmsEOTime extensions gmsObj dd
+$clear cubeinput scenddmap TimeSlice MILESTONYR extensions dd
 *dd_COM_DESC dd_PRC_DESC 
 $onMulti
 
@@ -508,7 +511,12 @@ with open('myrun.gms','w') as frun:
         if 'milestonyr' in l.lower():
           recordcode = 1
         if not '$if' in l.lower():
-          frun.write(l)
+          if r'%data_source% '.rstrip() == 'xlsx':
+            # milestonyr should come from milestonyr.dd, not from runfile
+            if not 'milestonyr' in l.lower():
+              frun.write(l)
+          else:
+            frun.write(l)
   #add dd files that are not part of runfile to scenddmap
   ddDiff = [file for file in ddFiles if file.lower() not in (x.lower() for x in ddList)]
   for diff in ddDiff:
@@ -541,7 +549,10 @@ for df in [os.path.join(filePathTmp, file) for file in filesTmp]:
            scenddmap[idx][2] = 'true'
      dd.append(ddbase)
 gams.set('dd',dd)
-db['MILESTONYR'].copy_symbol(gams.db['MILESTONYR'])
+# If data source is dd files (not xlsx) milestonyr is part of the run file provided by the user
+#TODO: allow dd files without run file?
+if r'%data_source% '.rstrip() == 'dd':
+  db['MILESTONYR'].copy_symbol(gams.db['MILESTONYR'])
 scenddmap = [tuple(l) for l in scenddmap]
 #TODO: mergeType=MergeType.REPLACE?
 gams.set('scenddmap',scenddmap)
@@ -554,26 +565,16 @@ gams.printLog("Compile time variable report starts in line " + str(start))
 end = [i for i, s in enumerate(rl) if 'End of Compile-time Variable List' in s][0]
 gams.printLog("Compile time variable report ends in line " +  str(end-1))
 
-gams.set('gmsBOTime',[float(1850)])
-gams.set('gmsEOTime',[float(2200)])
-gams.set('gmsObj',['AUTO'])
 while start<end:
   vl = rl[start].split()
-  if vl[1].lower() == 'obj':
-    gams.set('gmsObj',[vl[3]])
-  elif vl[1].lower() == 'botime':
-    gams.set('gmsBOTime',[float(vl[3])])
-  elif vl[1].lower() == 'eotime':
-    gams.set('gmsEOTime',[float(vl[3])])
-  elif vl[1].lower() == 'run_name':
+  if vl[1].lower() == 'run_name':
     pass
   else:
     val = ' '.join(vl[3:])
     extensions.append((vl[1],val,''))
   start += 1
 gams.set('extensions',extensions)
-$offembeddedcode TimeSlice dd MILESTONYR scenddmap gmsBOTime gmsEOTime extensions gmsObj
-$endif.runmode
+$offembeddedcode TimeSlice dd scenddmap extensions %MILESTONYR1%
 
 $onEmbeddedCode Python:
 gams.wsWorkingDir = '.'
@@ -593,16 +594,24 @@ gams.printLog("com_idx = " + str(com_idx))
 gams.printLog("Turning dd files into gdx files")
 for dd in gams.get('dd'):
   fileTmp = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if re.search(dd + r'.dds?$', f, re.IGNORECASE)][0]
+  # search for lines not containing the string "offeps" in fileTmp. The output is redirected to a file which is then executed
   s = 'grep -iv offeps "' + r'%DDPREFIX% '.rstrip()+fileTmp+'" > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
   rc = os.system(s)
   if not rc==0:
     raise NameError('probem executing: ' + s)
+  # generate a GDX file (dd+'.gdx')
   s = 'gams "'+r'%gams.scrDir%mkdd.%gams.scrExt%'+'" --mydd "'+r'%gams.scrDir%mydd.%gams.scrExt%'+'" mp=2 lo=2 gdx='+dd+'.gdx suppress = 1'
   rc = os.system(s)
   if not rc==0:
     raise NameError('probem executing: ' + s)
+  # Add symbols in gdx to gams db
   dd_db[dd] = gams.ws.add_database_from_gdx(dd+'.gdx')
   gams.printLog(str(fileTmp) + " --> " + str(dd) + ".gdx")
+
+if r'%data_source% '.rstrip() == 'xlsx':
+  # Get milestonyr data
+  gams.set('MILESTONYR', dd_db['output']['MILESTONYR'])
+
 noDD = []
 for cdRec in cd_input:
   sym = cdRec[0]
@@ -646,15 +655,22 @@ if len(noDD):
 # Check if some symbol in DD is not in our input map
 miss_sym = set()
 i_sym = set(s[0].lower() for s in cd_input)
-for dd in gams.get('dd'):
+for dd in gams.get('dd'):  
   for sym in dd_db[dd]:
     if not sym.name.lower() in i_sym:
-      miss_sym.add(sym.name.lower())
+      if r'%data_source% '.rstrip() == 'xlsx':
+        # ignore milestonyr in output.dd that comes from xl2times
+        if not (sym.name.lower() == 'milestonyr'):
+          miss_sym.add(sym.name.lower())
+      else:
+        miss_sym.add(sym.name.lower())
 if len(miss_sym):
   printme('*** Unmapped symbols in dd files: ' + str(miss_sym))
   raise NameError('Unmapped symbols in dd files')
-$offEmbeddedCode cubeInput dd_PRC_DESC dd_COM_DESC
+$offEmbeddedCode cubeInput dd_PRC_DESC dd_COM_DESC %MILESTONYR2%
+
 $gdxOut "%fp%miroScenario.gdx"
+*$gdxOut "D:\Projects\TIMES\master\TIMES_MIRO\renderer_times_miro\model-for-conversion\miroScenario.gdx"
 $unLoad
 $gdxOut
 $log ---

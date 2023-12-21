@@ -2,7 +2,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
   ns <- NS(id)
   
   tagList(
-    tags$div(
+    tags$div(class = "custom-widget",
       tabsetPanel(
         tabPanel("Model setup",
                  tags$div(class = "col-sm-12 col-lg-8 custom-8",
@@ -30,15 +30,6 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                    )
                           ),
                           tags$div(class = "col-sm-12 col-md-6",
-                                   tags$h4("Extensions", class="table-header"),
-                                   tags$div(class = "add-row-btn-wrapper", title = "Add row", 
-                                            actionButton(ns("addExtensions"), label = NULL, 
-                                                         icon = icon("circle-plus"), 
-                                                         class = "add-row-btn")
-                                   ),
-                                   tags$div(class = "table-styles",
-                                            rHandsontableOutput(ns('extensions'))
-                                   ),
                                    tags$h4("Additional statements in run file", class="table-header"),
                                    tags$div(class = "add-row-btn-wrapper", title = "Add row", 
                                             actionButton(ns("addStatements"), label = NULL, 
@@ -68,6 +59,17 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                           )
                  )
         ),
+        tabPanel("Options / Extensions",
+                 column(12, class = "col-xs-12 col-sm-12 col-md-6 col-lg-4",
+                        uiOutput(ns("col1"))
+                 ),
+                 column(12, class = "col-xs-12 col-sm-12 col-md-6 col-lg-4",
+                        uiOutput(ns("col2"))
+                 ),
+                 column(12, class = "col-xs-12 col-sm-12 col-md-6 col-lg-4",
+                        uiOutput(ns("col3"))
+                 )
+        ),
         tabPanel("Solver options",
                  column(12, class = "col-xs-12 col-sm-12 col-md-6 col-lg-4",
                         tags$h4("Solver options", class="table-header"),
@@ -87,7 +89,6 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                               min = 10, max = 36000, value = 1000L, step = 1)
                         ),
                         tags$div(class = "col-sm-6 custom-2",
-                                 selectInput(ns("gmsobj"), tags$h4("Objective function formulation"), c("ALT", "AUTO", "LIN", "MOD", "STD"), selected = "AUTO"),
                                  sliderInput(ns("gmsbratio"), label = tags$div(
                                    tags$h4("Basis indicator (bRatio)", tags$a("",
                                                                               title = "The value specified for bRatio will cause a basis to be discarded if the number of basic variables is smaller than bRatio times the number of equations. - Open documentation", 
@@ -112,7 +113,8 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
 renderMirowidget_scenddmap <- function(input, output, session, data, options = NULL, 
                                        path = NULL, rendererEnv = NULL, views = NULL, 
                                        attachments = NULL, outputScalarsFull = NULL, ...){
-
+  ns <- session$ns
+  
   
   rv <- reactiveValues(
     scenddMapData = NULL,
@@ -121,16 +123,33 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     timesliceData = NULL,
     milestonyrData = NULL,
     solveroptData = NULL, 
-    gmsbotime = character(0),
-    gmseotime = character(0),
-    boEoTimeData = NULL,
-    gmsobj = character(0),
     gmsbratio = character(0),
     gmsreslim = character(0),
     gmssolver = character(0),
     ddFiles = character(0), 
     runFile = character(0)
   )
+  
+  # read all possible extensions, their defaults and grouping
+  extensionConfig <- fromJSON(file.path(customRendererDir,"extensions.json"))
+  options_list <- extensionConfig$extensions
+  columns <- extensionConfig$groups
+  
+  # options vector
+  options <- unlist(unname(lapply(options_list, function(el) {return(lapply(el, "[[", 1L))})))
+  
+  # session$sendCustomMessage(type = 'optionlist',
+  #                           message = options_list)
+  
+  # tibble containing all options with their default values
+  defaultOptions <- tibble(uni = names(options), `uni#1` = options)
+  
+  # table IDs
+  identifiers <- tolower(gsub("[[:space:]/]", "", names(options_list)))
+  identifiers <- paste0(identifiers, "Table")
+  
+  # description (visible as tooltip) for each option
+  option_description <- jsonlite::fromJSON(file.path(customRendererDir,"option_description.json"))
   
   observe({
     rv$scenddmapData <<- data$scenddmap() %>% select(-text)
@@ -145,38 +164,131 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       rv$scenddmapData$offeps <<- as.logical(rv$scenddmapData$offeps)
     })
     
-    #TODO: read premain lines from data$extensions()[["text"]], communicate via seperate table?
     rv$extensionsData <<- data$extensions() %>% 
       filter(!(substr(uni, 1, 7) == "premain")) %>% select(-text)
     rv$additionalStatementsData <<- data$extensions() %>% 
       filter(substr(uni, 1, 7) == "premain") %>% select(text)
+    
+    # merge default options with user options
+    isolate({
+      rv$mergedOptions <- defaultOptions %>%
+        left_join(rv$extensionsData, by = "uni", suffix = c("_default", "_user")) %>%
+        mutate(
+          `uni#1` = coalesce(`uni#1_user`, `uni#1_default`)
+        ) %>%
+        select(uni, `uni#1`)
+    })
+    
     rv$milestonyrData <<- data$milestonyr() %>% select(-text)
     rv$solveroptData <<- data$solveropt() %>% select(-text)
     rv$timesliceData <<- data$timeslice() %>% select(-text)
-    rv$gmsobj <<- data$gmsobj()
-    rv$gmsbotime <<- data$gmsbotime()
-    rv$gmseotime <<- data$gmseotime()
     rv$gmsbratio <<- data$gmsbratio()
     rv$gmsreslim <<- data$gmsreslim()
     rv$gmssolver <<- data$gmssolver()
     
     isolate({
-      updateSelectInput(session, "gmsobj", selected = if(length(rv$gmsobj)) rv$gmsobj else "MOD")
       updateSliderInput(session, "gmsbratio", value = if(length(rv$gmsbratio)) rv$gmsbratio else 1)
       updateNumericInput(session, "gmsreslim", value = if(length(rv$gmsreslim))rv$gmsreslim else 1000)
       updateSelectInput(session, "gmssolver", selected = if(length(rv$gmssolver)) rv$gmssolver else "cplex")
-      rv$boEoTimeData <<- tibble(Time = c("BOTIME", "EOTIME"),
-                                 Value = c(if(length(rv$gmsbotime)) rv$gmsbotime else 1850, 
-                                           if(length(rv$gmseotime)) rv$gmseotime else 2200))
     })
+  })
+
+  lapply(names(columns), function(column) {
+    
+    colOptions <- columns[[column]]
+    
+    output[[column]] <- renderUI({
+      tables <-  lapply(colOptions, function(category) {
+        tagList(
+          tags$h4(category, class="table-header"),
+          tags$div(class = "table-styles",
+                   rHandsontableOutput(ns(paste0(tolower(gsub("[[:space:]/]", "", category)), "Table")))
+          )
+        )
+        
+      })
+      do.call(tagList, tables)
+    })
+    
+    #table output
+    lapply(colOptions, function(category) {
+      noSpaceCategory <- tolower(gsub("[[:space:]/]", "", category))
+      
+      # data observer
+      observe({
+        rv[[paste0(noSpaceCategory, "TableData")]] <- rv$mergedOptions %>%
+          filter(tolower(uni) %in% tolower(names(options_list[[category]])))
+      })
+      
+      output[[paste0(noSpaceCategory, "Table")]] <- renderRHandsontable({
+        tableData <- rv[[paste0(noSpaceCategory, "TableData")]]
+        
+        tableTmp <- rhandsontable(tableData, 
+                                  colHeaders = c("Extension", "Value"),
+                                  readOnly = FALSE, 
+                                  rowHeaders = NULL,
+                                  search = TRUE,
+                                  height = if(nrow(tableData) < 4) 150 # workaround for handsontable bug
+                                  ) %>% 
+          hot_table(stretchH = "all", highlightRow = TRUE, overflow = "hidden") %>%
+          hot_cols(manualColumnResize = TRUE, columnSorting = TRUE ) %>%
+          hot_context_menu(allowComments = TRUE, allowRowEdit = FALSE,
+                           allowColEdit = FALSE) %>%
+          
+          # configure individual dropdown for each value cell in table
+          hot_cols(renderer = paste0("
+           function (instance, td, row, col, prop, value, cellProperties) {
+             const optionsData = ", 
+             jsonlite::toJSON(unname(options_list[[category]])),
+             ";
+             if (col === 0) {
+               cellProperties.type = 'text';
+             }
+             if (col === 1) {
+               console.log(optionsData);
+               console.log(cellProperties);
+               cellProperties.type = 'dropdown';
+               cellProperties.source = optionsData[row];
+               // cellProperties.renderer = Handsontable.renderers.DropdownRenderer;
+             }
+      
+           }"))
+
+        # Iterate over all rows and set comments
+        for (row in 1:nrow(tableData)) {
+          uni_value <- as.character(tableData[row, "uni"])
+          desc <- option_description[[uni_value]]
+          
+          if (!is.null(desc)) {
+            tableTmp <- hot_cell(tableTmp, row, col = 1, comment = desc, readOnly = TRUE)
+          }
+        }
+        # workaround for handsontable bug that resets stretchH setting when using comments
+        tableTmp$x$stretchH <- "all"
+        
+        return(tableTmp)
+      })
+      
+      # observe changes in extensions tables
+      observeEvent(input[[paste0(noSpaceCategory, "Table")]], {
+        rv[[paste0(noSpaceCategory, "TableData")]] <<- as_tibble(hot_to_r(input[[paste0(noSpaceCategory, "Table")]]))
+      })
+    })
+    
+  })
+  
+  # merge extensions data from all tables 
+  observe({
+    rv$extensionsData <- bind_rows(
+      lapply(identifiers, function(identifier) {
+        as_tibble(hot_to_r(input[[identifier]]))
+      })
+    )
   })
   
   #add table row
   observeEvent(input$addScenddmap, {
     rv$scenddmapData <<- rv$scenddmapData %>% add_row(ddorder = "", dd = "", offeps = FALSE)
-  })
-  observeEvent(input$addExtensions, {
-    rv$extensionsData <<- rv$extensionsData %>% add_row(uni = "", `uni#1` = "")
   })
   observeEvent(input$addStatements, {
     rv$additionalStatementsData <<- rv$additionalStatementsData %>% add_row(text = "")
@@ -194,15 +306,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       rv$scenddmapData <<- as_tibble(hot_to_r(input$scenddmap))
     }else{
       rv$scenddmapData <<- rv$scenddmapData[0,]
-    }
-  })
-  
-  #observe user action in extensions table
-  observeEvent(input$extensions, {
-    if(length(input$extensions$data)){
-      rv$extensionsData <<- as_tibble(hot_to_r(input$extensions))
-    }else{
-      rv$extensionsData <<- rv$extensionsData[0,]
     }
   })
   
@@ -241,31 +344,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       rv$timesliceData <<- rv$timesliceData[0,]
     }
   })
-  
-  observeEvent(input$gmsobj, {
-    rv$gmsobj <- input$gmsobj
-  })
 
-  observeEvent(input$boEoTime, {
-    if(length(input$boEoTime$data)){
-      if(length(as_tibble(hot_to_r(input$boEoTime)))){
-        rv$gmsbotime <<- as_tibble(hot_to_r(input$boEoTime)) %>% 
-          filter(Time == "BOTIME") %>% pull(Value) %>% unique() %>% as.numeric()
-      }else{
-        rv$gmsbotime <<- 1850
-      }
-      if(length(as_tibble(hot_to_r(input$boEoTime)))){
-        rv$gmseotime <<- as_tibble(hot_to_r(input$boEoTime)) %>% 
-          filter(Time == "EOTIME") %>% pull(Value) %>% unique() %>% as.numeric()
-      }else{
-        rv$gmseotime <<- 2200
-      }
-    }else{
-      rv$boEoTimeData <<- rv$boEoTimeData[0,]
-      rv$gmsbotime <<- 1850
-      rv$gmseotime <<- 2200
-    }
-  })
   observeEvent(input$gmsbratio, {
     rv$gmsbratio <- input$gmsbratio
   })
@@ -294,18 +373,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     return(scenddmapTableTmp)
   })
   
-  #render extensions table
-  output$extensions <- renderRHandsontable({
-    extensionsTableTmp <<- rhandsontable(rv$extensionsData, 
-                                         colHeaders = c("Extension", "Value"),
-                                         readOnly = FALSE, 
-                                         rowHeaders = NULL,
-                                         search = TRUE) %>% 
-      hot_table(stretchH = "all", highlightRow = TRUE, overflow = "hidden") %>%
-      hot_cols(manualColumnResize = TRUE, columnSorting = TRUE )
-    return(extensionsTableTmp)
-  })
-  
   #render additionalStatements table
   output$additionalStatements <- renderRHandsontable({
     additionalStatementsTableTmp <<- rhandsontable(rv$additionalStatementsData, 
@@ -317,20 +384,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     return(additionalStatementsTableTmp)
   })
   
-  #render botime and eotime table
-  output$boEoTime <- renderRHandsontable({
-    boEoTimeTableTmp <<- rhandsontable(rv$boEoTimeData,
-                                         colHeaders = c("Time", "Value"),
-                                         readOnly = FALSE, 
-                                         rowHeaders = NULL,
-                                         search = TRUE) %>% 
-      hot_table(stretchH = "all", highlightRow = TRUE, overflow = "hidden") %>%
-      hot_col(1, readOnly = TRUE) %>%
-      hot_cols(manualColumnResize = TRUE, columnSorting = TRUE)
-    boEoTimeTableTmp$x$contextMenu <- list()
-    return(boEoTimeTableTmp)
-  })
-  
   #render milestonyr table
   output$milestonyr <- renderRHandsontable({
     milestonyrTableTmp <<- rhandsontable(rv$milestonyrData, 
@@ -339,12 +392,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                          rowHeaders = NULL,
                                          search = TRUE) %>% 
       hot_table(stretchH = "all", highlightRow = TRUE, overflow = "hidden") %>%
-      hot_col(1,  type = "dropdown", 
-              source = as.character(
-                (if(length(rv$gmsbotime)) rv$gmsbotime 
-                 else 1850):(if(length(rv$gmseotime)) 
-                   rv$gmseotime else 2200)), 
-              strict = TRUE, allowInvalid = FALSE) %>%
       hot_cols(manualColumnResize = TRUE, columnSorting = FALSE)
     return(milestonyrTableTmp)
   })
@@ -363,7 +410,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   
   #render timeslice table
   output$timeslice <- renderRHandsontable({
-    #TODO: no context menu
     timesliceTableTmp <<- rhandsontable(rv$timesliceData, 
                                         colHeaders = c("Time slices available"),
                                         readOnly = TRUE, 
@@ -391,7 +437,9 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         extensionsTmp <- rv$extensionsData
         additionalStatementsTmp <- rv$additionalStatementsData
         if(length(extensionsTmp) && nrow(extensionsTmp) > 0){
-          extensionsTmp <- extensionsTmp %>% filter(uni != "" & `uni#1` != "")
+          extensionsTmp <- extensionsTmp %>% 
+            filter(uni != "" & `uni#1` != "") %>% 
+            filter(`uni#1` != "unset")
         }
         extensionsTmp[["text"]] <- ""
         
@@ -404,7 +452,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
           }
         }
         extensionsTmp <- bind_rows(extensionsTmp, additionalStatementsTmp)
-        
         extensionsTmp
       }),
       milestonyr = reactive({
@@ -433,23 +480,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
         }
         timesliceTmp[["text"]] <- ""
         timesliceTmp
-      }),
-      gmsobj = reactive({
-        rv$gmsobj
-      }),
-      gmsbotime = reactive({
-        if (!length(rv$gmsbotime)) {
-          1850L
-        } else{
-          as.numeric(rv$gmsbotime)
-        }
-      }),
-      gmseotime = reactive({
-        if (!length(rv$gmseotime)) {
-          2200L
-        } else{
-          as.numeric(rv$gmseotime)
-        }
       }),
       gmsbratio = reactive({
         rv$gmsbratio
