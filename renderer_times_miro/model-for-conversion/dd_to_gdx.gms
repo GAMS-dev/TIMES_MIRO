@@ -414,7 +414,7 @@ parameter cubeOutput(soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N)
 $if not set RUNFILE $abort "No run file provided"
 
 * If miro importer is used with xlsx files as data source, no run file is provided by the user.
-* milestonyr is then read in xl2times output dd file. If miro importer is used with dd files as
+* milestonyr is then provided by xl2times via milestonyr.dd file. If miro importer is used with dd files as
 * data source, the user provides run file as well containing milestonyr (and not in dd files)
 $if not set DATA_SOURCE $set DATA_SOURCE "xlsx"
 $ifThenE.milestonyr sameas("%DATA_SOURCE%","xlsx")
@@ -495,8 +495,9 @@ with open('myrun.gms','w') as frun:
           continue
       elif '.dd' in l.lower():
         ddList.append(l.split(' ')[1].split('\n')[0])
-        scenddmap.append([str(ddcnt),l.split(' ')[1].split('.dd')[0],'false'])
-        ddcnt += 1
+        if not 'milestonyr' in l.lower():
+          scenddmap.append([str(ddcnt),l.split(' ')[1].split('.dd')[0],'false'])
+          ddcnt += 1
       elif 'maindrv.mod' in l.lower():
         recordcode = 2
         codecnt = 1
@@ -520,7 +521,8 @@ with open('myrun.gms','w') as frun:
   #add dd files that are not part of runfile to scenddmap
   ddDiff = [file for file in ddFiles if file.lower() not in (x.lower() for x in ddList)]
   for diff in ddDiff:
-    scenddmap.append(['0',diff.split('.dd')[0],'false'])
+    if not 'milestonyr' in diff.lower():
+      scenddmap.append(['0',diff.split('.dd')[0],'false'])
   frun.write('$show\n')
 gams.printLog("Execute gams myrun.gms ... and create myrun.gdx")
 
@@ -548,6 +550,7 @@ for df in [os.path.join(filePathTmp, file) for file in filesTmp]:
          if ddName.lower() == ddbase.lower():
            scenddmap[idx][2] = 'true'
      dd.append(ddbase)
+
 gams.set('dd',dd)
 # If data source is dd files (not xlsx) milestonyr is part of the run file provided by the user
 #TODO: allow dd files without run file?
@@ -593,7 +596,14 @@ gams.printLog("com_idx = " + str(com_idx))
 
 gams.printLog("Turning dd files into gdx files")
 for dd in gams.get('dd'):
-  fileTmp = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if re.search(dd + r'.dds?$', f, re.IGNORECASE)][0]
+ 
+  # check whether dd file listed in run file exists in actual user files
+  matching_files = [f for f in os.listdir(r'%DDPREFIX% '.rstrip()) if re.search(dd + r'.dds?$', f, re.IGNORECASE)]
+  if matching_files:
+      fileTmp = matching_files[0]
+  else:
+      raise NameError('File "' + dd + '.dd" is listed in run file but not found in zip archive. Please make sure to match zipped *.dd files and files listed in your run file!')
+
   # search for lines not containing the string "offeps" in fileTmp. The output is redirected to a file which is then executed
   s = 'grep -iv offeps "' + r'%DDPREFIX% '.rstrip()+fileTmp+'" > "' + r'%gams.scrDir%mydd.%gams.scrExt%'+'"'
   rc = os.system(s)
@@ -655,7 +665,11 @@ if len(noDD):
 # Check if some symbol in DD is not in our input map
 miss_sym = set()
 i_sym = set(s[0].lower() for s in cd_input)
-for dd in gams.get('dd'):  
+for dd in gams.get('dd'):
+  # if data source is 'dd', milestonyr is read from run file, not from milestonyr.dd
+  if dd.lower() == 'milestonyr' and r'%data_source% '.rstrip() == 'dd':
+    continue
+  
   for sym in dd_db[dd]:
     if not sym.name.lower() in i_sym:
       if r'%data_source% '.rstrip() == 'xlsx':
@@ -670,7 +684,6 @@ if len(miss_sym):
 $offEmbeddedCode cubeInput dd_PRC_DESC dd_COM_DESC %MILESTONYR2%
 
 $gdxOut "%fp%miroScenario.gdx"
-*$gdxOut "D:\Projects\TIMES\master\TIMES_MIRO\renderer_times_miro\model-for-conversion\miroScenario.gdx"
 $unLoad
 $gdxOut
 $log ---

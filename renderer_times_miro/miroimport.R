@@ -78,11 +78,6 @@ miroimport_times <- function(symbolNames,
       ))
     }
     
-    if (file.exists(file.path(tempDir, "milestonyr.dd"))) {
-      # Delete the file milestonyr.dd since milestonyr is assumed to be part of output.dd
-      file.remove(file.path(tempDir, "milestonyr.dd"))
-      flog.info("File 'milestonyr.dd' deleted since symbol milestonyr is assumed to be part of output.dd.")
-    }
   } else if (length(ddFiles)) {
     ddFilesDir <- tempDir
     zip::unzip(localFile$datapath,
@@ -97,7 +92,7 @@ miroimport_times <- function(symbolNames,
   convertDDToGDX <- function(symbolNames, DDToGDXPath, runFilePath, ddFilesDir, dataSource) {
     tryCatch(
       {
-        processx::run(
+        gamsrun <- processx::run(
           command = "gams", args = c(
             DDToGDXPath,
             "--gmsrunopt=local", paste0(
@@ -109,6 +104,7 @@ miroimport_times <- function(symbolNames,
             paste0("--data_source=", dataSource)
           ),
           wd = tempDir,
+          error_on_status = FALSE,
           echo_cmd = TRUE, echo = TRUE,
           windows_hide_window = TRUE, timeout = 10L
         )
@@ -122,6 +118,17 @@ miroimport_times <- function(symbolNames,
         )
       }
     )
+    
+    if (gamsrun$status != 0) {
+      # extract python NameError message
+      errorMessage <- sub(".*NameError'>: \\s*(.*?)\\s*\\*\\*\\*.*", "\\1", gamsrun$stdout)
+      if (errorMessage == gamsrun$stdout) {
+        errorMessage <- "An unexpected error ocurred. Please check the log for more information."
+      }
+      flog.debug(gamsrun$stdout)
+      abortSafe(errorMessage)
+    }
+    
     rgdxSetCustom <- function(gdxFile, symName) {
       sym <- gdxrrwMIRO::rgdx(gdxFile, list(
         name = symName,
