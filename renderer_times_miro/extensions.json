@@ -245,5 +245,8 @@
       "Miscellaneous controls",
       "Others"
     ]
+  },
+  "solver_options": {
+      "solver_choices": ["Cplex", "Gurobi", "Xpress", "CBC", "HiGHS", "Conopt", "Conopt4"]
   }
 }

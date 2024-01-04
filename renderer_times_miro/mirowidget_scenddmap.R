@@ -30,32 +30,29 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                                    )
                           ),
                           tags$div(class = "col-sm-12 col-md-6",
-                                   tags$h4("Additional statements in run file", class="table-header"),
-                                   tags$div(class = "add-row-btn-wrapper", title = "Add row", 
-                                            actionButton(ns("addStatements"), label = NULL, 
+                                   tags$h4("Milestone years", class="table-header"),
+                                   tags$div(class = "add-row-btn-wrapper", title = "Add milestone year", 
+                                            actionButton(ns("addMilestonyr"), label = NULL, 
                                                          icon = icon("circle-plus"), 
                                                          class = "add-row-btn")
                                    ),
                                    tags$div(class = "table-styles",
-                                            rHandsontableOutput(ns('additionalStatements'))
+                                            rHandsontableOutput(ns('milestonyr'))
+                                   ),
+                                   tags$div(class = "table-styles",
+                                            rHandsontableOutput(ns('timeslice'))
                                    )
                           )
                  ),
                  tags$div(class = "col-sm-12 col-lg-4 custom-4",
-                          tags$h4("Years for model run ('milestonyr')", class="table-header"),
-                          tags$div(class = "add-row-btn-wrapper", title = "Add row", 
-                                   actionButton(ns("addMilestonyr"), label = NULL, 
+                          tags$h4("Additional statements", class="table-header"),
+                          tags$div(class = "add-row-btn-wrapper", title = "Add statement", 
+                                   actionButton(ns("addStatements"), label = NULL, 
                                                 icon = icon("circle-plus"), 
                                                 class = "add-row-btn")
                           ),
                           tags$div(class = "table-styles",
-                                   rHandsontableOutput(ns('milestonyr'))
-                          ),
-                          tags$div(class = "table-styles",
-                                   rHandsontableOutput(ns('boEoTime'))
-                          ),
-                          tags$div(class = "table-styles",
-                                   rHandsontableOutput(ns('timeslice'))
+                                   rHandsontableOutput(ns('additionalStatements'))
                           )
                  )
         ),
@@ -70,10 +67,10 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                         uiOutput(ns("col3"))
                  )
         ),
-        tabPanel("Solver options",
+        tabPanel("Solver",
                  column(12, class = "col-xs-12 col-sm-12 col-md-6 col-lg-4",
                         tags$h4("Solver options", class="table-header"),
-                        tags$div(class = "add-row-btn-wrapper", title = "Add row", 
+                        tags$div(class = "add-row-btn-wrapper", title = "Add solver option", 
                                  actionButton(ns("addSolveropt"), label = NULL, 
                                               icon = icon("circle-plus"), 
                                               class = "add-row-btn")
@@ -84,7 +81,7 @@ mirowidget_scenddmapOutput <- function(id, height = NULL, options = NULL, path =
                  ),
                  column(12, class = "col-xs-12 col-sm-12 col-md-6 col-lg-6",
                         tags$div(class = "col-sm-6 custom-2",
-                                 selectInput(ns("gmssolver"), tags$h4("Solver to use"), c("cplex", "cbc", "conopt", "conopt4"), selected = "cplex"),
+                                 selectInput(ns("gmssolver"), tags$h4("Solver to use"), choices = c()),
                                  numericInput(ns("gmsreslim"), tags$h4("Time limit for solve [seconds]"), 
                                               min = 10, max = 36000, value = 1000L, step = 1)
                         ),
@@ -115,7 +112,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                                        attachments = NULL, outputScalarsFull = NULL, ...){
   ns <- session$ns
   
-  
   rv <- reactiveValues(
     scenddMapData = NULL,
     extensionsData = NULL,
@@ -134,23 +130,20 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   extensionConfig <- fromJSON(file.path(customRendererDir,"extensions.json"))
   options_list <- extensionConfig$extensions
   columns <- extensionConfig$groups
+  solverOptions <- extensionConfig$solver_options
   
   # options vector
   options <- unlist(unname(lapply(options_list, function(el) {return(lapply(el, "[[", 1L))})))
   
-  # session$sendCustomMessage(type = 'optionlist',
-  #                           message = options_list)
-  
   # tibble containing all options with their default values
   defaultOptions <- tibble(uni = names(options), `uni#1` = options)
-  
   # table IDs
   identifiers <- tolower(gsub("[[:space:]/]", "", names(options_list)))
   identifiers <- paste0(identifiers, "Table")
   
   # description (visible as tooltip) for each option
   option_description <- jsonlite::fromJSON(file.path(customRendererDir,"option_description.json"))
-  
+
   observe({
     rv$scenddmapData <<- data$scenddmap() %>% select(-text)
     #0 values to bottom, rest sorted in ascending order 
@@ -181,6 +174,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     
     rv$milestonyrData <<- data$milestonyr() %>% select(-text)
     rv$solveroptData <<- data$solveropt() %>% select(-text)
+    
     rv$timesliceData <<- data$timeslice() %>% select(-text)
     rv$gmsbratio <<- data$gmsbratio()
     rv$gmsreslim <<- data$gmsreslim()
@@ -189,7 +183,9 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
     isolate({
       updateSliderInput(session, "gmsbratio", value = if(length(rv$gmsbratio)) rv$gmsbratio else 1)
       updateNumericInput(session, "gmsreslim", value = if(length(rv$gmsreslim))rv$gmsreslim else 1000)
-      updateSelectInput(session, "gmssolver", selected = if(length(rv$gmssolver)) rv$gmssolver else "cplex")
+      updateSelectInput(session, "gmssolver", 
+                        choices = setNames(tolower(solverOptions$solver_choices), solverOptions$solver_choices), 
+                        selected = if(length(rv$gmssolver)) rv$gmssolver else "cplex")
     })
   })
 
@@ -245,8 +241,6 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
                cellProperties.type = 'text';
              }
              if (col === 1) {
-               console.log(optionsData);
-               console.log(cellProperties);
                cellProperties.type = 'dropdown';
                cellProperties.source = optionsData[row];
                // cellProperties.renderer = Handsontable.renderers.DropdownRenderer;
@@ -436,11 +430,17 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
       extensions = reactive({
         extensionsTmp <- rv$extensionsData
         additionalStatementsTmp <- rv$additionalStatementsData
+        
+        if(is.null(extensionsTmp) || !nrow(extensionsTmp) > 0){
+          extensionsTmp <- rv$mergedOptions
+        }
+        
         if(length(extensionsTmp) && nrow(extensionsTmp) > 0){
           extensionsTmp <- extensionsTmp %>% 
             filter(uni != "" & `uni#1` != "") %>% 
             filter(`uni#1` != "unset")
         }
+        
         extensionsTmp[["text"]] <- ""
         
         if(length(additionalStatementsTmp) > 0 && nrow(additionalStatementsTmp) > 0){
@@ -452,6 +452,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
           }
         }
         extensionsTmp <- bind_rows(extensionsTmp, additionalStatementsTmp)
+
         extensionsTmp
       }),
       milestonyr = reactive({
