@@ -127,7 +127,7 @@ renderMirowidget_scenddmap <- function(input, output, session, data, options = N
   )
   
   # read all possible extensions, their defaults and grouping
-  extensionConfig <- fromJSON(file.path(customRendererDir,"extensions.json"))
+  extensionConfig <- fromJSON(file.path(customRendererDir,"input_config.json"))
   options_list <- extensionConfig$extensions
   columns <- extensionConfig$groups
   solverOptions <- extensionConfig$solver_options
