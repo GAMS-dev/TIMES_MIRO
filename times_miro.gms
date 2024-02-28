@@ -381,14 +381,13 @@ alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
 set ddorder 'Order index for DD Files' / 0*500 /;
 
 $onExternalInput
-set           solveropt(*,*,*)  'Solver options'                                 / cplex.(scaind.0,  rerun.yes, iis.yes, lpmethod.4, baralg.1,
+set           solveropt(*,*,*)  'Solver options'                                 / cplex.(scaind.0,  rerun.yes, iis.1, lpmethod.4, baralg.1,
                                                                                   barcrossalg.1, barorder.2, threads.8)/;                                                                                  
 singleton set gmsSolver(*)      'Solver for TIMES'                               / cplex /;
 scalar        gmsResLim         'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio         'Basis indicator'                                / 1 /;
 $offExternalInput
 singleton set gmsTIMESsrc(*)    'Location of TIME source'                        / '' '' /; // leave at '' for default
-singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 
 $onEmpty
 set           dd                              'DD Files';
@@ -399,14 +398,7 @@ set           scenddmap(ddorder,dd<,offeps<)  'DD File information'           / 
 set           TimeSlice(*)                    'ALL_TS'                        / / ;
 set           MILESTONYR(*)                   'Years for this model run'      / /;
 set           extensions(*,*)                 'TIMES Extensions'              / /;
-$offExternalInput
-*$onMulti
-*singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
-*singleton set gmsrunmode                      'whether to create a MIRO scenario or solve TIMES' /'' 'create'/;
-*$offMulti
-*$endif.data
 
-$onExternalInput
 $onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
 $offEps
@@ -441,7 +433,6 @@ singleton set gmsSolver(*)      'Solver for TIMES'                              
 singleton set gmsTIMESsrc(*)    'Location of TIME source'                        / '' '' /; // leave at '' for default
 scalar        gmsResLim         'Time limit for solve'                           / 1000 /;
 scalar        gmsBRatio         'Basis indicator'                                / 1 /;
-singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue' / local /; // local, short, long
 
 *Clear data from MIRO that may cause duplicate errors when creating a scenario
 $onMultiR
@@ -678,7 +669,6 @@ $offEmbeddedCode actdd orderactdd
 $offMulti
 
 
-
 *######################################
 *#  3) Write TIMES Data (*.dd files)  #
 *######################################
@@ -752,11 +742,10 @@ $eval.set GMSSOLVER   gmsSolver.tl
 $eval.set GMSTIMESSRC gmsTIMESsrc.te
 $if "x%GMSTIMESSRC%"=="x" $set GMSTIMESSRC %gams.idir1%times_model%system.dirsep%
 $eval     GMSRESLIM   gmsResLim   
-$eval     GMSBRATIO   gmsBRatio    
-$eval.set GMSRUNOPT   gmsRunOpt.tl
+$eval     GMSBRATIO   gmsBRatio
 
 $onecho > timesdriver.gms
-$Title TIMES -- VERSION 4.6.9
+$Title TIMES -- VERSION 4.7.7
 option resLim=%GMSRESLIM%, profile=1, solveOpt=REPLACE, bRatio=%GMSBRATIO%;
 option limRow=0, limCol=0, solPrint=OFF, solver=%GMSSOLVER%;
 $offListing
@@ -806,117 +795,11 @@ with open('timesdriver.gms', 'a+') as td:
       td.write(s+'\n')
 $offEmbeddedCode
 
-*#####################################################################
-*#  5) Execute TIMES driver                                          #
-*#     a) execute locally                                            #
-*#     b) compile locally and submit workfile to NEOS for execution  # 
-*#####################################################################
-* 5a) execute locally
-$ifThenI.localSolve %GMSRUNOPT%==local
-$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% filecase=2 er=99 ide=1 o=solve.lst gdx=out.gdx
-$else.localSolve
-* 5b) compile locally and submit workfile to NEOS
-$  call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% filecase=2 er=99 ide=1 a=c xs=times.g00
-$  set restartFile times.g00
-$  set wantGDX     yes
+*#############################
+*#  5) Execute TIMES driver  # 
+*#############################
 
-$  set dryRun      ''
-$  set gmsOptions  'fw=1'
-$  onEmbeddedCode Python:
-# Copyright (c) 2017 NEOS-Server
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-import os
-import sys
-import time
-import base64
-import re
-try:
-    import xmlrpc.client as xmlrpclib
-except ImportError:
-    import xmlrpclib
-
-# NEOS XML Template (to be filled)
-xml = r'''<document>
-<category>lp</category>
-<solver>BDMLP</solver>
-<priority>:queue:</priority>
-<inputType>GAMS</inputType>
-<model><![CDATA[]]></model>
-<options><![CDATA[]]></options>
-<parameters><![CDATA[%gmsOptions%]]></parameters>
-<restart><base64>:restartb64:</base64></restart>
-<wantlog><![CDATA[yes]]></wantlog>
-<wantlst><![CDATA[yes]]></wantlst>
-<wantgdx><![CDATA[%wantGDX%]]></wantgdx>
-</document>'''
-xml = xml.replace(":queue:", '%GMSRUNOPT%'.lower())
-
-neos = xmlrpclib.ServerProxy('https://neos-server.org:3333')
-alive = neos.ping()
-if alive != "NeosServer is alive\n":
-    raise NameError('\n***\n*** Could not make connection to NEOS Server\n***')
-with open(r'%restartFile%', 'rb') as restartfile:
-    restart = restartfile.read()
-    xml = xml.replace(":restartb64:", base64.b64encode(restart).decode('utf-8'))
-
-
-if len(r'%dryRun%'):
-    with open(os.path.splitext(r'%dryRun%')[0]+'.xml', 'w') as rf:
-        rf.write(xml)
-else:       
-    (jobNumber, password) = neos.submitJob(xml)
-    sys.stdout.write("\nJob number = %d\nJob password = %s\n" % (jobNumber, password))
-    sys.stdout.flush()
-
-    if jobNumber == 0:
-        raise NameError('\n***\n*** NEOS Server error:' + password + '\n***')
-    
-    offset = 0
-    echo = 1
-    status = ''
-    while status != 'Done':
-        time.sleep(1)
-        (msg, offset) = neos.getIntermediateResults(jobNumber, password, offset)
-        if echo == 1:
-           s = msg.data.decode()
-           if s.find('Composing results.') != -1:
-              sys.stdout.write(s.split('Composing results.', 1)[0])
-              echo = 0;
-           else:
-              sys.stdout.write(s)
-           sys.stdout.flush()
-    
-        status = neos.getJobStatus(jobNumber, password)
-    
-    msg = neos.getOutputFile(jobNumber, password, 'solver-output.zip')
-    with open('solver-output.zip', 'wb') as rf:
-        rf.write(msg.data)
-$  offEmbeddedCode
-$  ifthen.dryRun not "x%dryRun%"=="x"
-$    call cat "%dryRun%"
-$  else.dryRun
-$    hiddencall rm -f solve.log solve.lst solve.lxi out.gdx
-$    hiddencall gmsunzip -qq -o solver-output.zip
-$  endif.dryRun
-$endIf.localSolve
+$call.checkErrorLevel gams timesdriver.gms idir1=%GMSTIMESSRC% lo=%gams.lo% filecase=2 er=99 ide=1 o=solve.lst gdx=out.gdx
 
 *###############################################
 *#  6) Collect results and prepare output cube # 
