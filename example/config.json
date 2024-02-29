@@ -1,0 +1,507 @@
+{
+  "_comment": "Example configuration for a slimed down version of the TIMES Ireland model. For a complete list of available options please refer to https://github.com/GAMS-dev/TIMES_MIRO/tree/master",
+  "generalConfig": {
+    "tabNames": {
+      "dashboard": "Dashboard",
+      "dataExplorer": "Data Explorer",
+      "dataExplorerPivot": "Data Explorer (Pivot)",
+      "fullOutput": "Full Output"
+    }
+  },
+  "dataProcessing" :{
+    "excludeNonNumericPeriods": true,
+    "skip": {}
+  },
+  "dataExplorer": {
+    "schemaFiles": {
+      "dataSchema": "Schema.xlsx",
+      "technologySchema": "Schema_Technology.xlsx",
+      "colorSchema": null
+    },
+    "tabNames": {
+      "All Sectors": { "dataString": null, "tooltip": "" },
+      "Transport": { "dataString": "Transport", "tooltip": "" }
+    },
+    "nonEmissionFuel": {
+      "fuels": ["Electricity", "Wood", "Hydrogen", "Hydro", "Wind", "Solar", "Biogas"],
+      "emissionParameter": "Emissions"
+    }
+  },
+  "dashboard": {
+    "valueBoxesTitle": "Summary indicators",
+    "valueBoxes": {
+      "Id": [
+        "allEmissions", "electricity", "transportEnergy", "industryEnergy", "serviceEnergy", "residentialEnergy"
+      ],
+      "Color": [
+        "#848991", "#ffb327", "#29B675", "#29B675", "#29B675", "#29B675"
+      ],
+      "Icon": [
+        "smog", "plug-circle-bolt", "truck", "industry", "user-gear", "house"  
+      ],
+      "Title": [
+        "Emissions", "Electricity", "Transport energy consumption", "Industry energy consumption", "Services energy consumption", "Residential energy consumption"
+      ],
+      "Prefix": ["+", "+", "+", "+", "+", "+"],
+      "Postfix": ["%", "%", "%", "%", "%", "%"],
+      "redPositive": [false, false, false, false, false, false],
+      "NoColor": [false, false, false, false, false, false],
+      "ValueScalar": [null, null, null, null, null, null],
+      "Decimals": [null, null, null, null, null, null]
+    },
+    "dataViews": {
+      "allEmissions": {
+        "Co2EmissionsBySector": "Co2 Emissions by sector",
+        "IndustryEmissionsByType": "Industry emissions by type"
+      },
+      "electricity": {
+        "meanElectricity": "Marginal Electricity price (mean of TimeSlice)",
+        "minElectricity": "Marginal Electricity price (min of TimeSlice)",
+        "maxElectricity": "Marginal Electricity price (max of TimeSlice)"
+      },
+      "transportEnergy": {
+        "transportEnergy": "Transport final energy consumption"
+      },
+      "industryEnergy": {
+        "industryEnergy": "Industry final energy consumption"
+      },
+      "serviceEnergy": {
+        "serviceEnergy": "Services final energy consumption"
+      },
+      "residentialEnergy": {
+        "residentialEnergy": "Residential final energy consumption"
+      }
+    },
+    "dataViewsConfig": {
+        "Co2EmissionsBySector": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Attribute": "VAR_Comnet", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "Commodity": ["AGRCO2N", "INDCO2N", "INDCO2P", "PWRCO2N", "RSDCO2", "SRVCO2N", "TRACO2N"] },
+            "chartOptions": { "title": "Co2 Emissions by sector", "yTitle": "Emission kt", 
+                              "customLabels": {
+                                  "AGRCO2N": "Agriculture",
+                                  "INDCO2N": "Industry",
+                                  "INDCO2P": "Industrial process",
+                                  "PWRCO2N": "Power generation",
+                                  "RSDCO2": "Residential",
+                                  "SRVCO2N": "Services",
+                                  "TRACO2N": "Transport"
+                              }            
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "IndustryEmissionsByType": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Attribute": "VAR_Comnet", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "Commodity": ["INDCO2N", "INDCO2P"] },
+            "chartOptions": { "title": "Industry emissions by type", "yTitle": "CO2 Emissions (kt)",
+                              "customLabels": {
+                                  "INDCO2P": "Industrial process",
+                                  "INDCO2N": "Industry"
+                              } 
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "meanElectricity": {
+            "aggregationFunction": "mean",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Commodity": "ELCC", "Attribute": "EQ_CombalM", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE" },
+            "chartOptions": { "title": "Marginal Electricity price (mean of TimeSlice)", "xTitle": "Year", "yTitle": "marginal price (MEUR/PJ)" },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "minElectricity": {
+            "aggregationFunction": "min",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Commodity": "ELCC", "Attribute": "EQ_CombalM", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE" },
+            "chartOptions": { "title": "Marginal Electricity price (min of TimeSlice)", "xTitle": "Year", "yTitle": "marginal price (MEUR/PJ)" },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "maxElectricity": {
+            "aggregationFunction": "max",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Commodity": "ELCC", "Attribute": "EQ_CombalM", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE" },
+            "chartOptions": { "title": "Marginal Electricity price (max of TimeSlice)", "xTitle": "Year", "yTitle": "marginal price (MEUR/PJ)" },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "transportEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-TRABDL", "FT-TRABNG", "FT-TRACNG", "FT-TRADST", "FT-TRAELC", "FT-TRAETH", "FT-TRAGSL", "FT-TRAKER", "FT-TRALNG"] },
+            "chartOptions": { "title": "Transport final energy consumption (PJ)", "xTitle": "Year", "yTitle": "Energy Consumption (PJ)",
+                              "customLabels": {
+                                  "FT-TRABDL": "Biodiesel",
+                                  "FT-TRABNG": "Bio-CNG",
+                                  "FT-TRACNG": "CNG",
+                                  "FT-TRADST": "Diesel",
+                                  "FT-TRAELC": "Electricity",
+                                  "FT-TRAETH": "Ethanol",
+                                  "FT-TRAGSL": "Gasoline",
+                                  "FT-TRAH2": "Hydrogen",
+                                  "FT-TRAKER": "Kerosene",
+                                  "FT-TRALNG": "LNG"
+                              }
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "industryEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-INDBGS", "FT-INDBIO", "FT-INDCOA", "FT-INDCOK", "FT-INDDST", "FT-INDELC", "FT-INDGAS", "FT-INDHFO", "FT-INDKER", "FT-INDLPG", "FT-INDNWS", "FT-INDPEA", "FT-INDRWS"] },
+            "chartOptions": { "title": "Industry final energy consumption", "xTitle": "Year", "yTitle": "PJ",
+                              "customLabels": {
+                                  "FT-INDBGS": "Biogas",
+                                  "FT-INDBIO": "Biomass",
+                                  "FT-INDCOA": "Coal",
+                                  "FT-INDCOK": "Coke",
+                                  "FT-INDDST": "Diesel",
+                                  "FT-INDELC": "Electricity",
+                                  "FT-INDGAS": "Natural gas",
+                                  "FT-INDHFO": "HFO",
+                                  "FT-INDKER": "Kerosene",
+                                  "FT-INDLPG": "LPG",
+                                  "FT-INDNWS": "Non-renewable waste",
+                                  "FT-INDPEA": "Peat",
+                                  "FT-INDRWS": "Renewable waste"
+                              } 
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "serviceEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-SRVAHT", "FT-SRVBGS", "FT-SRVBIO", "FT-SRVCOA", "FT-SRVELC", "FT-SRVGAS", "FT-SRVHET", "FT-SRVLPG", "FT-SRVOIL", "FT-SRVSOL"] },
+            "chartOptions": { "title": "Services final energy consumption", "xTitle": "Year", "yTitle": "PJ",
+                              "customLabels": {
+                                  "FT-SRVAHT": "Ambient Heat",
+                                  "FT-SRVBGS": "Biogas",
+                                  "FT-SRVBIO": "Biomass",
+                                  "FT-SRVCOA": "Coal",
+                                  "FT-SRVELC": "Electricity",
+                                  "FT-SRVGAS": "Natural gas",
+                                  "FT-SRVHET": "District Heat",
+                                  "FT-SRVLPG": "LPG",
+                                  "FT-SRVOIL": "Oil",
+                                  "FT-SRVSOL": "Solar"
+                              } 
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "residentialEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-RSDAHT", "FT-RSDBDL", "FT-RSDBGS", "FT-RSDCOA", "FT-RSDELC", "FT-RSDETH", "FT-RSDGAS", "FT-RSDHET", "FT-RSDKER", "FT-RSDLPG", "FT-RSDPEA", "FT-RSDSOL", "FT-RSDWOO"] },
+            "chartOptions": { "title": "Residential final energy consumption", "xTitle": "Year", "yTitle": "PJ",
+                              "customLabels": {
+                                  "FT-RSDAHT": "Ambient Heat",
+                                  "FT-RSDBDL": "Biodiesel",
+                                  "FT-RSDBGS": "RSDBGS",
+                                  "FT-RSDCOA": "Coal",
+                                  "FT-RSDELC": "Electricity",
+                                  "FT-RSDETH": "Ethanol",
+                                  "FT-RSDGAS": "Natural gas",
+                                  "FT-RSDHET": "Heat",
+                                  "FT-RSDKER": "Kerosene",
+                                  "FT-RSDLPG": "LPG",
+                                  "FT-RSDPEA": "Peat",
+                                  "FT-RSDSOL": "Solar",
+                                  "FT-RSDWOO": "Biomass"
+                              } 
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        }
+    }
+  },
+  "scenCompareDashboard": {
+    "valueBoxesTitle": "Summary indicators",
+    "valueBoxes": {
+      "Id": [
+        "allEmissions", "electricity", "transportEnergy", "industryEnergy", "serviceEnergy", "residentialEnergy"
+      ],
+      "Color": [
+        "#848991", "#ffb327", "#29B675", "#29B675", "#29B675", "#29B675"
+      ],
+      "Icon": [
+        "smog", "plug-circle-bolt", "truck", "industry", "user-gear", "house"  
+      ],
+      "Title": [
+        "Emissions", "Electricity", "Transport energy consumption", "Industry energy consumption", "Services energy consumption", "Residential energy consumption"
+      ],
+      "Prefix": ["+", "+", "+", "+", "+", "+"],
+      "Postfix": ["%", "%", "%", "%", "%", "%"],
+      "redPositive": [false, false, false, false, false, false],
+      "NoColor": [false, false, false, false, false, false],
+      "ValueScalar": [null, null, null, null, null, null],
+      "Decimals": [null, null, null, null, null, null]
+    },
+    "dataViews": {
+      "allEmissions": {
+        "Co2EmissionsBySector": "Co2 Emissions by sector",
+        "IndustryEmissionsByType": "Industry emissions by type"
+      },
+      "electricity": {
+        "meanElectricity": "Marginal Electricity price (mean of TimeSlice)",
+        "minElectricity": "Marginal Electricity price (min of TimeSlice)",
+        "maxElectricity": "Marginal Electricity price (max of TimeSlice)"
+      },
+      "transportEnergy": {
+        "transportEnergy": "Transport final energy consumption"
+      },
+      "industryEnergy": {
+        "industryEnergy": "Industry final energy consumption"
+      },
+      "serviceEnergy": {
+        "serviceEnergy": "Services final energy consumption"
+      },
+      "residentialEnergy": {
+        "residentialEnergy": "Residential final energy consumption"
+      }
+    },
+    "dataViewsConfig": {
+        "Co2EmissionsBySector": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": ["Period", "_scenName"],
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Attribute": "VAR_Comnet", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "Commodity": ["AGRCO2N", "INDCO2N", "INDCO2P", "PWRCO2N", "RSDCO2", "SRVCO2N", "TRACO2N"] },
+            "chartOptions": { "title": "Co2 Emissions by sector", "yTitle": "Emission kt", 
+                              "customChartColors": {
+                                  "IE․AGRCO2N": ["#de38a4", "#A31476"],
+                                  "IE․INDCO2N": ["#554ce6", "#3223C9"],
+                                  "IE․INDCO2P": ["#b4eb1c", "#789F03"],
+                                  "IE․PWRCO2N": ["#871414", "#690101"],
+                                  "IE․RSDCO2": ["#27cad6", "#0A8A93"],
+                                  "IE․SRVCO2N": ["#196e3a", "#004E23"],
+                                  "IE․TRACO2N": ["#e8d413", "#9D8F02"]
+                              },
+                              "customLabels": {
+                                  "AGRCO2N": "Agriculture",
+                                  "INDCO2N": "Industry",
+                                  "INDCO2P": "Industrial process",
+                                  "PWRCO2N": "Power generation",
+                                  "RSDCO2": "Residential",
+                                  "SRVCO2N": "Services",
+                                  "TRACO2N": "Transport"
+                              }                          
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "IndustryEmissionsByType": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": ["Period", "_scenName"],
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Attribute": "VAR_Comnet", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "Commodity": ["INDCO2N", "INDCO2P"] },
+            "chartOptions": { "title": "Industry emissions by type", "yTitle": "CO2 Emissions (kt)" },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "meanElectricity": {
+            "aggregationFunction": "mean",
+            "pivotRenderer": "line",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Commodity": "ELCC", "Attribute": "EQ_CombalM", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "_scenName": null },
+            "chartOptions": { "title": "Marginal Electricity price (mean of TimeSlice)", "xTitle": "Year", "yTitle": "marginal price (MEUR/PJ)" },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "minElectricity": {
+            "aggregationFunction": "min",
+            "pivotRenderer": "line",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Commodity": "ELCC", "Attribute": "EQ_CombalM", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "_scenName": null },
+            "chartOptions": { "title": "Marginal Electricity price (min of TimeSlice)", "xTitle": "Year", "yTitle": "marginal price (MEUR/PJ)" },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "maxElectricity": {
+            "aggregationFunction": "max",
+            "pivotRenderer": "line",
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Commodity": "ELCC", "Attribute": "EQ_CombalM", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "_scenName": null },
+            "chartOptions": { "title": "Marginal Electricity price (max of TimeSlice)", "xTitle": "Year", "yTitle": "marginal price (MEUR/PJ)" },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "transportEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": ["Period", "_scenName"],
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-TRABDL", "FT-TRABNG", "FT-TRACNG", "FT-TRADST", "FT-TRAELC", "FT-TRAETH", "FT-TRAGSL", "FT-TRAKER", "FT-TRALNG"] },
+            "chartOptions": { "title": "Transport final energy consumption (PJ)", "xTitle": "Year", "yTitle": "Energy Consumption (PJ)",
+                              "customLabels": {
+                                  "FT-TRABDL": "Biodiesel",
+                                  "FT-TRABNG": "Bio-CNG",
+                                  "FT-TRACNG": "CNG",
+                                  "FT-TRADST": "Diesel",
+                                  "FT-TRAELC": "Electricity",
+                                  "FT-TRAETH": "Ethanol",
+                                  "FT-TRAGSL": "Gasoline",
+                                  "FT-TRAH2": "Hydrogen",
+                                  "FT-TRAKER": "Kerosene",
+                                  "FT-TRALNG": "LNG"
+                              }
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "industryEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": ["Period", "_scenName"],
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-INDBGS", "FT-INDBIO", "FT-INDCOA", "FT-INDCOK", "FT-INDDST", "FT-INDELC", "FT-INDGAS", "FT-INDHFO", "FT-INDKER", "FT-INDLPG", "FT-INDNWS", "FT-INDPEA", "FT-INDRWS"] },
+            "chartOptions": { "title": "Industry final energy consumption", "xTitle": "Year", "yTitle": "PJ",
+                              "customLabels": {
+                                  "FT-INDBGS": "Biogas",
+                                  "FT-INDBIO": "Biomass",
+                                  "FT-INDCOA": "Coal",
+                                  "FT-INDCOK": "Coke",
+                                  "FT-INDDST": "Diesel",
+                                  "FT-INDELC": "Electricity",
+                                  "FT-INDGAS": "Natural gas",
+                                  "FT-INDHFO": "HFO",
+                                  "FT-INDKER": "Kerosene",
+                                  "FT-INDLPG": "LPG",
+                                  "FT-INDNWS": "Non-renewable waste",
+                                  "FT-INDPEA": "Peat",
+                                  "FT-INDRWS": "Renewable waste"
+                              } 
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "serviceEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": ["Period", "_scenName"],
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-SRVAHT", "FT-SRVBGS", "FT-SRVBIO", "FT-SRVCOA", "FT-SRVELC", "FT-SRVGAS", "FT-SRVHET", "FT-SRVLPG", "FT-SRVOIL", "FT-SRVSOL"] },
+            "chartOptions": { "title": "Services final energy consumption", "xTitle": "Year", "yTitle": "PJ",
+                              "customLabels": {
+                                  "FT-SRVAHT": "Ambient Heat",
+                                  "FT-SRVBGS": "Biogas",
+                                  "FT-SRVBIO": "Biomass",
+                                  "FT-SRVCOA": "Coal",
+                                  "FT-SRVELC": "Electricity",
+                                  "FT-SRVGAS": "Natural gas",
+                                  "FT-SRVHET": "District Heat",
+                                  "FT-SRVLPG": "LPG",
+                                  "FT-SRVOIL": "Oil",
+                                  "FT-SRVSOL": "Solar"
+                              }
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        },
+        "residentialEnergy": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": ["Period", "_scenName"],
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-RSDAHT", "FT-RSDBDL", "FT-RSDBGS", "FT-RSDCOA", "FT-RSDELC", "FT-RSDETH", "FT-RSDGAS", "FT-RSDHET", "FT-RSDKER", "FT-RSDLPG", "FT-RSDPEA", "FT-RSDSOL", "FT-RSDWOO"] },
+            "chartOptions": { "title": "Residential final energy consumption", "xTitle": "Year", "yTitle": "PJ",
+                              "customLabels": {
+                                  "FT-RSDAHT": "Ambient Heat",
+                                  "FT-RSDBDL": "Biodiesel",
+                                  "FT-RSDBGS": "RSDBGS",
+                                  "FT-RSDCOA": "Coal",
+                                  "FT-RSDELC": "Electricity",
+                                  "FT-RSDETH": "Ethanol",
+                                  "FT-RSDGAS": "Natural gas",
+                                  "FT-RSDHET": "Heat",
+                                  "FT-RSDKER": "Kerosene",
+                                  "FT-RSDLPG": "LPG",
+                                  "FT-RSDPEA": "Peat",
+                                  "FT-RSDSOL": "Solar",
+                                  "FT-RSDWOO": "Biomass"
+                              }
+            },
+            "userFilter": "Region",
+            "decimals": 2
+        }
+    }
+  },
+  "scenCompareDataExplorer": {
+    "schemaFiles": {
+      "dataSchema": "Schema.xlsx",
+      "technologySchema": "Schema_Technology.xlsx",
+      "colorSchema": null
+    },
+    "tabNames": {
+      "All Sectors": { "dataString": null, "tooltip": "" },
+      "Transport": { "dataString": "Transport", "tooltip": "" }
+    },
+    "nonEmissionFuel": {
+      "fuels": ["Electricity", "Wood", "Hydrogen", "Hydro", "Wind", "Solar", "Biogas"],
+      "emissionParameter": "Emissions"
+    }
+  }
+}

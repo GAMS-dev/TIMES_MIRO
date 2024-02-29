@@ -243,7 +243,8 @@ img + em {
 .custom-dropdown-wide .selectize-control {
   margin-bottom:0;
 }
-.custom-dropdown-wide .selectize-input {
+.custom-dropdown-wide .selectize-input,
+.scenario-dropdown .selectize-input {
   min-height: 22px;
   padding: 1px 5px;
 }
@@ -252,16 +253,76 @@ img + em {
        float:right;
    }
    .custom-dropdown .selectize-input {
-       width: 80px;
+       width: 120px;
    }
    .custom-dropdown.medium-width .selectize-input  {
        width: 85px;
    }
    .custom-dropdown-wide {
        float:right;
-       min-width:250px;
+       /* min-width:250px; */
        max-width:300px;
    }
+   .custom-dropdown-wide.user-filter {
+       float:left;
+       /* min-width:250px; */
+       max-width:300px;
+   }
+   .charttype-and-btn-wrapper {
+       width: 25%;
+       float: right;
+   }
+   .charttype-and-btn-wrapper > .custom-dropdown {
+       padding-left: 0;
+   }
+   .charttype-and-btn-wrapper .dashboard-btn-csv,
+   .charttype-and-btn-wrapper .dashboard-btn-png {
+       margin-right: 5px;
+   }
+}
+@media only screen and (min-width: 1200px){
+    .custom-dropdown-wide.user-filter.odd-inline,
+    .charttype-and-btn-wrapper.odd-inline {
+     width: 25%;
+    }
+    .custom-dropdown-wide.user-filter.even-inline,
+    .charttype-and-btn-wrapper.even-inline {
+     width: 33%;
+    }
+}
+@media only screen and (min-width: 576px) and (max-width: 1199px){
+    .custom-dropdown-wide.user-filter.odd-inline,
+    .charttype-and-btn-wrapper.odd-inline {
+     width: 33%;
+    }
+    .custom-dropdown-wide.user-filter.even-inline,
+    .charttype-and-btn-wrapper.even-inline {
+     width: 33%;
+    }
+}
+.custom-dropdown-wide.user-filter.one-inline,
+.charttype-and-btn-wrapper.one-inline {
+ width: unset;
+ min-width:250px;
+}
+.custom-dropdown-wide.user-filter .selectize-control.multi .selectize-input.has-items {
+    padding: 2px 5px 2px;
+}
+.custom-dropdown-wide.user-filter .selectize-control.multi .selectize-input.has-items > .item {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 9px;
+}
+.custom-dropdown-wide.user-filter .selectize-control.multi .selectize-input>div {
+    margin: 0px 3px 1px 0;
+    padding: 2px 3px;
+}
+.custom-dropdown-wide.user-filter .selectize-dropdown, .selectize-input, .selectize-input input {
+    line-height: 16px;
+}
+.charttype-and-btn-wrapper .dashboard-btn-csv,
+.charttype-and-btn-wrapper .dashboard-btn-png {
+    height: 21px;
 }
 @media only screen and (max-width: 575px){
    .custom-dropdown,
@@ -560,5 +621,77 @@ img + em {
 .custom-widget .handsontable.listbox tr td.current, 
 .custom-widget .handsontable.listbox tr:hover td {
     background: #91c8e8;
+}
+/* TIMES-NZ */
+
+.custom-css .dashboard-chart-wrapper {
+    min-width: 280px;
+    height:300px;
+}
+.custom-css .info-right {
+    float: right;
+}
+.custom-css .default-height {
+    min-height: 60vh;
+}
+.custom-css .input-hidden {
+  position: absolute;
+  left: -9999px;
+}
+.custom-css .radio-styles {
+  margin-bottom: 15px;
+}
+@media (prefers-color-scheme:dark){
+  .custom-css .nav-pills>li>a {
+    color: #eee;
+  }
+}
+#shiny-tab-outputData .tab-content {
+    padding: 0;
+}
+#shiny-tab-outputData .tab-content > .tab-pane > .small-space {
+  height: 0;
+}
+#shiny-tab-outputData .tab-content > .tab-pane > .render-output {
+  overflow: hidden;
+}
+.custom-css .custom-table-header {
+  font-family: sans-serif;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 20px;
+}
+.custom-css .scenario-name-inline {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.custom-compare .data-explorer .dashboard-chart-wrapper,
+.custom-compare .data-explorer .dashboard-table-wrapper {
+  margin-bottom: 30px;
+}
+.custom-css .scenario-name-inline {
+  display: inline-block;
+}
+.custom-css .inline-download-buttons {
+  float: right;
+}
+.custom-css .dashboard-btn {
+  float: right;
+  padding: 1px 12px;
+}
+.custom-css .dashboard-btn-csv {
+  margin-left:5px;
+}
+@media only screen and (max-width: 575px) {
+  .custom-css .dashboard-btn {
+    width: 50%;
+  }
+  .custom-css .dashboard-btn-wrapper {
+      padding: 0 5px;
+  }
+  .custom-css .dashboard-btn-csv {
+    margin-left: 0;
+  }
 }
 

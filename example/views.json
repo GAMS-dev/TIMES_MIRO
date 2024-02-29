@@ -1,0 +1,81 @@
+{
+    "cubeoutput": {
+        "full output: Co2 Emissions by sector": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "domainFilter": { "default": "_none" },
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Attribute": "VAR_Comnet", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "Commodity": ["AGRCO2N", "INDCO2N", "INDCO2P", "PWRCO2N", "RSDCO2", "SRVCO2N", "TRACO2N"] },
+            "chartOptions": { "title": "Co2 Emissions by sector", "xTitle": "Sector", "yTitle": "Emission kt" }
+        },
+        "full output: Industry emissions by type": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "domainFilter": { "default": "_none" },
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Attribute": "VAR_Comnet", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE", "Commodity": ["INDCO2N", "INDCO2P"] },
+            "chartOptions": { "title": "Industry emissions by type", "xTitle": "sector", "yTitle": "CO2 Emissions (kt)" }
+        },
+        "full output: Marginal Electricity price (mean of TimeSlice)": {
+            "aggregationFunction": "mean",
+            "pivotRenderer": "stackedbar",
+            "domainFilter": { "default": "_none" },
+            "tableSummarySettings": { "enabled": false, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null },
+            "filter": { "Commodity": "ELCC", "Attribute": "EQ_CombalM", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
+            "cols": { "Region": "IE" },
+            "chartOptions": { "title": "Marginal Electricity price (mean of TimeSlice)", "xTitle": "Year", "yTitle": "marginal price (MEUR/PJ)" }
+        },
+        "full output: Transport final energy consumption": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "domainFilter": { "default": "_none" },
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-TRABDL", "FT-TRABNG", "FT-TRACNG", "FT-TRADST", "FT-TRAELC", "FT-TRAETH", "FT-TRAGSL", "FT-TRAKER", "FT-TRALNG"] },
+            "chartOptions": { "title": "Transport final energy consumption (PJ)", "xTitle": "Year", "yTitle": "Energy Consumption (PJ)" }
+        },
+        "full output: Industry final energy consumption": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "domainFilter": { "default": "_none" },
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-INDBGS", "FT-INDBIO", "FT-INDCOA", "FT-INDCOK", "FT-INDDST", "FT-INDELC", "FT-INDGAS", "FT-INDHFO", "FT-INDKER", "FT-INDLPG", "FT-INDNWS", "FT-INDPEA", "FT-INDRWS"] },
+            "chartOptions": { "title": "Industry final energy consumption", "xTitle": "Year", "yTitle": "PJ" }
+        },
+        "full output: Services final energy consumption": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "domainFilter": { "default": "_none" },
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-SRVAHT", "FT-SRVBGS", "FT-SRVBIO", "FT-SRVCOA", "FT-SRVELC", "FT-SRVGAS", "FT-SRVHET", "FT-SRVLPG", "FT-SRVOIL", "FT-SRVSOL"] },
+            "chartOptions": { "title": "Services final energy consumption", "xTitle": "Year", "yTitle": "PJ" }
+        },
+        "full output: Residential final energy consumption": {
+            "aggregationFunction": "sum",
+            "pivotRenderer": "stackedbar",
+            "domainFilter": { "default": "_none" },
+            "tableSummarySettings": { "enabled": true, "rowSummaryFunction": "sum", "colSummaryFunction": "sum" },
+            "rows": "Period",
+            "aggregations": { "TimeSlice": null, "Commodity": null, "Vintage": null },
+            "filter": { "Attribute": "VAR_FOut", "UserConstraint": "-" },
+            "cols": { "Region": null, "Process": ["FT-RSDAHT", "FT-RSDBDL", "FT-RSDBGS", "FT-RSDCOA", "FT-RSDELC", "FT-RSDETH", "FT-RSDGAS", "FT-RSDHET", "FT-RSDKER", "FT-RSDLPG", "FT-RSDPEA", "FT-RSDSOL", "FT-RSDWOO"] },
+            "chartOptions": { "title": "Residential final energy consumption", "xTitle": "Year", "yTitle": "PJ" }
+        }
+    }
+}
