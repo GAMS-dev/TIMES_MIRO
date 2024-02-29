@@ -390,6 +390,7 @@ Example:
 ### dataViews<a name="dataViews"></a>
 A data view is shown if  the corresponding value box is clicked in the user interface. It can display multiple charts and tables. In `dataViews` you define how many charts/tables a view should contain. The actual configuration of the charts/tables is done in [dataViewsConfig](#dataViewsConfig) (see below). 
 The name/id of a data view must match the id of a valuebox. This represents the link between the valuebox and the view. After the name/id, the title is specified, which is displayed above the chart/table. 
+If only one chart is specified for a view, the chart and corresponding table of the data set are displayed one below the other. If there is more than 1 chart per view configured, you can choose between chart and table via dropdown in the dashboard.
 
 In the following example two data views are configured. The ids (`allEmissions` and `transportEnergy`) match the ones used for the [valueBoxes](#valueBoxes) (see above). The `allEmissions` view will show two charts/tables, the `transportEnergy` view will show one.
 

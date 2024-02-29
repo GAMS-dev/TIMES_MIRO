@@ -617,7 +617,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
         title
       })
       
-      output[[paste0(id, "Table")]] <- renderDataTable({
+      output[[paste0(id, "Table")]] <- renderDT({
         
         if(!identical(id, "overview")){
           plot_data <- filtered_data() %>% 
@@ -1555,7 +1555,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       tableId <- paste0("#", session$ns(paste0(indicator, "Table")))
       chartWrapperId <- paste0("#", session$ns(paste0(indicator, "ChartWrapper")))
       
-      if (identical(input[[paste0(indicator, "ChartType")]], "Table")) {
+      if (identical(input[[paste0(indicator, "ChartType")]], "table")) {
         showEl(session, tableId)
         hideEl(session, chartWrapperId)
       } else {

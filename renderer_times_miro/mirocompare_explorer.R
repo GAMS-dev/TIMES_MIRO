@@ -1605,7 +1605,7 @@ renderMirocompare_explorer <- function(input, output, session, data, options = N
       tableId <- paste0("#", session$ns(paste0(indicator, "Table")))
       chartWrapperId <- paste0("#", session$ns(paste0(indicator, "ChartWrapper")))
       
-      if (identical(input[[paste0(indicator, "ChartType")]], "Table")) {
+      if (identical(input[[paste0(indicator, "ChartType")]], "table")) {
         showEl(session, tableId)
         hideEl(session, chartWrapperId)
       } else {
