@@ -311,15 +311,6 @@
             "filter": { "Attribute": "VAR_Comnet", "Process": "-", "UserConstraint": "-", "Vintage": "-" },
             "cols": { "Region": "IE", "Commodity": ["AGRCO2N", "INDCO2N", "INDCO2P", "PWRCO2N", "RSDCO2", "SRVCO2N", "TRACO2N"] },
             "chartOptions": { "title": "Co2 Emissions by sector", "yTitle": "Emission kt", 
-                              "customChartColors": {
-                                  "IE․AGRCO2N": ["#de38a4", "#A31476"],
-                                  "IE․INDCO2N": ["#554ce6", "#3223C9"],
-                                  "IE․INDCO2P": ["#b4eb1c", "#789F03"],
-                                  "IE․PWRCO2N": ["#871414", "#690101"],
-                                  "IE․RSDCO2": ["#27cad6", "#0A8A93"],
-                                  "IE․SRVCO2N": ["#196e3a", "#004E23"],
-                                  "IE․TRACO2N": ["#e8d413", "#9D8F02"]
-                              },
                               "customLabels": {
                                   "AGRCO2N": "Agriculture",
                                   "INDCO2N": "Industry",
