@@ -9,9 +9,10 @@ miroimport_times <- function(symbolNames,
     abortSafe("Please upload a single zip file containing either xlsx or dd files as well as a run file.")
   }
   filesInZip <- zip::zip_list(localFile$datapath)
-  xlsxFiles <- filesInZip$filename[endsWith(filesInZip$filename, ".xlsx")]
-  ddFiles <- filesInZip$filename[endsWith(filesInZip$filename, ".dd")]
-  runFile <- filesInZip$filename[endsWith(filesInZip$filename, ".run")]
+  xlsxFiles <- filesInZip$filename[endsWith(tolower(filesInZip$filename), ".xlsx") | 
+                                     endsWith(tolower(filesInZip$filename), ".xlsm")]
+  ddFiles <- filesInZip$filename[endsWith(tolower(filesInZip$filename), ".dd")]
+  runFile <- filesInZip$filename[endsWith(tolower(filesInZip$filename), ".run")]
   
   if (length(runFile) != 1) {
     zip::zip_append(localFile$datapath,
@@ -58,7 +59,7 @@ miroimport_times <- function(symbolNames,
           wd = tempDir,
           echo_cmd = TRUE, echo = TRUE,
           windows_hide_window = TRUE,
-          timeout = 100L
+          timeout = 300L
         )
       },
       error = function(e) {
@@ -225,7 +226,7 @@ miroimport_times <- function(symbolNames,
       )
     }))
   }
-  modelDir <- file.path(customRendererDir, "model-for-conversion")
+  modelDir <- file.path(customRendererDir, "model-for-import")
   convertDDToGDX(
     symbolNames,
     DDToGDXPath = file.path(modelDir, "dd_to_gdx.gms"),

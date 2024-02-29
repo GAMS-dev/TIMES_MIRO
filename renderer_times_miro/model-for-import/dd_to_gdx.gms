@@ -366,16 +366,9 @@ $offEmbeddedCode
 $if not errorFree $stop
 $LOG ### CUBEINPUTDOM=%sysenv.CUBEINPUTDOM%
 
-*############################################################################################
-*#  2) LOAD DATA                                                                            #
-*#     a) if run through MIRO, the data will be loaded from the MIRO App                    #
-*#     b) if run through Studio, you can create a GDX file that can be loaded               #
-*#        into the MIRO app.                         #
-*#        Data specified via:                                                               #
-*#          --DDPREFIX (dd files location, including '/' at the end)                        #
-*#          --RUNFILE (runfile location)                                                    #
-*#        will be used for the GDX file creation                                            #
-*############################################################################################
+*###################
+*#  2) LOAD DATA   #
+*###################
 
 alias (*, UC_N, ALL_REG, ALLYEAR, PRC, COM_GRP, ALL_TS, LIM, CUR);
 set ddorder 'Order index for DD Files' / 0*500 /;
@@ -398,7 +391,6 @@ set           extensions(*,*)                 'TIMES Extensions'              / 
 $onMulti
 singleton set gmsrunlocation(*)               'Location of Run file'          / '' 'TIMES_Demo/model/demo12.run'/;
 $offMulti
-*$endif.data
 
 $onEps
 parameter     cubeInput(%sysEnv.CUBEINPUTDOM%) / /;
@@ -413,9 +405,8 @@ parameter cubeOutput(soName,sow,COM_GRP,PRC,ALLYEAR,ALL_REG,Vintage,ALL_TS,UC_N)
 
 $if not set RUNFILE $abort "No run file provided"
 
-* If miro importer is used with xlsx files as data source, no run file is provided by the user.
-* milestonyr is then provided by xl2times via milestonyr.dd file. If miro importer is used with dd files as
-* data source, the user provides run file as well containing milestonyr (and not in dd files)
+* If miro importer is used with xlsx files as data source milestonyr is provided by xl2times via milestonyr.dd file.
+* If miro importer is used with dd files as data source, run file is provided as well containing milestonyr (and not in dd files)
 $if not set DATA_SOURCE $set DATA_SOURCE "xlsx"
 $ifThenE.milestonyr sameas("%DATA_SOURCE%","xlsx")
 $ set MILESTONYR1 ""
@@ -452,7 +443,6 @@ singleton set gmsRunOpt(*)      'Selection for local, short and long NEOS queue'
 *Clear data from MIRO that may cause duplicate errors when creating a scenario
 $onMultiR
 $clear cubeinput scenddmap TimeSlice MILESTONYR extensions dd
-*dd_COM_DESC dd_PRC_DESC 
 $onMulti
 
 $onembeddedCode Python:
@@ -552,12 +542,11 @@ for df in [os.path.join(filePathTmp, file) for file in filesTmp]:
      dd.append(ddbase)
 
 gams.set('dd',dd)
-# If data source is dd files (not xlsx) milestonyr is part of the run file provided by the user
+# If data source is dd files (not xlsx) milestonyr is part of the run file
 #TODO: allow dd files without run file?
 if r'%data_source% '.rstrip() == 'dd':
   db['MILESTONYR'].copy_symbol(gams.db['MILESTONYR'])
 scenddmap = [tuple(l) for l in scenddmap]
-#TODO: mergeType=MergeType.REPLACE?
 gams.set('scenddmap',scenddmap)
 # process myrun.lst for compile time variables
 gams.printLog("Process myrun.lst for compile time variables")
@@ -687,5 +676,5 @@ $gdxOut "%fp%miroScenario.gdx"
 $unLoad
 $gdxOut
 $log ---
-$log --- Scenario exported to "%fp%miroScenario.gdx". Please import into MIRO.
+$log --- Scenario exported to "%fp%miroScenario.gdx".
 $log ---
