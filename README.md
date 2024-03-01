@@ -627,4 +627,4 @@ If you have any questions or comments regarding the TIMES/MIRO app, please conta
 
 # License<a name="license"></a>
 The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the times\_model, TIMES\_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See files `times_model\LICENSE.txt`, `TIMES_Demo\LICENSE.txt` as well as `TIMES-DK_COMETS\LICENSE` for more information.
-The data processing and data explorer code in the custom renderer files was taken from https://github.com/EECA-NZ/TIMES-NZ-Visualisation (MIT licensed). The code has been modified to meed the requirements of this application.
+The data processing and data explorer code in the custom renderer files was taken from https://github.com/EECA-NZ/TIMES-NZ-Visualisation (MIT licensed, see [here](https://github.com/EECA-NZ/TIMES-NZ-Visualisation/blob/master/LICENSE)). The code has been modified to meed the requirements of this application.
