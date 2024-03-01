@@ -1245,9 +1245,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       
       # GAMS Tables need to be lengthened to only have one value column
       # as this is how a view is stored
-      numericColumnNames <- viewData %>%
-        select(where(is.numeric)) %>%
-        names()
+      numericColumnNames <- viewData[sapply(viewData, is.numeric)] %>% names()
       
       if (length(numericColumnNames) > 1) {
         viewData <- viewData %>%
@@ -1550,22 +1548,17 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       do.call(tagList, sections)
     })
     
-    # toggle between Chart and table for view with two-chart layout 
+    # show/hide Chart for view with multi-chart layout. Show/hide table is done in renderDT() directly
     toggleChartType <- function(indicator) {
-      tableId <- paste0("#", session$ns(paste0(indicator, "Table")))
-      chartWrapperId <- paste0("#", session$ns(paste0(indicator, "ChartWrapper")))
-      
       if (identical(input[[paste0(indicator, "ChartType")]], "table")) {
-        showEl(session, tableId)
-        hideEl(session, chartWrapperId)
+        hideEl(session, paste0("#", session$ns(paste0(indicator, "ChartWrapper"))))
       } else {
-        hideEl(session, tableId)
-        showEl(session, chartWrapperId)
+        showEl(session, paste0("#", session$ns(paste0(indicator, "ChartWrapper"))))
       }
     }
     
     # identify views with two-chart layout
-    twoChartsViews <- unlist(lapply(names(dashboard$dataViews), function(view) {
+    multiChartsViews <- unlist(lapply(names(dashboard$dataViews), function(view) {
       if (length(dashboard$dataViews[[view]]) > 1) {
         names(dashboard$dataViews[[view]])
       } else {
@@ -1576,7 +1569,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
     lapply(names(dashboardChartData), function(indicator) {
       
       # observer for views where user can switch between table/chart  (two-chart layout)
-      if(indicator %in% twoChartsViews) {
+      if(indicator %in% multiChartsViews) {
         observeEvent(input[[paste0(indicator, "ChartType")]], {
           toggleChartType(indicator)
         })
@@ -1584,7 +1577,8 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       
       # table for each view
       output[[paste0(indicator, "Table")]] <- renderDT({
-        if (!nrow(dashboardChartData[[indicator]])) {
+        if (!nrow(dashboardChartData[[indicator]]) || 
+            (indicator %in% multiChartsViews && !identical(input[[paste0(indicator, "ChartType")]], "table"))) {
           return()
         }
         
