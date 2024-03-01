@@ -1,0 +1,59 @@
+$Title TIMES -- VERSION 4.6.9
+option resLim=1000, profile=1, solveOpt=REPLACE, bRatio=1;
+option limRow=0, limCol=0, solPrint=OFF, solver=cplex;
+$offListing
+file fslvopt / "cplex.opt" /; put fslvopt "* Generated cplex option file" /;
+$onPut
+scaind 0
+rerun YES
+iis YES
+lpmethod 4
+baralg 1
+barcrossalg 1
+barorder 2
+threads 8
+$offPut
+putClose;
+$set RUN_NAME TIMES
+$set TIMESED NO
+$set MACRO NO
+$set OBJ AUTO
+$set DAMAGE LP
+$set OBJANN NO
+$set OBLONG NO
+$set MID_YEAR NO
+$set DISCSHIFT 0
+$set VARCOST NO
+$set STAGES NO
+$set SENSIS NO
+$set SPINES NO
+$set ABS NO
+$set CLI NO
+$set DSC NO
+$set DUC NO
+$set ETL NO
+$set MICRO NO
+$set RETIRE NO
+$set VDA YES
+$set DEBUG NO
+$set DUMPSOL NO
+$set SOLVE_NOW YES
+$set XTQA NO
+$set BENCOST NO
+$set SOLVEDA YES
+$set BOTIME 1850
+$set EOTIME 2200
+$set DYNTS NO
+$set RPOINT NO
+$set VALIDATE NO
+$set VAR_UC NO
+$set WAVER NO
+$set DSCAUTO NO
+$onMulti
+$batInclude ts.dd
+$batInclude initsys.mod
+$batInclude initmty.mod
+$batInclude output.dd
+
+Set MILESTONYR / 2005,2010,2015,2020,2030,2050/;
+$batInclude maindrv.mod mod
