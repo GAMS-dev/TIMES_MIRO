@@ -30,8 +30,11 @@ on the left side to switch between the following views:
 The input section can be used to prepare data for the next model run. 
 
 ### Database Scenarios<a name="import-database-scenarios"></a>
-Input data that is already stored in the integrated database can be loaded via the `load data` 
-button. In the dialog that opens, the `Database` tab lists all available scenarios. 
+A TIMES MIRO Scenario (all visible data and attachments) can be stored in the database at any 
+time as a MIRO scenario for later use under `Scenario` &rarr; `Save as`. To load an existing 
+scenario from the database, click the `Load data` button in the input view. In the dialog that 
+opens, the `Database` tab lists all available scenarios. If there are many saved scenarios, 
+the [Load scenarios view](#load-scenarios) can give a better overview. 
 
 <picture>
   <source srcset="static_times_miro/load_db_dark.png" media="(prefers-color-scheme: dark)">
@@ -86,7 +89,7 @@ The representative years for the model periods are taken from different sources 
 ## Prepare Model Run<a name="prepare-model-run"></a>
 
 In the `Settings` tab the main configuration is done. There are three sections: `Model setup`, 
-`Options / Extensions` and `Solver options`.
+`Options / Extensions` and `Solver`.
 
 ### Model Setup
 - `DD Files order / Read under $offEps`: In this table, the names of all \*.dd files that belong to the current TIMES MIRO scenario are listed. The user can adjust the read order and specify whether a \*.dd file should be read in GAMS under `$offEps`. If a \*.dd file should not be used for the next model run, this can be specified by an order value of `0`. Note that the [xl2times](https://github.com/etsap-TIMES/xl2times) tool, which is used when [importing xlsx files](#import-external-scenarios), only generates 2 \*.dd files as output.
@@ -115,7 +118,7 @@ also be entered manually.
 
 <br />
 
-### Solver Options
+### Solver
 In this tab, the solver to be used and (optional) options can be defined.
 - `Solver options`: This table allows to change/define solver options to be used.
 - `Solver to use`: Select a solver to use. 
@@ -126,13 +129,6 @@ In this tab, the solver to be used and (optional) options can be defined.
   <source srcset="static_times_miro/solver_options_dark.png" media="(prefers-color-scheme: dark)">
   <img style="min-width: 850px;max-width: 1100px;width: 100%;" src="static_times_miro/solver_options.png">
 </picture>
-
----
-**Info**  
-
-A TIMES MIRO Scenario (all visible data and attachments) can be stored in the database at any time as a MIRO scenario for later use under `Scenario` &rarr; `Save as`. To load an existing scenario from the database, click the `Load data` button in the input view. If there are many saved scenarios, the [Load scenarios view](#load-scenarios-view) can give a better overview. 
-
----
 
 ### Input data<a name="input-data"></a>
 This is the central tab for browsing and editing input data in a powerful pivot table. The concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Each dimension of the cube can be filtered, aggregated, dragged into the columns, etc. using drag and drop. The cells are editable. Note, however, that when a dimension of the cube is in the `Aggregate` field, the table is read-only. More information about the pivot tool in general can be found [here](https://www.gams.com/miro/charts.html#pivot-chart).
@@ -193,7 +189,7 @@ With a configuration adapted to the model, you can significantly improve the res
 
 ## Compare Scenarios View<a name="compare-scenarios-view"></a>
 
-This section can be used to compare MIRO scenarios that are stored in the database. There are three different types of comparison available per default: `Split view`, `Tab view` and `Pivot view`. In the `Dashboard compare` mode, the tabs 'Dashboard' and 'Data Explorer' known from the regular (single-scenario) output are available, in which the data of the selected scenarios can be compared with each other.
+This section can be used to compare MIRO scenarios that are stored in the database. There are three different types of comparison available per default: `Split view`, `Tab view` and `Pivot view`. 
 In the `split view` comparison the data of two scenarios can be compared side by side. Scenarios can also be loaded into tabs (as you know it from e.g. your internet browser) in the `tab view` comparison. This allows to compare more than two scenarios. In the `pivot view` comparison the data of all selected scenarios is merged into a pivot table which allows to create charts that combine data from multiple scenarios.
 
 Once the configuration for the four optional renderers (see above) has been completed, the dashboard and the data explorer tab can also be used in a custom scenario comparison module without much additional effort.
