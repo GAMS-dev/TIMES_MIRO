@@ -940,9 +940,32 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
         }
       }
       
+      customColors <- c(
+        "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
+        "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00",
+        "#cab2d6", "#6a3d9a", "#ffff99", "#b15928",
+        "#FCDCDB", "#f9b9b7", "#D5D3DA", "#ada9b7",
+        "#e2546b", "#66101F", "#E0ABD7", "#c45ab3",
+        "#8bf2fe", "#1BE7FF", "#a1d1b6", "#4C9F70",
+        "#F6FAA9", "#f0f757", "#d3b499", "#9E6D42",
+        "#50caf3", "#086788", "#eee49d", "#E0CA3C",
+        "#dbcac7", "#BA9790", "#f69e84", "#EB4511",
+        "#ccadf1", "#9B5DE5", "#A1FB8B", "#47fa1a",
+        "#8dadd0", "#38618c", "#fcebea", "#fad8d6",
+        "#a6b474", "#373d20", "#a248ce", "#210b2c",
+        "#f37ea9", "#d81159", "#68f7f7", "#08bdbd",
+        "#98feb1", "#35ff69", "#d27193", "#6d213c",
+        "#edfab1", "#dcf763", "#feb46f", "#e06c00",
+        "#f3ebaa", "#e9d758", "#c0c7c7", "#829191",
+        "#f3cac5", "#E8998D", "#c7dac9", "#91b696",
+        "#BE99A4", "#714955", "#7c7ccf", "#2a2a72",
+        "#7efee0", "#00ffc5", "#c28eb1", "#6c3a5c",
+        "#df7192", "#8b1e3f", "#95D86B", "#3E721D"
+      )
+      
       chartJsObj <- chartjs::chartjs(
         title = paste0(stringr::str_to_sentence(plot_title), " (", Y_label , ")"),
-        customColors = if(length(dataExplorer$schemaFiles$colorSchema)) color_marker_list$colors else NULL
+        customColors = if(length(dataExplorer$schemaFiles$colorSchema)) color_marker_list$colors else customColors
       )
       if (identical(chart_type, "column")){
         chartJsObj <- chartjs::cjsBar(chartJsObj, labels = sort(unique(dataTmp$Period)), stacked = TRUE, yTitle = Y_label)
@@ -954,7 +977,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       for (name in names(dataTmp)[-1]) {
         chartJsObj <- chartjs::cjsSeries(chartJsObj, dataTmp[[name]], label = name,
                                          fill = chart_type %in% c("area"),
-                                         fillOpacity = if (identical(chart_type, "area")) 0.15 else 0.15) 
+                                         fillOpacity = if (identical(chart_type, "area")) 1 else 0.15) 
       }
       
       if (identical(chart_type, "area")) {
