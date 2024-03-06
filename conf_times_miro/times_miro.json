@@ -216,7 +216,7 @@
       ],
       "functionName": "miroimport_times",
       "localFileInput": {
-        "label": "Please upload zipped XLSX files or zipped RUN and DD file(s) here",
+        "label": "Please upload zipped XLSX or DD files here. A RUN file is optional and must be part of the zip archive.",
         "multiple": true,
         "accept": [
           ".zip"

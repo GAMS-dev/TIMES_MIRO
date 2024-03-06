@@ -169,7 +169,7 @@ The representative years for the model periods are taken from different sources 
 ## Prepare Model Run<a name="prepare-model-run"></a>
 
 In the `Settings` tab the main configuration is done. There are three sections: `Model setup`, 
-`Options / Extensions` and `Solver options`.
+`Options / Extensions` and `Solver`.
 
 ### Model Setup
 - `DD Files order / Read under $offEps`: In this table, the names of all \*.dd files that belong to the current TIMES MIRO scenario are listed. The user can adjust the read order and specify whether a \*.dd file should be read in GAMS under `$offEps`. If a \*.dd file should not be used for the next model run, this can be specified by an order value of `0`. Note that the [xl2times](https://github.com/etsap-TIMES/xl2times) tool, which is used when [importing xlsx files](#import-external-scenarios), only generates 2 \*.dd files as output.
@@ -634,4 +634,4 @@ If you have any questions or comments regarding the TIMES/MIRO app, please conta
 
 # License<a name="license"></a>
 The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the times\_model, TIMES\_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See files `times_model\LICENSE.txt`, `TIMES_Demo\LICENSE.txt` as well as `TIMES-DK_COMETS\LICENSE` for more information.
-The data processing and data explorer code in the custom renderer files was taken from https://github.com/EECA-NZ/TIMES-NZ-Visualisation (MIT licensed, see [here](https://github.com/EECA-NZ/TIMES-NZ-Visualisation/blob/master/LICENSE)). The code has been modified to meed the requirements of this application.
+The data processing and data explorer code in the custom renderer files was taken from https://github.com/EECA-NZ/TIMES-NZ-Visualisation (MIT licensed, see [here](https://github.com/EECA-NZ/TIMES-NZ-Visualisation/blob/master/LICENSE)). The code has been modified to meet the requirements of this application.

@@ -281,7 +281,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
   ###################################################
   
   # Data processing and data explorer code was taken from https://github.com/EECA-NZ/TIMES-NZ-Visualisation (MIT licensed)
-  # The code has been modified to meed the requirements of this application
+  # The code has been modified to meet the requirements of this application
   
   dataProcessing <- config$dataProcessing
   
