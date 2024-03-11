@@ -415,10 +415,6 @@ $else.milestonyr
 $ set MILESTONYR1 "MILESTONYR"
 $ set MILESTONYR2 ""
 $endIf.milestonyr
-$log #######################
-$log %DATA_SOURCE%
-$log %MILESTONYR1%
-$log %MILESTONYR2%
 $if not set DDPREFIX $set DDPREFIX "dd_files/"
 
 $setNames "%RUNFILE%" fp fn fe
@@ -599,7 +595,7 @@ for dd in gams.get('dd'):
   if not rc==0:
     raise NameError('probem executing: ' + s)
   # generate a GDX file (dd+'.gdx')
-  s = 'gams "'+r'%gams.scrDir%mkdd.%gams.scrExt%'+'" --mydd "'+r'%gams.scrDir%mydd.%gams.scrExt%'+'" mp=2 lo=2 gdx='+dd+'.gdx suppress = 1'
+  s = 'gams "'+r'%gams.scrDir%mkdd.%gams.scrExt%'+'" --mydd "'+r'%gams.scrDir%mydd.%gams.scrExt%'+'" mp=2 lo=3 gdx='+dd+'.gdx suppress = 1'
   rc = os.system(s)
   if not rc==0:
     raise NameError('probem executing: ' + s)

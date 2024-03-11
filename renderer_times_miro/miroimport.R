@@ -58,8 +58,7 @@ miroimport_times <- function(symbolNames,
           error_on_status = FALSE,
           wd = tempDir,
           echo_cmd = TRUE, echo = TRUE,
-          windows_hide_window = TRUE,
-          timeout = 300L
+          windows_hide_window = TRUE
         )
       },
       error = function(e) {
