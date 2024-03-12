@@ -374,7 +374,7 @@ renderMirocompare_explorer <- function(input, output, session, data, options = N
                 mutate(across(all_of(scenarioNames), 
                               ~ ifelse(!!sym(conditionColumn) == condition, 
                                        # make sure to replace 'Value' strings in newValue with current scenario column name
-                                       eval(parse(text = stringr::str_replace(newValue, "Value", as.character(cur_column())))), 
+                                       eval(parse(text = stringr::str_replace(newValue, "Value", paste0("`", cur_column(), "`")))), 
                                        .)
                 ))
               
