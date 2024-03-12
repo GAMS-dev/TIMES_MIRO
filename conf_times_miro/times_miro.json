@@ -1,6 +1,6 @@
 {
   "theme": "browser",
-  "customCss": true, 
+  "customCss": true,
   "excelIncludeMeta": true,
   "excelIncludeEmptySheets": true,
   "autoGenInputGraphs": true,
@@ -54,21 +54,6 @@
     "gmsbratio": {
       "newAlias": "Basis indicator"
     },
-    "gmsrunlocation": {
-      "newAlias": "Location of Run file"
-    },
-    "gmsbotime": {
-      "newAlias": "First year available (BOTIME)"
-    },
-    "gmseotime": {
-      "newAlias": "Last year available (EOTIME)"
-    },
-    "gmsobj": {
-      "newAlias": "Choice of objective function formulations"
-    },
-    "gmsrunmode": {
-      "newAlias": "whether to create a MIRO scenario or solve TIMES"
-    },
     "dd_prc_desc": {
       "newAlias": "Process Description"
     },
@@ -118,17 +103,7 @@
       "rendererName": "mirowidget_scenddmap",
       "alias": "Settings",
       "apiVersion": 2,
-      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "gmsobj", "gmsrunlocation", "gmsbotime", "gmseotime", "gmsbratio", "gmsreslim", "gmssolver", "gmsrunmode"]
-    },
-    "gmsrunmode": {
-      "widgetType": "dropdown",
-      "alias": "Mode to run",
-      "choices": ["solve", "create"],
-      "selected": "solve",
-      "noHcube": true,
-      "clearValue": false,
-      "multiple": false,
-      "label": "Mode to run"
+      "widgetSymbols": ["extensions", "milestonyr", "solveropt", "timeslice", "gmsbratio", "gmsreslim", "gmssolver", "dd_prc_desc", "dd_com_desc"]
     },
     "gmssolver": {
       "widgetType": "dropdown",
@@ -162,42 +137,6 @@
       "noHcube": false,
       "label": "Basis indicator (bRatio)"
     },
-    "gmsbotime": {
-      "widgetType": "numericinput",
-      "decimal": 0,
-      "decimalCharacter": ".",
-      "digitGroupSeparator": ",",
-      "label": "First year available (BOTIME)",
-      "min": 1850,
-      "max": 2200,
-      "value": 1960
-    },
-    "gmseotime": {
-      "widgetType": "numericinput",
-      "decimal": 0,
-      "decimalCharacter": ".",
-      "digitGroupSeparator": ",",
-      "label": "Last year available (EOTIME)",
-      "min": 1850,
-      "max": 2200,
-      "value": 2200
-    },
-    "gmsrunlocation": {
-      "widgetType": "textinput",
-      "alias": "Location of RUN file (for initialization)",
-      "value": " ",
-      "label": "Location of RUN file"
-    },
-    "gmsobj": {
-      "widgetType": "dropdown",
-      "alias": "Objective function formulation",
-      "choices": ["ALT", "AUTO", "LIN", "MOD", "STD"],
-      "selected": "MOD",
-      "noHcube": false,
-      "clearValue": false,
-      "multiple": false,
-      "label": "Objective function formulation"
-    },
     "cubeinput": {
       "widgetType": "table",
       "tableType": "pivot",
@@ -217,13 +156,6 @@
       }
     }
   },
-  "outputAttachments": [
-    {
-      "filename": "miroScenario.gdx",
-      "execPerm": false,
-      "throwError": false
-    }
-  ],
   "overwriteHeaderAliases": {
     "cubeinput": {
       "newHeaders": ["Symbol", "Type", "DD File", "User Constraint", "Region", "Year", "Process", "Commodity", "Time Slice", "Limit Types", "Currencies", "Gen1", "Gen2", "Gen3", "value"]
@@ -253,7 +185,7 @@
       "newHeaders": ["DD file", "Region", "Commodity", "Description"]
     }
   },
-  "extraClArgs": ["--gmsrunopt=local", "--DDPREFIX=dd_files/"],
+  "extraClArgs": ["--gmsrunopt=local", "--DDPREFIX=dd_files/", "--runmode=run"],
   "readme": {
     "tabTitle": "Readme",
     "filename": "app_README.md",
@@ -266,17 +198,42 @@
     "hidePivotControls": false,
     "fixedColumns": true
   },
-  "inputGroups": [
+  "customDataImport": [
     {
-      "name": "Symbol descriptions",
-      "members": ["dd_prc_desc", "dd_com_desc"],
-      "sameTab": false
+      "label": "XLSX or DD files",
+      "symNames": [
+        "solveropt",
+        "scenddmap",
+        "timeslice",
+        "milestonyr",
+        "extensions",
+        "dd_prc_desc",
+        "dd_com_desc",
+        "gmssolver",
+        "cubeinput",
+        "gmsreslim",
+        "gmsbratio"
+      ],
+      "functionName": "miroimport_times",
+      "localFileInput": {
+        "label": "Please upload zipped XLSX or DD files here. A RUN file is optional and must be part of the zip archive.",
+        "multiple": true,
+        "accept": [
+          ".zip"
+        ]
+      }
     }
   ],
+  "layoutSettings": {
+    "maxTabsExpandedInput": 5,
+    "maxTabsExpandedOutput": 5,
+    "maxTabsExpandedPivotComp": 5,
+    "maxTabsExpandedSplitComp": 5,
+    "maxTabsExpandedTabComp": 5
+  },
   "handsontable": {
     "stretchH": "last",
     "readonly": false,
-    "manualColumnResize": true,
     "contextMenu": {
       "enabled": true,
       "allowRowEdit": true,

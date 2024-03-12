@@ -1,127 +1,162 @@
-# TIMES MIRO App
+# TIMES - The Integrated MARKAL-EFOM System
 
-   * [Input View / Job Setup](#input-view)
-       * [TIMES MIRO Scenarios](#times-data-sets)
-       * [Create a TIMES MIRO Scenario from *.dd and *.run Files](#create-input)
-       * [Prepare Model Run](#prepare-model-run)
-       * [Input Data](#input-data)
-       * [RES Viewer](#res-viewer)
-       * [Import data from Excel](#times-excel-import)
-       * [Solve Model](#solve-model)
-   * [GAMS Interaction View](#gams-interaction-view)
-   * [Output View](#output-view)
-   * [Load Scenarios View](#load-scenarios-view)
-   * [Compare Scenarios View](#compare-scenarios-view)
-   * [License](#license)
+This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model. 
+The TIMES (The Integrated MARKAL-EFOM System) model generator was developed by ETSAP the Energy Technology Systems Analysis
+ Program, which is a Technology Cooperation Program of the International Energy Agency. ETSAP is an international community 
+ which uses long term energy scenarios to conduct in-depth energy and environmental analyses. The TIMES model generator 
+ combines two different, but complementary, systematic approaches to modelling energy: a technical engineering approach and 
+ an economic approach. TIMES is a technology rich, bottom-up model generator, which uses linear-programming to produce a 
+ least-cost energy system, optimized according to a number of user constraints, over medium to long-term time horizons. In a 
+ nutshell, TIMES is used for, "the exploration of possible energy futures based on contrasted scenarios" (Loulou et al., 2005).
 
-
-This is a [GAMS MIRO](https://gams.com/miro) app for the [IEA-ETSAP TIMES](https://github.com/etsap-TIMES/TIMES_model) model. TIMES MIRO is seen as an open source platform primarily intended to promote the dissemination and use of existing TIMES models. It allows users to make changes to model assumptions and perform sensitive runs based on the initial model assumptions. It then facilitates the comparison of results across multiple scenarios to evaluate the impact of the alternate futures. The app comes with predefined TIMES MIRO Scenarios, e.g. the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) (default) and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets. Others can be created from \*.dd and \*.run files (see [below](#create-input)).
-
-This write-up assumes that the user is well familiar with TIMES and the organization of the datasets produced when running TIMES via [VEDA](https://iea-etsap.org/index.php/etsap-tools/data-handling-shells/veda).
-
-
-Following the common [MIRO App Structure](https://www.gams.com/miro/start.html#miro-structure), the app has a navigation bar on the left side to switch between the following views: 
-* Input View
-* Output View
-* GAMS Interaction View
-* Load Scenarios View
-* Compare Scenarios View 
-<br /><br />
- 
-### TIMES MIRO Scenarios<a name="times-data-sets"></a>
-To perform a model run, MIRO compatible data is required. This data can be loaded in the form of scenarios already stored in the integrated database or uploaded in the form of [GAMS Data Exchange](https://www.gams.com/latest/docs/UG_GDX.html) (GDX) or Excel files. TIMES MIRO scenarios stored in the database can be loaded via the `load data` button in the navigation bar of the Input view. In the dialog that opens, all available scenarios are listed (`Database` tab). 
-
-![Load a data set from the database](static_times_miro/load_data.png)
-*Load a TIMES MIRO scenario from the database* 
+TIMES MIRO is seen as an open source platform primarily intended to promote the dissemination and use of existing TIMES models. 
+It allows users to make changes to model assumptions and perform sensitive runs based on the initial model assumptions. 
+It then facilitates the comparison of results across multiple scenarios to evaluate the impact of the alternate futures. 
+The app comes with predefined TIMES MIRO Scenarios, e.g. the [TIMES_Demo](https://github.com/etsap-TIMES/TIMES_Demo) (default) 
+and the the [TIMES-DK\_COMETS](https://github.com/energy-modelling-club/TIMES-DK_COMETS) data sets. 
+Others can be created from TIMES model Excel input files (\*.xlsx) or \*.dd files (see [below](#import-data)).
 
 <br />
 
-### Create a TIMES MIRO Scenario from *.dd and *.run Files<a name="create-input"></a>
-If the data comes from a GDX file, this GDX file must correspond to the data structure of a TIMES MIRO scenario with its input cube and the settings. If not available, such a GDX file can be generated from within the interface using \*.dd files and a \*.run file as produced by [VEDA](https://iea-etsap.org/index.php/etsap-tools/data-handling-shells/veda). In the input view click on the `settings` tab and go to `Create new TIMES MIRO scenario`. Now upload all \*.dd files to be used and the \*.run file via the corresponding upload fields. MIRO tells you whether the upload was successful and lists the files in the tables next to the upload fields. 
+Following the common [MIRO App Structure](https://www.gams.com/miro/start.html#miro-structure), the app has a navigation bar 
+on the left side to switch between the following views: 
+* Input
+* Output
+* GAMS Interaction
+* Load Scenarios
+* Compare Scenarios
 
-![Upload dd and run files](static_times_miro/upload_files.png)
-*Upload \*.dd and \*.run files*
+##  Import Data<a name="import-data"></a>
+The input section can be used to prepare data for the next model run. 
 
-The process to generate the GDX file containing a TIMES MIRO Scenario can be started by clicking on `Solve model`. An input data cube will be created from the \*.dd files provided by the user and the TIMES MIRO scenario will be completed by automatically extracting TIMES extensions, active \*.dd files, etc. from the \*.run file. Note that this approach is convenient but also fragile because if the \*.run file contains unexpected content, things might fail.
+### Database Scenarios<a name="import-database-scenarios"></a>
+A TIMES MIRO Scenario (all visible data and attachments) can be stored in the database at any 
+time as a MIRO scenario for later use under `Scenario` &rarr; `Save as`. To load an existing 
+scenario from the database, click the `Load data` button in the input view. In the dialog that 
+opens, the `Database` tab lists all available scenarios. If there are many saved scenarios, 
+the [Load scenarios view](#load-scenarios) can give a better overview. 
 
-**_NOTE:_**  Depending on which of the two sub-tabs `Prepare model run` and `Create new TIMES MIRO scenario` of the settings menu you are in, clicking on `Solve Model` will start different processes. Make sure that you are in the correct tab. This also applies when you are no longer on the Settings tab. The last selected mode is activated.
-
-When the process is complete, the view switches to the output section and the GDX file is attached to the current MIRO scenario. To download it, go to `Scenario` in the upper right corner of the application, select `Edit metadata` and open the `Attachments` tab. You will find a `miroScenario.gdx`. Click on the file to start the download. This GDX file can be imported in a next step to use it as input data for a model run (see below).
-
-![Download of the new TIMES MIRO scenario](static_times_miro/download_miroscenario.png)
-*Download of the new TIMES MIRO scenario*
-
+<picture>
+  <source srcset="static_times_miro/load_db_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="width: 500px;" src="static_times_miro/load_db.png">
+</picture>
 <br />
 
-### Prepare model run<a name="prepare-model-run"></a>
-To load a TIMES MIRO Scenario from a GDX file, click on `Load data` in the input view and in the opening dialog on the `Local` tab. Here you can upload the GDX file and confirm it by clicking on `Import`. 
+### Local File Scenarios<a name="import-local-file-scenarios"></a>
+Scenario files previously exported from MIRO can be re-imported via the `Local` tab in the same dialog. 
 
-**_Info:_**  A TIMES MIRO Scenario (all visible data and attachments) can be stored in the database at any time as a MIRO scenario for later use under `Scenario` &rarr; `Save as`. To load an existing scenario from the database, click the `Load data` button in the input view. If there are many saved scenarios, the [Load scenarios view](#load-scenarios-view) can give a better overview. 
+### External Scenarios<a name="import-external-scenarios"></a>
+New data can be imported via the `External` tab. Either TIMES model Excel input files (\*.xlsx) or \*.dd files can be used as data source. Optionally, it is 
+possible to provide a \*.run file as produced by 
+[VEDA](https://iea-etsap.org/index.php/etsap-tools/data-handling-shells/veda). The data must be 
+zipped (file paths can remain) and uploaded via the fileinput widget. 
+Click on `Load` to start the data import. As soon as this is finished, MIRO will inform you whether the import was successful. 
 
-Under `Prepare model run` in the `Settings` tab the main configuration is done. Since most of the settings should be self explaining only some of them are explained below.
+<picture>
+  <source srcset="static_times_miro/load_external_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="width: 500px;" src="static_times_miro/load_external.png">
+</picture>
 
-![inputwidgets](static_times_miro/input_widgets.png)
-*The main configuration is done in the `prepare model run` tab* 
+---
+**NOTE**
 
-<br />
-- `DD Files order / Read under $offEps`: In this table, the names of all \*.dd files that belong to the current TIMES MIRO scenario are listed. The user can adjust the read order and specify whether a \*.dd file should be read in GAMS under `$offEps`. If a \*.dd file should not be used for the next model run, this can be specified by an order value of `0`. 
-- `Extensions`: This table allows to enable/disable TIMES extensions.
+To be able to import Excel input files, [python](https://www.python.org/) and the python package 
+[xl2times](https://github.com/etsap-TIMES/xl2times) are required. The Excel input format accepted by this tool is documented 
+in the [TIMES Model Documentation PART IV](https://iea-etsap.org/docs/Documentation_for_the_TIMES_Model-Part-IV.pdf). Make 
+sure that python can be found by putting it in the [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) environment variable.
+
+---
+
+The following happens when importing data via the `External` tab:
+
+- XLSX: If xlsx files are provided as input data, the python tool [xl2times](https://github.com/etsap-TIMES/xl2times) is first 
+called in the background, which converts these files into \*.dd files (`output.dd` and `ts.dd`). In the next step, 
+GAMS is called to convert these \*.dd files into MIRO-compatible input data. 
+- DD: If \*.dd files are provided as input data, GAMS is directly called to convert the \*.dd files into MIRO-compatible input data.
+
+If a (optional) run file is used in any of these cases, the MIRO input data will be completed by automatically extracting TIMES 
+extensions, active \*.dd files, etc. from the \*.run file. Note that this approach is convenient but also fragile because if the 
+\*.run file contains unexpected content, things might fail. You should therefore ensure that the content of the run file is 
+compatible with the data provided.
+
+**Milestone years**
+
+The representative years for the model periods are taken from different sources depending on the input files used. 
+- If .xlsx files are imported, the milestone years are always extracted from them, regardless of any .run file that may have been provided.
+- If .dd files are imported together with a run file, the milestone years are extracted from the run file. There must be no `milestonyr` entry in the dd files. 
+- If .dd files are imported without a run file, the milestone years are set to the default: 2005, 2010, 2015, 2020, 2030, 2050. There must be no `milestonyr` entry in the dd files. 
+
+## Prepare Model Run<a name="prepare-model-run"></a>
+
+In the `Settings` tab the main configuration is done. There are three sections: `Model setup`, 
+`Options / Extensions` and `Solver`.
+
+### Model Setup
+- `DD Files order / Read under $offEps`: In this table, the names of all \*.dd files that belong to the current TIMES MIRO scenario are listed. The user can adjust the read order and specify whether a \*.dd file should be read in GAMS under `$offEps`. If a \*.dd file should not be used for the next model run, this can be specified by an order value of `0`. Note that the [xl2times](https://github.com/etsap-TIMES/xl2times) tool, which is used when [importing xlsx files](#import-external-scenarios), only generates 2 \*.dd files as output.
+- `Milestone years`: This table allows to select the set of years for which the model will run.
 - `Time slices available`: This table cannot be edited by the user, but only serves as an overview of the available time slices in the data. The set of timeslices and the representation of the intra-annual resolution is pre-configured and of central importance to many model data structures. A re-configuration of this set would require extensive modifications in the input data cube.
-- `Years for model run`: This table allows to select the set of years for which the model will run. Those years are often referred to as *milestone years*.
+- `Additional statements`: This table allows you to add GAMS code to the run file that is 
+generated during the model run. The custom code will be placed before the 
+`$batInclude maindrv.mod`. This setting is recommended for expert TIMES users only.
+
+<picture>
+  <source srcset="static_times_miro/model_setup_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="min-width: 850px;max-width: 1100px;width: 100%;" src="static_times_miro/model_setup.png">
+</picture>
+
+<br />
+
+### Options / Extensions
+In this tab, TIMES options/extensions can be configured. A tooltip with a description of the option appears when you hover 
+over an option. Each value cell contains a dropdown menu which allows you to select available options. Note that values can 
+also be entered manually. 
+
+<picture>
+  <source srcset="static_times_miro/options_extensions_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="min-width: 850px;max-width: 1100px;width: 100%;" src="static_times_miro/options_extensions.png">
+</picture>
+
+<br />
+
+### Solver
+In this tab, the solver to be used and (optional) options can be defined.
 - `Solver options`: This table allows to change/define solver options to be used.
-<br /><br />
+- `Solver to use`: Select a solver to use. 
+- `Time limit for solve [seconds]`: Time limit for solving the model.
+- `Basis indicator (bRatio)`: The value specified for [bRatio](https://www.gams.com/latest/docs/UG_GamsCall.html#GAMSAObratio) will cause a basis to be discarded if the number of basic variables is smaller than bRatio times the number of equations.
+
+<picture>
+  <source srcset="static_times_miro/solver_options_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="min-width: 850px;max-width: 1100px;width: 100%;" src="static_times_miro/solver_options.png">
+</picture>
 
 ### Input data<a name="input-data"></a>
 This is the central tab for browsing and editing input data in a powerful pivot table. The concept of this tab follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). Each dimension of the cube can be filtered, aggregated, dragged into the columns, etc. using drag and drop. The cells are editable. Note, however, that when a dimension of the cube is in the `Aggregate` field, the table is read-only. More information about the pivot tool in general can be found [here](https://www.gams.com/miro/charts.html#pivot-chart).
 
-![inputtable](static_times_miro/input_table.png)
-*Edit of the input cube* 
+<picture>
+  <source srcset="static_times_miro/input_table_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="min-width: 850px;max-width: 1200px;width: 100%;" src="static_times_miro/input_table.png">
+</picture>
 
 <br />
 
 ### RES viewer<a name="res-viewer"></a>
 In the upper right corner of the input data tab there is a *switch view* button that allows to look at the RES network. The RES viewer provides `process centric`, `commodity centric` and `user constraint centric` views. All displayed items are clickable which allows convenient switching between different views. The corresponding table at the right and the pivot table at the bottom are updated automatically and show related data.
 
-![resnetwork](static_times_miro/res_network.png)
-*Process-centric view of the RES Viewer* 
+<picture>
+  <source srcset="static_times_miro/res_network_dark.png" media="(prefers-color-scheme: dark)">
+  <img src="static_times_miro/res_network.png">
+</picture>
 
 <br /><br />
 
-### Import data from Excel<a name="times-excel-import"></a>
-Besides the possibility to import local data via a GDX file, Excel files can also be loaded. Here similar rules apply as with the GDX format regarding data structure. To get a compatible Excel file to start with, the scenario currently loaded in MIRO can be exported in xlsx format. Go to `Scenario` &rarr; `Export` and select Excel as format for export. In the following example, only data for the main [input data](#input-data) (`cubeinput`) is imported.   
-
-The Excel file with the data to be loaded should contain at least two sheets: 
-- `cubeinput (Input)`: this sheet contains the data to be loaded
-- `_index`: this sheet describes the layout of the data to be read by TIMES/MIRO. In the official [MIRO documentation](https://gams.com/miro/start.html#excel-import-rules) you can find more information about the usage of an index sheet.
-
-All TIMES data should be included in the `cubeinput (Input)` sheet. The data has to be entered in a flat format, specifying all dimensions of the cube. If a dimension is not applicable, a `-` must be entered.
-
-![exceldata](static_times_miro/excel_data.png)
-*Example of how a flat Excel table could look like* 
-
-In this example two activity bounds are specified for a process in TIMES. The bounds are inserted via the `ACT_BND(r,t,p,s,bd)` parameter of TIMES which requires a region, time period, process, timeslice and a bound as dimensions. Therefore in the `cubeinput (Input)` sheet we fill in the following columns:
-
-- `siname`: name of the parameter
-- `typ`: Par, as we insert a TIMES parameterd
-- `dd`: dd file in the TIMES/MIRO App to which the parameter will be associated. Make sure that this dd file is also specified in the `settings` tab. 
-- `all_reg`: name of the region for which the parameter is defined
-- `allyear`: years for which the parameter is defined
-- `prc`: process for which the parameter is defiend
-- `all_ts`: timelsice
-- `lim`: bound (here we define two bounds an UPper and a LOwer bound)
-- `value`: value of the parameter
-
-All other dimensions not relevant to the `ACT_BND` definition are initialized to `-`. 
-
-To import an Excel file containing TIMES data into the app, first click on `Load Data` in the input view and then select `Local` to browse for the file. When you click the `Load` button, you will be given the option to merge the new data with the existing data or to replace all existing data in the cube with the uploaded data. 
-
-<br />
-
 ### Solve model<a name="solve-model"></a>
-When all data has been prepared and settings have been made in the input view, the model can be solved by clicking on the `solve model` button in the navigation bar.
+When all data has been prepared and settings have been made in the input view, the model can be solved by clicking on the `solve model` button in the navigation bar in the `Input` section.
 
-![navigation](static_times_miro/solve.png)
-*Solve the TIMES model* 
+<picture>
+  <source srcset="static_times_miro/solve_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="max-width:225px;width: 100%;" src="static_times_miro/solve.png">
+</picture>
 
 <br /><br />
 
@@ -132,33 +167,40 @@ For more details on this view, please consult the [GAMS MIRO Documentation](http
 
 
 ## Output View<a name="output-view"></a>
-Once a TIMES model has been solved, the Output view is filled with results data (generated by [GDX2VEDA](https://www.gams.com/latest/docs/T_GDX2VEDA.html) ). Similar to the Input data, the concept of the output data follows the idea to look at data based on "important" indices (e.g. Region, Year, Process, Commodity, Time Slice, ...). 
-The output data can be browsed in a pivot table (read-only) as in the input view or in a standard table. Views can be switched by the button in the upper right corner.
+Once a TIMES model has been solved, the Output view is filled with results data (generated by [GDX2VEDA](https://www.gams.com/latest/docs/T_GDX2VEDA.html) ). 
 
-![outputcube](static_times_miro/output_pivot.png)
-*Output view using a pivot table* 
+If the TIMES MIRO application is used without further ado, the output section shows data in a powerful pivot table that allows slicing and dicing the results as needed. Similar to the Input data, the concept of the data in the `Full Output` tab follows the idea to look at data based on "important" indices (e.g. Region, Attribute, Commodity, Process, Time Slice, ...). 
+In addition to a table, the renderer also supports the visualization of data in the form of a heatmap or as a chart (line chart, bar chart, etc.). The MIRO pivot table renderer allows you to store "views" - the current representation of the data - to the database and load it together with the scenario data. This is very convenient for views that are frequently needed.
 
-<br />
-The output view also provides basic charting facilities. Supported chart types are:
-* heatmap
-* bar chart
-* stacked bar chart
-* line chart
-* scatter chart
-* area chart
-* stacked area chart
-* radar chart
+<picture>
+  <source srcset="static_times_miro/stacked_bar_chart_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="min-width: 850px;max-width: 1200px;width: 100%;" src="static_times_miro/stacked_bar_chart.png">
+</picture>
 
-![inputcube](static_times_miro/stacked_bar_chart.png)
-*Stacked bar chart* 
+With a configuration adapted to the model, you can significantly improve the results visualization. Up to 4 output screens are available for integration.
+
+- `Dashboard`: Interactive dashboard with different views showing key insight data. The dashboard is navigated via the ‘tiles’ on the right-hand side of the screen. The tiles show headline results for the current scenario. You can switch between charts and tables. Each chart/table can be downloaded. 
+- `Data Explorer`: Interactive tool that provides insights into the most important sectors. You can filter the data based on different indicators and switch between several chart types. Data and charts are available for download. 
+- `Data Explorer (Pivot)`: Pivot table that holds the same data as `Data Explorer`. The pivot table allows you to filter, aggregate and pivot data freely. In addition to a table, the MIRO pivot table renderer also supports the visualization of data in the form of a heatmap or as chart (line chart, bar chart, etc.). Each slice, or 'view' of data can be exported by clicking the download button. If you are currently viewing a chart, the view is exported as a PNG file; if you are viewing a table or heatmap, the data is exported as a CSV file. Read more about the pivot table tool [here](https://www.gams.com/miro/charts.html#pivot-chart).
+- `Full Output`: Pivot table that holds all output data (default renderer, see above). 
 
 ## Load Scenarios View<a name="load-scenarios-view"></a>
 `Load scenarios` provides a powerful batch load module that graphically assists you to create and execute complex database queries. Filters can be applied to scenario metadata such as the creation time, scenario name, or optional tags you have assigned to a scenario. You can also filter by any input and output scalars defined in your model as well as any [double-dash parameters](https://www.gams.com/latest/docs/UG_GamsCall.html#UG_GamsCall_DoubleDashParametersEtc) and GAMS [command line parameters](https://www.gams.com/latest/docs/UG_GamsCall.html#UG_GamsCall_ListOfCommandLineParameters). You can combine any of these filters with the logical operators AND and OR. You can execute your query by clicking on the Fetch results button. After the results have been retrieved, the page will be updated and you will see a table with the scenarios that correspond to your query. Once you have found the scenarios you were looking for, you can select them and, for example, [compare them](#compare-scenarios-view) or load them into the sandbox for editing. More information about this in the [official MIRO documentation](https://www.gams.com/miro/start.html#scenario-loading).
 
 ## Compare Scenarios View<a name="compare-scenarios-view"></a>
 
-This view can be used to compare MIRO scenarios that are stored in the database. There are three different types of comparison available, split view, tab view and pivot view. In the split view comparison the data of two scenarios can be compared side by side. Scenarios can also be loaded into tabs (as you know it from e.g. your internet browser) in the tab view comparison. This allows to compare more than two scenarios. In the pivot view comparison the data of all selected scenarios is merged into a pivot table which allows to create charts that combine data from multiple scenarios.
+This section can be used to compare MIRO scenarios that are stored in the database. There are three different types of comparison available per default: `Split view`, `Tab view` and `Pivot view`. 
+In the `split view` comparison the data of two scenarios can be compared side by side. Scenarios can also be loaded into tabs (as you know it from e.g. your internet browser) in the `tab view` comparison. This allows to compare more than two scenarios. In the `pivot view` comparison the data of all selected scenarios is merged into a pivot table which allows to create charts that combine data from multiple scenarios.
+
+Once the configuration for the four optional renderers (see above) has been completed, the dashboard and the data explorer tab can also be used in a custom scenario comparison module without much additional effort.
+
+`Dashboard compare`, 
+<picture>
+  <source srcset="static_times_miro/dashboard_compare_dark.png" media="(prefers-color-scheme: dark)">
+  <img style="min-width: 850px;max-width: 1200px;width: 100%;" src="static_times_miro/dashboard_compare.png">
+</picture>
 
 
 # License<a name="license"></a>
 The MIRO demo app is licensed under the MIT license (see file LICENSE). Note that everything inside the times\_model, TIMES\_Demo as well as the TIMES-DK_COMETS submodules is licensed under GPL-3. See files `times_model\LICENSE.txt`, `TIMES_Demo\LICENSE.txt` as well as `TIMES-DK_COMETS\LICENSE` for more information.
+The data processing and data explorer code in the custom renderer files was taken from https://github.com/EECA-NZ/TIMES-NZ-Visualisation (MIT licensed, see [here](https://github.com/EECA-NZ/TIMES-NZ-Visualisation/blob/master/LICENSE)). The code has been modified to meet the requirements of this application.

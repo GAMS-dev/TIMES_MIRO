@@ -1,0 +1,252 @@
+{
+  "extensions": {
+    "Run name case identification": {
+      "RUN_NAME": "TIMES"
+    },
+    "Controls affecting equilibrium mode": {
+      "TIMESED": [
+        "NO",
+        "YES"
+      ],
+      "MACRO": [
+        "NO",
+        "YES",
+        "MSA",
+        "MLF",
+        "CSA"
+      ]
+    },
+    "Objective function": {
+      "OBJ": [
+        "AUTO",
+        "ALT",
+        "LIN",
+        "MOD",
+        "STD"
+      ],
+      "DAMAGE": [
+        "LP",
+        "NLP",
+        "NO"
+      ],
+      "OBJANN": [
+        "NO",
+        "YES"
+      ],
+      "OBLONG": [
+        "NO",
+        "YES"
+      ],
+      "MID_YEAR": [
+        "NO",
+        "YES"
+      ],
+      "DISCSHIFT": [
+        "0",
+        "integer"
+      ],
+      "VARCOST": [
+        "NO",
+        "LIN"
+      ]
+    },
+    "Stochastic and sensitivity analysis controls": {
+      "STAGES": [
+        "NO",
+        "YES"
+      ],
+      "SENSIS": [
+        "NO",
+        "YES"
+      ],
+      "SPINES": [
+        "NO",
+        "YES"
+      ]
+    },
+    "Controls for time-stepped model solution": {
+      "FIXBOH": [
+        "unset",
+        "integer"
+      ],
+      "TIMESTEP": [
+        "unset",
+        "integer"
+      ]
+    },
+    "TIMES extensions": {
+      "ABS": [
+        "NO",
+        "YES"
+      ],
+      "CLI": [
+        "NO",
+        "YES"
+      ],
+      "DSC": [
+        "NO",
+        "YES"
+      ],
+      "DUC": [
+        "NO",
+        "YES"
+      ],
+      "ETL": [
+        "NO",
+        "YES"
+      ],
+      "MICRO": [
+        "NO",
+        "YES"
+      ],
+      "RETIRE": [
+        "NO",
+        "LP",
+        "MIP",
+        "YES"
+      ],
+      "VDA": [
+        "NO",
+        "YES"
+      ]
+    },
+    "The TIMES reduction algorithm": {
+      "REDUCE": [
+        "unset",
+        "YES",
+        "NO"
+      ]
+    },
+    "GAMS savepoint / loadpoint controls": {
+      "SPOINT": [
+        "unset",
+        "1",
+        "2",
+        "3"
+      ],
+      "LPOINT": [
+        "unset",
+        "string"
+      ]
+    },
+    "Debugging controls": {
+      "DEBUG": [
+        "NO",
+        "YES"
+      ],
+      "DUMPSOL": [
+        "NO",
+        "YES"
+      ],
+      "SOLVE_NOW": [
+        "YES",
+        "NO"
+      ],
+      "XTQA": [
+        "NO",
+        "YES"
+      ]
+    },
+    "Controls affecting solution reporting": {
+      "ANNCOST": [
+        "unset",
+        "LEV"
+      ],
+      "BENCOST": [
+        "NO",
+        "YES"
+      ],
+      "RPT_FLOTS": [
+        "unset",
+        "COM",
+        "ANNUAL"
+      ],
+      "SOLVEDA": [
+        "YES",
+        "NO",
+        "1",
+        "0"
+      ]
+    },
+    "Miscellaneous controls": {
+      "BOTIME": [
+        "1850",
+        "integer"
+      ],
+      "EOTIME": [
+        "2200",
+        "integer"
+      ],
+      "DATAGDX": [
+        "unset",
+        "YES"
+      ],
+      "DYNTS": [
+        "NO",
+        "YES"
+      ],
+      "GDX_IREBND": [
+        "unset",
+        "string"
+      ],
+      "GDX_IPRIC": [
+        "unset",
+        "string"
+      ],
+      "RELAX_PRC_CG": [
+        "unset",
+        "YES"
+      ],
+      "RPOINT": [
+        "NO",
+        "YES"
+      ],
+      "VALIDATE": [
+        "NO",
+        "YES"
+      ],
+      "VAR_UC": [
+        "NO",
+        "YES"
+      ],
+      "VINTOPT": [
+        "unset",
+        "1",
+        "2"
+      ],
+      "WAVER": [
+        "NO",
+        "YES"
+      ]
+    },
+    "Others": {
+      "DSCAUTO": [
+        "NO",
+        "YES"
+      ]
+    }
+  },
+  "groups": {
+    "col1": [
+      "Run name case identification",
+      "Controls affecting equilibrium mode",
+      "Objective function",
+      "Stochastic and sensitivity analysis controls",
+      "Controls for time-stepped model solution"
+    ],
+    "col2": [
+      "TIMES extensions",
+      "The TIMES reduction algorithm",
+      "GAMS savepoint / loadpoint controls",
+      "Debugging controls"
+    ],
+    "col3": [
+      "Controls affecting solution reporting",
+      "Miscellaneous controls",
+      "Others"
+    ]
+  },
+  "solver_options": {
+      "solver_choices": ["Cplex", "Gurobi", "Xpress", "CBC", "HiGHS", "Conopt", "Conopt4"]
+  }
+}
