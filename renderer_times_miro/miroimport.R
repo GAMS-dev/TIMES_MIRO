@@ -47,10 +47,8 @@ miroimport_times <- function(symbolNames,
     tryCatch(
       {
         xl2times <- processx::run(
-          command = "python",
+          command = "xl2times",
           args = c(
-            "-m",
-            "xl2times",
             file.path(tempDir, xlsxFiles),
             "--output_dir", ddFilesDir,
             "--dd"

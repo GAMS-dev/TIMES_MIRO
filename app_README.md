@@ -63,7 +63,7 @@ Click on `Load` to start the data import. As soon as this is finished, MIRO will
 To be able to import Excel input files, [python](https://www.python.org/) and the python package 
 [xl2times](https://github.com/etsap-TIMES/xl2times) are required. The Excel input format accepted by this tool is documented 
 in the [TIMES Model Documentation PART IV](https://iea-etsap.org/docs/Documentation_for_the_TIMES_Model-Part-IV.pdf). Make 
-sure that python can be found by putting it in the [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) environment variable.
+sure that python and the tool can be found by putting it in the [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) environment variable.
 
 ---
 
@@ -194,7 +194,6 @@ In the `split view` comparison the data of two scenarios can be compared side by
 
 Once the configuration for the four optional renderers (see above) has been completed, the dashboard and the data explorer tab can also be used in a custom scenario comparison module without much additional effort.
 
-`Dashboard compare`, 
 <picture>
   <source srcset="static_times_miro/dashboard_compare_dark.png" media="(prefers-color-scheme: dark)">
   <img style="min-width: 850px;max-width: 1200px;width: 100%;" src="static_times_miro/dashboard_compare.png">

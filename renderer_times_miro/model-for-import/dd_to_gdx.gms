@@ -605,7 +605,7 @@ for dd in gams.get('dd'):
 
 if r'%data_source% '.rstrip() == 'xlsx':
   # Get milestonyr data
-  gams.set('MILESTONYR', dd_db['output']['MILESTONYR'])
+  gams.set('MILESTONYR', dd_db['milestonyr']['MILESTONYR'])
 
 noDD = []
 for cdRec in cd_input:
