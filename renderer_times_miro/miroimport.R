@@ -51,8 +51,7 @@ miroimport_times <- function(symbolNames,
           args = c(
             file.path(tempDir, xlsxFiles),
             "--output_dir", ddFilesDir,
-            "--dd",
-            "--no_cache"
+            "--dd"
           ),
           error_on_status = FALSE,
           wd = tempDir,
