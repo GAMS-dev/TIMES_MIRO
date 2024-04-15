@@ -1177,19 +1177,13 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       
       # apply custom labels
       if (length(config$chartOptions$customLabels)) {
-        labelCols <- dataTmp[, sapply(dataTmp, class) == 'character']
-        for (i in seq_len(nrow(dataTmp))) {
-          for (j in seq_len(length(labelCols))) {
-            if (is.na(dataTmp[[i, j]])) {
-              next
-            }
-            for (key in names(config$chartOptions$customLabels)) {
-              if (dataTmp[[i, j]] == key) {
-                dataTmp[[i, j]] <- config$chartOptions$customLabels[[key]]
-                break
-              }
-            }
-          }
+        labelCols <- dataTmp[, sapply(dataTmp, class) == "character"]
+        for (col in seq_len(length(labelCols))) {
+          dataTmp[[col]] <- ifelse(
+            dataTmp[[col]] %in% names(config$chartOptions$customLabels),
+            config$chartOptions$customLabels[dataTmp[[col]]],
+            dataTmp[[col]]
+          )
         }
       }
       
@@ -1255,6 +1249,44 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       sum(numericCols) > 1
     }
     
+    getData <- function(indicator) {
+      noRowHeaders <- attr(dashboardChartData[[indicator]], "noRowHeaders")
+      dataTmp <- dashboardChartData[[indicator]]
+      if (length(dataViewsConfig[[indicator]]$decimals)) {
+        dataTmp <- dataTmp %>%
+          mutate(across(where(is.numeric), ~ round(., as.numeric(dataViewsConfig[[indicator]]$decimals))))
+      }
+      
+      # filter user selection
+      if (length(dataViewsConfig[[indicator]]$userFilter)) {
+        indicatorTmp <- indicator
+        if (length(dataViewsConfig[[indicator]]$userFilter) == 1 &&
+            dataViewsConfig[[indicator]]$userFilter %in% names(dataViewsConfig)) {
+          indicatorTmp <- dataViewsConfig[[indicator]]$userFilter
+        }
+        
+        for (filterName in dataViewsConfig[[indicatorTmp]]$userFilter) {
+          if (length(input[[paste0(indicatorTmp, "userFilter_", filterName)]])) {
+            filterEl <- input[[paste0(indicatorTmp, "userFilter_", filterName)]]
+            if (filterName %in% names(dataViewsConfig[[indicator]]$cols)) {
+              dataTmp <- dataTmp %>%
+                select(
+                  seq_len(noRowHeaders),
+                  (any_of(filterEl) |
+                     contains(paste0("\U2024", filterEl, "\U2024")) |
+                     starts_with(paste0(filterEl, "\U2024")) |
+                     ends_with(paste0("\U2024", filterEl)))
+                )
+            } else {
+              dataTmp <- dataTmp %>%
+                filter(!!rlang::sym(filterName) %in% filterEl)
+            }
+          }
+        }
+      }
+      return(dataTmp)
+    }
+    
     dashboardChartData <- list()
     
     for (view in names(dataViewsConfig)) {
@@ -1268,13 +1300,15 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       
       # GAMS Tables need to be lengthened to only have one value column
       # as this is how a view is stored
-      numericColumnNames <- viewData[sapply(viewData, is.numeric)] %>% names()
+      numericColumnNames <- names(viewData[sapply(viewData, is.numeric)])
       
       if (length(numericColumnNames) > 1) {
         viewData <- viewData %>%
-          pivot_longer(cols = numericColumnNames,
-                       names_to = "Hdr",
-                       values_to = "value")
+          pivot_longer(
+            cols = all_of(numericColumnNames),
+            names_to = "Hdr",
+            values_to = "value"
+          )
       }
       preparedData <- prepareData(config, viewData)
       dashboardChartData[[view]] <- preparedData
@@ -1287,7 +1321,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
                postfix = "%",
                noColor = FALSE,
                invert = FALSE,
-               title,
+               title = "",
                subtitle = NULL,
                icon = shiny::icon("bar-chart"),
                color = "aqua",
@@ -1447,7 +1481,6 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
     # names(dashboard$dataViews) must match dashboard$valueBoxes$Id entries
     output$dataViews <- renderUI({
       sections <- lapply(names(dashboard$dataViews), function(viewList) {
-        
         view <- dashboard$dataViews[[viewList]]
         
         id <- names(view)[1]
@@ -1605,32 +1638,9 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
           return()
         }
         
-        dataTmp <- dashboardChartData[[indicator]]
-        if(length(dataViewsConfig[[indicator]]$decimals)){
-          dataTmp <- dataTmp %>%
-            mutate(across(where(is.numeric), ~ round(., as.numeric(dataViewsConfig[[indicator]]$decimals))))
-        }
-        
-        #filter user selection
-        if (length(dataViewsConfig[[indicator]]$userFilter)) {
-          for (filterName in dataViewsConfig[[indicator]]$userFilter) {
-            if(length(input[[paste0(indicator, "userFilter_", filterName)]])) {
-              filterEl <- input[[paste0(indicator, "userFilter_", filterName)]]
-              if(filterName %in% names(dataViewsConfig[[indicator]]$cols)) {
-                dataTmp <- dataTmp %>%
-                  select(1:as.numeric(attr(dashboardChartData[[indicator]], "noRowHeaders")), 
-                         (matches(paste0("^", filterEl, "$")) | 
-                            contains(paste0(filterEl, "\U2024")) | 
-                            contains(paste0("\U2024", filterEl)))
-                  )
-              } else {
-                dataTmp <- dataTmp %>% 
-                  filter(!!rlang::sym(filterName) %in% filterEl)
-              } 
-            }
-          }
-        }
-        
+        dataTmp <- getData(indicator)
+        noRowHeaders <- attr(dashboardChartData[[indicator]], "noRowHeaders")
+
         # Table Summary
         colSummarySettings <- NULL
         
@@ -1696,18 +1706,19 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
           rownames = FALSE, 
           container = DTbuildColHeaderContainer(
             names(dataTmp),
-            attr(dashboardChartData[[indicator]], "noRowHeaders"),
-            unlist(nonNumericCols[names(dataTmp)[seq_len(attr(dashboardChartData[[indicator]], "noRowHeaders"))]],
-                   use.names = FALSE
-            ),
+            noRowHeaders,
+            nonNumericCols,
             colSummary = colSummarySettings
           ),
-          options = list(paging = FALSE, dom = 't',
-                         scrollX = TRUE, 
-                         scrollY = "35vh",
-                         columnDefs = list(list(
-                           className = 'dt-left', targets = "_all"
-                         )))
+          options = list(
+            paging = FALSE, dom = "t",
+            scrollX = TRUE, 
+            scrollY = "35vh",
+            scrollCollapse = TRUE,
+            columnDefs = list(list(
+              className = "dt-left", targets = "_all"
+            ))
+          )
         )
       })
       
@@ -1736,40 +1747,17 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       
       # charts output
       output[[paste0(indicator, "Chart")]] <- chartjs::renderChartjs({
-        
-        dataTmp <- dashboardChartData[[indicator]]
-        if(length(dataViewsConfig[[indicator]]$decimals)){
-          dataTmp <- dataTmp %>%
-            mutate(across(where(is.numeric), ~ round(., as.numeric(dataViewsConfig[[indicator]]$decimals))))
-        }
-        
-        #filter user selection
-        if (length(dataViewsConfig[[indicator]]$userFilter)) {
-          for (filterName in dataViewsConfig[[indicator]]$userFilter) {
-            if(length(input[[paste0(indicator, "userFilter_", filterName)]])) {
-              filterEl <- input[[paste0(indicator, "userFilter_", filterName)]]
-              if(filterName %in% names(dataViewsConfig[[indicator]]$cols)) {
-                dataTmp <- dataTmp %>%
-                  select(1:as.numeric(attr(dashboardChartData[[indicator]], "noRowHeaders")), 
-                         (matches(paste0("^", filterEl, "$")) | 
-                            contains(paste0(filterEl, "\U2024")) | 
-                            contains(paste0("\U2024", filterEl)))
-                  )
-              } else {
-                dataTmp <- dataTmp %>% 
-                  filter(!!rlang::sym(filterName) %in% filterEl)
-              } 
-            }
-          }
-        }
+        dataTmp <- getData(indicator)
         
         chartType <- tolower(input[[paste0(indicator, "ChartType")]])
         currentView <- dataViewsConfig[[indicator]]
         
         if (!nrow(dataTmp) || 
             !chartType %in% 
-            c("line", "scatter", "area", "stackedarea", "bar",
-              "stackedbar", "radar", "timeseries")) {
+            c(
+              "line", "scatter", "area", "stackedarea", "bar",
+              "stackedbar", "radar", "timeseries"
+            )) {
           return()
         }
         
@@ -1785,6 +1773,7 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
         if (length(currentView$chartOptions$customChartColors) &&
             length(names(currentView$chartOptions$customChartColors))) {
           # custom chart colors specified
+
           colorLabels <- names(currentView$chartOptions$customChartColors)
           colorLabelsNew <- colorLabels
           if (length(currentView$chartOptions$customLabels)) {
@@ -1899,13 +1888,13 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
         }
         
         # Fit chart to screen
-        chartJsObj$x$options$maintainAspectRatio = FALSE
+        chartJsObj$x$options$maintainAspectRatio <- FALSE
         
         # set locale for '.' as decimal sign
-        chartJsObj$x$options$locale = "en-US"
+        chartJsObj$x$options$locale <- "en-US"
         
         # enable zoom
-        chartJsObj$x$options$plugins$zoom = list(
+        chartJsObj$x$options$plugins$zoom <- list(
           zoom = list(
             wheel = list(
               enabled = TRUE
@@ -1927,33 +1916,33 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       
       # download buttons: png & csv
       output[[paste0(indicator, "DownloadButtons")]] <- renderUI({
-        
         canvasId <- paste0(indicator, "Chart")
         
         tagList(
-          tags$div(class = " dashboard-btn-wrapper",
-                   tags$a(
-                     id = ns(paste0(indicator, "DownloadCsv")),
-                     class = "btn btn-default btn-custom pivot-btn-custom shiny-download-link dashboard-btn dashboard-btn-csv",
-                     href = "",
-                     target = "_blank",
-                     download = NA,
-                     tags$div(
-                       tags$i(class = "fa fa-file-csv")
-                     ),
-                     title = lang$renderers$miroPivot$btDownloadCsv
-                   ),
-                   tags$a(
-                     id = ns("downloadPng"),
-                     class = "btn btn-default bt-export-canvas btn-custom pivot-btn-custom dashboard-btn dashboard-btn-png",
-                     download = paste0(canvasId, ".png"),
-                     href = "#",
-                     `data-canvasid` = ns(canvasId),
-                     tags$div(
-                       tags$i(class = "fa fa-file-image")
-                     ),
-                     title = lang$renderers$miroPivot$btDownloadPng
-                   )
+          tags$div(
+            class = " dashboard-btn-wrapper",
+            tags$a(
+              id = ns(paste0(indicator, "DownloadCsv")),
+              class = "btn btn-default btn-custom pivot-btn-custom shiny-download-link dashboard-btn dashboard-btn-csv",
+              href = "",
+              target = "_blank",
+              download = NA,
+              tags$div(
+                tags$i(class = "fa fa-file-csv")
+              ),
+              title = lang$renderers$miroPivot$btDownloadCsv
+            ),
+            tags$a(
+              id = ns(paste0(indicator, "DownloadPng")),
+              class = "btn btn-default bt-export-canvas btn-custom pivot-btn-custom dashboard-btn dashboard-btn-png",
+              download = paste0(canvasId, ".png"),
+              href = "#",
+              `data-canvasid` = ns(canvasId),
+              tags$div(
+                tags$i(class = "fa fa-file-image")
+              ),
+              title = lang$renderers$miroPivot$btDownloadPng
+            )
           )
         )
       })
@@ -1962,10 +1951,10 @@ renderMirorenderer_cubeoutput <- function(input, output, session, data, options 
       output[[paste0(indicator, "DownloadCsv")]] <- downloadHandler(
         filename = paste0(indicator, ".csv"),
         content = function(file) {
-          return(write_csv(dashboardChartData[[indicator]], file, na = ""))
+          dataTmp <- getData(indicator)
+          return(write_csv(dataTmp, file, na = ""))
         }
       )
-      
     })
   } 
   if (!length(dashboard) || !length(generalConfig$tabNames$dashboard)) {
