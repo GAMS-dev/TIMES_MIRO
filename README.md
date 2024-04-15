@@ -25,7 +25,7 @@ In order to use the TIMES MIRO app locally you need
 To be able to import TIMES model Excel input files in MIRO, [python](https://www.python.org/) and the python package 
 [xl2times](https://github.com/etsap-TIMES/xl2times) are required. The Excel input format accepted by this tool is documented 
 in the [TIMES Model Documentation PART IV](https://iea-etsap.org/docs/Documentation_for_the_TIMES_Model-Part-IV.pdf). Make 
-sure that python can be found by putting it in the [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) environment variable.
+sure that python and the tool can be found by putting it in the [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) environment variable.
 
 # Example Application with Customized Visualizations
 If the TIMES MIRO application is used without further ado, the output section shows all model results in a powerful pivot table 
