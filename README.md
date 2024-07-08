@@ -209,7 +209,7 @@ This is the central tab for browsing and editing input data in a powerful pivot 
 <br />
 
 ### RES viewer<a name="res-viewer"></a>
-In the upper right corner of the input data tab there is a *switch view* button that allows to look at the RES network. The RES viewer provides `process centric`, `commodity centric` and `user constraint centric` views. All displayed items are clickable which allows convenient switching between different views. The corresponding table at the right and the pivot table at the bottom are updated automatically and show related data.
+In the upper right corner of the input data tab there is a *switch view* button that allows to look at the RES network. The RES viewer provides `process centric`, `commodity centric` and `user constraint centric` views. All displayed items are clickable which allows convenient switching between different views. The corresponding table at the right and the pivot table at the bottom are updated automatically and show related data. Note that the pivot table uses the package [rpivotTable](https://cran.rstudio.com/web/packages/rpivotTable/index.html) which is loaded when the application is started.
 
 ![res_network](static_times_miro/res_network.png)
 

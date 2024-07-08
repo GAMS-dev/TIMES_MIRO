@@ -89,7 +89,8 @@
     },
     "cubeinput": {
       "outType": "mirorenderer_cubeinput",
-      "additionalData": ["dd_prc_desc", "dd_com_desc"]
+      "additionalData": ["dd_prc_desc", "dd_com_desc"],
+      "packages": ["rpivotTable"]
     }
   },
   "saveTraceFile": false,
