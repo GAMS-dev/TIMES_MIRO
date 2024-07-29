@@ -69,7 +69,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       ),
                       # Data View process
                       fluidRow(class = "row-custom side-padding",
-                               rpivotTableOutput(ns("data_prc"))
+                               rpivotTable::rpivotTableOutput(ns("data_prc"))
                       )),
              
              # Commodity Tab
@@ -127,7 +127,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       ),
                       # Data commodity view
                       fluidRow(class = "row-custom side-padding",
-                               rpivotTableOutput(ns("data_com"))
+                               rpivotTable::rpivotTableOutput(ns("data_com"))
                       )
              ),
              
@@ -182,7 +182,7 @@ mirorenderer_cubeinputOutput <- function(id, height = NULL, options = NULL, path
                       ),
                       # Data user constraint view
                       fluidRow(class = "row-custom side-padding",
-                               rpivotTableOutput(ns("data_uc"))
+                               rpivotTable::rpivotTableOutput(ns("data_uc"))
                       )
              )
            )
@@ -573,7 +573,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   
   # Select data
   # Process-centric view data table
-  output$data_prc <- renderRpivotTable({
+  output$data_prc <- rpivotTable::renderRpivotTable({
     req(input$sel_prc)
     
     tableData <- noTopData 
@@ -594,7 +594,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   })
   
   # Commodity-centric view data table
-  output$data_com <- renderRpivotTable({
+  output$data_com <- rpivotTable::renderRpivotTable({
     req(input$sel_com)
     
     tableData <- noTopData 
@@ -615,7 +615,7 @@ renderMirorenderer_cubeinput <- function(input, output, session, data, options =
   })
   
   # UC view data table
-  output$data_uc <- renderRpivotTable({
+  output$data_uc <- rpivotTable::renderRpivotTable({
     req(input$sel_uc)
     
     tableData <- ucData %>% dplyr::filter(uc_n == input$sel_uc)
